@@ -1,0 +1,60 @@
+{
+  "name": "inkos-novels",
+  "version": "0.1.0",
+  "language": "zh",
+  "llm": {
+    "provider": "custom",
+    "service": "custom",
+    "configSource": "studio",
+    "baseUrl": "https://www.gulieapi.top/v1",
+    "model": "claude-sonnet-4-6",
+    "apiKeyEnv": "GULIEAPI_API_KEY",
+    "apiFormat": "chat",
+    "stream": false
+  },
+  "notify": [],
+  "daemon": {
+    "schedule": {
+      "radarCron": "0 */6 * * *",
+      "writeCron": "*/15 * * * *"
+    },
+    "maxConcurrentBooks": 3
+  },
+  "modelOverrides": {
+    "writer": {
+      "model": "claude-sonnet-4-6",
+      "baseUrl": "https://www.gulieapi.top/v1",
+      "provider": "custom",
+      "apiKeyEnv": "GULIEAPI_API_KEY",
+      "stream": false
+    },
+    "architect": {
+      "model": "claude-sonnet-4-6",
+      "baseUrl": "https://www.gulieapi.top/v1",
+      "provider": "custom",
+      "apiKeyEnv": "GULIEAPI_API_KEY",
+      "stream": false
+    },
+    "reviser": {
+      "model": "claude-sonnet-4-6",
+      "baseUrl": "https://www.gulieapi.top/v1",
+      "provider": "custom",
+      "apiKeyEnv": "GULIEAPI_API_KEY",
+      "stream": false
+    },
+    "auditor": {
+      "model": "claude-haiku-4-5-20251001",
+      "baseUrl": "https://www.gulieapi.top/v1",
+      "provider": "custom",
+      "apiKeyEnv": "GULIEAPI_API_KEY",
+      "stream": false
+    },
+    "chapter-analyzer": {
+      "model": "claude-haiku-4-5-20251001",
+      "baseUrl": "https://www.gulieapi.top/v1",
+      "provider": "custom",
+      "apiKeyEnv": "GULIEAPI_API_KEY",
+      "stream": false
+    }
+  }
+}
