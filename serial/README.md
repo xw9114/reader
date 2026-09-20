@@ -14,4 +14,8 @@ python3 ops/daily-serial.py
 python3 ops/healthcheck.py
 ```
 
-写作日志位于 `/var/log/openclaw-jobs/serial-chapter-*.log`。切换前的短篇脚本、`daily/` 成品和定时任务配置备份保留在原项目中。回滚时恢复旧定时任务命令及 `ops/backups/20260920-serial-novel/` 中的 InkOS provider，并同步旧运行器中的 provider 哈希。
+写作日志位于 `/var/log/openclaw-jobs/serial-chapter-*.log`。切换前的短篇脚本、`daily/` 成品和定时任务配置备份保留在原项目中。
+
+本连载需要给 InkOS 1.8.0 的 `provider.js` 应用 `ops/provider-serial.patch`：基础文件 SHA-256 为 `4380a5bc8b02d8e8b82941c256874d7bdc9dfc1a8f1cfaa9a5c218a402dc6c54`，打补丁后应为 `bff513da7fa7b4c8e5a6da82bbbb98186b36da19ae7d158015e0419f3bc3781f`。补丁只在进程设置 `INKOS_SERIAL_MAX_TOKENS` 时限制输出上限，同时修正 HTTP 524 的错误分类。服务器的已部署副本和旧版备份分别位于 `../ops/inkos-1.8.0-patched/provider.js` 与 `../ops/backups/20260920-serial-novel/provider.js`。
+
+回滚时恢复 `../ops/backups/20260920-serial-novel/` 中的旧 provider、短篇脚本及两份 cron 配置；旧短篇成品一直保留在 `daily/`。

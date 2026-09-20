@@ -1,0 +1,74 @@
+--- provider.js
++++ provider.js
+@@ -446,10 +446,11 @@
+ // === Error Wrapping ===
+ function wrapLLMError(error, context) {
+     const msg = String(error);
++    const httpStatus = msg.match(/^(?:Error|APIError):\s*(?:HTTP\s*)?(\d{3})\b/i)?.[1];
+     const ctxLine = context
+         ? `\n  (baseUrl: ${context.baseUrl}, model: ${context.model})`
+         : "";
+-    if (msg.includes("400")) {
++    if (httpStatus === "400") {
+         // 抽上游 error body 的 message / reason / code（和下方 5xx 一致），让真实错因浮到用户面前
+         let detail = "";
+         if (error && typeof error === "object") {
+@@ -469,17 +470,17 @@
+             `  2. 模型名称不正确或未上架\n` +
+             `  3. 消息格式不兼容（部分服务不支持 system role 或 developer role）${ctxLine}`);
+     }
+-    if (msg.includes("403")) {
++    if (httpStatus === "403") {
+         return new Error(`API 返回 403 (请求被拒绝)。可能原因：\n` +
+             `  1. API Key 无效或过期\n` +
+             `  2. API 提供方的内容审查拦截了请求（公益/免费 API 常见）\n` +
+             `  3. 账户余额不足\n` +
+             `  建议：用 inkos doctor 测试 API 连通性，或换一个不限制内容的 API 提供方${ctxLine}`);
+     }
+-    if (msg.includes("401")) {
++    if (httpStatus === "401") {
+         return new Error(`API 返回 401 (未授权)。请检查 .env 中的 INKOS_LLM_API_KEY 是否正确。${ctxLine}`);
+     }
+-    if (msg.includes("429")) {
++    if (httpStatus === "429") {
+         return new Error(`API 返回 429 (请求过多)。请稍后重试，或检查 API 配额。${ctxLine}`);
+     }
+     if (msg.includes("Connection error")
+@@ -497,6 +498,9 @@
+             `  3. API 服务暂时不可用\n` +
+             `  建议：检查 INKOS_LLM_BASE_URL 是否包含完整路径（如 /v1）`);
+     }
++    if (httpStatus === "524") {
++        return new Error(`API 上游超时（HTTP 524）。请稍后重试或改用流式响应。${ctxLine}`);
++    }
+     // R4 Bug 2: 5xx "status code (no body)" — 尝试从 OpenAI SDK APIError 里抽 body 给用户看具体原因
+     // （如 PPIO 的 {"code":500,"reason":"MODEL_NOT_AVAILABLE","message":"model not available"}）
+     if (msg.includes("status code") && msg.includes("no body")) {
+@@ -1206,6 +1210,18 @@
+     }
+     return { content, usage };
+ }
++// Some OpenAI-compatible gateways reject the model bank's advertised output
++// limit (for example 128000) even when a chapter needs far fewer tokens.
++// Apply this only for the serial novel process, which sets the env var.
++function capSerialMaxTokens(requested) {
++    const raw = process.env.INKOS_SERIAL_MAX_TOKENS;
++    if (!raw)
++        return requested;
++    const cap = Number(raw);
++    if (!Number.isInteger(cap) || cap < 2048 || cap > 16384)
++        throw new Error("INKOS_SERIAL_MAX_TOKENS must be an integer from 2048 to 16384");
++    return Math.min(requested, cap);
++}
+ // === Simple Chat (used by all agents via BaseAgent.chat()) ===
+ export async function chatCompletion(client, model, messages, options) {
+     if (isLlmStubEnabled())
+@@ -1213,7 +1229,7 @@
+     // C1 (v2.0.0)：删除 maxTokensCap 机制。per-call 显式传的 maxTokens 永远不被裁剪。
+     const resolved = {
+         temperature: clampTemperatureForModel(client.service, model, options?.temperature ?? client.defaults.temperature),
+-        maxTokens: options?.maxTokens ?? client.defaults.maxTokens,
++        maxTokens: capSerialMaxTokens(options?.maxTokens ?? client.defaults.maxTokens),
+         extra: client.defaults.extra,
+     };
+     const onStreamProgress = options?.onStreamProgress;
