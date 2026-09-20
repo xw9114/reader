@@ -74,6 +74,7 @@ def sync_git(message: str) -> str:
     local = run(["git", "rev-parse", "HEAD"])
     remote = remote_head()
     if local != remote:
+        run(["git", "fetch", "--no-tags", "origin", "main"], env=git_environment(), timeout=120)
         run(["git", "merge-base", "--is-ancestor", remote, local])
         run(["git", "push", "origin", "HEAD:main"], env=git_environment(), timeout=120)
         if remote_head() != local:
