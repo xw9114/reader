@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - "daily/**"
+      - "serial/published/**"
+      - "serial/books/**/book.json"
       - "site/**"
       - "tools/build_publish.py"
       - ".github/workflows/deploy-pages.yml"
