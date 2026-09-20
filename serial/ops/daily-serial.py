@@ -37,9 +37,9 @@ def fail(message: str) -> None:
     raise RuntimeError(message)
 
 
-def run(command: list[str], *, cwd: Path = REPOSITORY, timeout: int = 90,
+def run(command: list[str], *, cwd: Path | None = None, timeout: int = 90,
         env: dict[str, str] | None = None) -> str:
-    completed = subprocess.run(command, cwd=cwd, env=env, text=True,
+    completed = subprocess.run(command, cwd=cwd or REPOSITORY, env=env, text=True,
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                timeout=timeout, check=False)
     if completed.returncode:
@@ -75,7 +75,18 @@ def sync_git(message: str) -> str:
     remote = remote_head()
     if local != remote:
         run(["git", "fetch", "--no-tags", "origin", "main"], env=git_environment(), timeout=120)
-        run(["git", "merge-base", "--is-ancestor", remote, local])
+        ancestor = subprocess.run(["git", "merge-base", "--is-ancestor", remote, local],
+                                  cwd=REPOSITORY, stdout=subprocess.DEVNULL,
+                                  stderr=subprocess.DEVNULL).returncode
+        if ancestor:
+            merged = subprocess.run(["git", "merge", "--no-edit", remote], cwd=REPOSITORY,
+                                    text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if merged.returncode:
+                if (REPOSITORY / ".git" / "MERGE_HEAD").exists():
+                    subprocess.run(["git", "merge", "--abort"], cwd=REPOSITORY,
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                fail(f"remote main conflicts with serial state: {merged.stderr[-300:]}")
+            local = run(["git", "rev-parse", "HEAD"])
         run(["git", "push", "origin", "HEAD:main"], env=git_environment(), timeout=120)
         if remote_head() != local:
             fail("remote main did not reach the local commit")
