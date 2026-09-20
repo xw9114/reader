@@ -1,0 +1,36 @@
+[
+  {
+    "number": 1,
+    "title": "名字已经签收",
+    "status": "ready-for-review",
+    "wordCount": 3055,
+    "createdAt": "2026-09-20T05:22:58.828Z",
+    "updatedAt": "2026-09-20T05:22:58.853Z",
+    "auditIssues": [
+      "[info] 检测到4句连续以相同开头的句子，呈现列表式AI生成结构",
+      "[warning] memo 在 advance/resolve 里声明要处理 H002，但确定性关键词检查没有找到对应落点",
+      "[warning] memo 在 advance/resolve 里声明要处理 H007，但确定性关键词检查没有找到对应落点",
+      "[warning] 115个段落里有83个不足35字，段落被切得过碎。",
+      "[warning] 连续出现8个不足35字的短段，容易形成短句堆砌。"
+    ],
+    "lengthWarnings": [],
+    "lengthTelemetry": {
+      "target": 2500,
+      "softMin": 2160,
+      "softMax": 2840,
+      "hardMin": 1819,
+      "hardMax": 3181,
+      "countingMode": "zh_chars",
+      "writerCount": 3055,
+      "postReviseCount": 0,
+      "finalCount": 3055,
+      "repairApplied": false,
+      "lengthWarning": false
+    },
+    "tokenUsage": {
+      "promptTokens": 48638,
+      "completionTokens": 7551,
+      "totalTokens": 56189
+    }
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "kind": "long-fiction",
+  "id": "旧城清算:chapter-0001",
+  "stage": "chapter-1",
+  "model": "gpt-5.6-terra",
+  "skillIds": [
+    "inkos-long-writing"
+  ],
+  "resumeCursor": "1",
+  "status": "complete",
+  "artifacts": [
+    "chapters/0001_名字已经签收.md",
+    "chapters/index.json",
+    "story/current_state.md",
+    "story/pending_hooks.md",
+    "story/snapshots/1",
+    "story/runtime/chapter-0001.trace.json"
+  ],
+  "observations": [
+    {
+      "metric": "chapter-length",
+      "expected": {
+        "target": 2500,
+        "min": 1819,
+        "max": 3181,
+        "unit": "zh_chars"
+      },
+      "actual": {
+        "value": 3055,
+        "unit": "zh_chars"
+      },
+      "severity": "info",
+      "evidence": "chapters/0001_名字已经签收.md",
+      "repairable": false
+    }
+  ],
+  "updatedAt": "2026-09-20T05:22:58.867Z"
+}

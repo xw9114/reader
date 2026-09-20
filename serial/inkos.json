@@ -1,0 +1,23 @@
+{
+  "name": "serial",
+  "version": "0.1.0",
+  "language": "zh",
+  "llm": {
+    "provider": "custom",
+    "service": "custom",
+    "configSource": "studio",
+    "baseUrl": "https://api.xw9114.online/v1",
+    "model": "gpt-5.6-terra",
+    "apiKeyEnv": "XW9114_API_KEY",
+    "apiFormat": "chat",
+    "stream": true
+  },
+  "notify": [],
+  "daemon": {
+    "schedule": {
+      "radarCron": "0 */6 * * *",
+      "writeCron": "*/15 * * * *"
+    },
+    "maxConcurrentBooks": 3
+  }
+}

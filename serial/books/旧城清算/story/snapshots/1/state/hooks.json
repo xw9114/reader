@@ -1,0 +1,121 @@
+{
+  "hooks": [
+    {
+      "hookId": "H004",
+      "startChapter": 0,
+      "type": "群体证据",
+      "status": "deferred",
+      "lastAdvancedChapter": 0,
+      "expectedPayoff": "形成可互证的异常住户链",
+      "payoffTiming": "mid-arc",
+      "notes": "初始线索：至少一户旧邻的结算状态与实际领取情况不一致。",
+      "dependsOn": [
+        "H001"
+      ],
+      "paysOffInArc": "第2卷前段",
+      "coreHook": true,
+      "halfLifeChapters": 30,
+      "promoted": true
+    },
+    {
+      "hookId": "H005",
+      "startChapter": 0,
+      "type": "资金链",
+      "status": "deferred",
+      "lastAdvancedChapter": 0,
+      "expectedPayoff": "确认空壳服务公司与补偿资金回流关系",
+      "payoffTiming": "slow-burn",
+      "notes": "初始线索：补偿台账中出现非正常服务费代码。",
+      "dependsOn": [
+        "H004"
+      ],
+      "paysOffInArc": "第3卷中段",
+      "coreHook": true,
+      "halfLifeChapters": 80,
+      "promoted": true
+    },
+    {
+      "hookId": "H001",
+      "startChapter": 0,
+      "type": "身份异常",
+      "status": "progressing",
+      "lastAdvancedChapter": 1,
+      "expectedPayoff": "确认伪造签收责任链",
+      "payoffTiming": "endgame",
+      "notes": "许知微取得台账节选并核对官方已结算名单，两处均显示其286,400元补偿已签收/已完成；她确认2018年11月16日人在外地、未签协议且未收款。",
+      "dependsOn": [],
+      "paysOffInArc": "终卷后段",
+      "coreHook": true,
+      "halfLifeChapters": 80,
+      "promoted": true
+    },
+    {
+      "hookId": "H002",
+      "startChapter": 0,
+      "type": "程序时限",
+      "status": "progressing",
+      "lastAdvancedChapter": 1,
+      "expectedPayoff": "取得资格复核的有效入口",
+      "payoffTiming": "near-term",
+      "notes": "许知微查明资格复核公告期至12月20日、仅余8天，并已提交申请；系统提示原始资料若移交资产处置档案，申请可能不再受理。",
+      "dependsOn": [
+        "H001"
+      ],
+      "paysOffInArc": "第1卷后段",
+      "coreHook": false,
+      "halfLifeChapters": 10,
+      "promoted": true
+    },
+    {
+      "hookId": "H003",
+      "startChapter": 0,
+      "type": "家庭秘密",
+      "status": "progressing",
+      "lastAdvancedChapter": 1,
+      "expectedPayoff": "解释许敬和修改编号与沉默原因",
+      "payoffTiming": "slow-burn",
+      "notes": "许知微发现第017行经办编号由JG-0417改为JG-0423，并依据父亲惯用数字笔迹确认许敬和曾改过该编号；改号原因和其介入程度未明。",
+      "dependsOn": [
+        "H001"
+      ],
+      "paysOffInArc": "第3卷后段",
+      "coreHook": true,
+      "halfLifeChapters": 80,
+      "promoted": true
+    },
+    {
+      "hookId": "H006",
+      "startChapter": 0,
+      "type": "母女关系",
+      "status": "progressing",
+      "lastAdvancedChapter": 1,
+      "expectedPayoff": "周岚交出原始安置凭据并公开证言",
+      "payoffTiming": "slow-burn",
+      "notes": "周岚只交出台账一页，承认纸袋内另有材料却抱入卧室反锁；她以住户过渡费、安置房和生活安稳为由，恳求许知微不要翻名单、找窗口或追查。",
+      "dependsOn": [
+        "H003"
+      ],
+      "paysOffInArc": "第4卷前段",
+      "coreHook": true,
+      "halfLifeChapters": 80,
+      "promoted": true
+    },
+    {
+      "hookId": "H007",
+      "startChapter": 0,
+      "type": "职业冲突",
+      "status": "progressing",
+      "lastAdvancedChapter": 1,
+      "expectedPayoff": "江惟林律所意见书的真实作用被揭开",
+      "payoffTiming": "mid-arc",
+      "notes": "江惟林在离婚现场回避“启衡·周主任”连续来电及兴港里问题；许知微随后查到启衡律师事务所两年前承担兴港里更新项目资产处置专项法律服务，但仍不知江惟林是否参与项目组。",
+      "dependsOn": [
+        "H005"
+      ],
+      "paysOffInArc": "第2卷末",
+      "coreHook": false,
+      "halfLifeChapters": 30,
+      "promoted": true
+    }
+  ]
+}
