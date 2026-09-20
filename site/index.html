@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#143f36">
+    <meta name="description" content="将 daily 目录中的小说章节快速复制到番茄作家助手。">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><rect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%23143f36%22/><text x=%2216%22 y=%2223%22 text-anchor=%22middle%22 font-size=%2220%22 fill=%22white%22>番</text></svg>">
+    <title>番茄发布台</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">READER / DAILY</p>
+        <h1>番茄发布台</h1>
+      </div>
+      <p class="library-status" id="libraryStatus">正在读取作品…</p>
+    </header>
+
+    <main class="workspace" aria-live="polite">
+      <aside class="library" aria-label="作品列表">
+        <label class="search-label" for="storySearch">查找作品</label>
+        <input id="storySearch" class="search-input" type="search" placeholder="输入标题或日期" autocomplete="off">
+        <div class="story-list" id="storyList"></div>
+      </aside>
+
+      <section class="editor" id="editor" hidden>
+        <div class="story-heading">
+          <div>
+            <p class="story-date" id="storyDate"></p>
+            <h2 id="storyTitle"></h2>
+          </div>
+          <a class="download-link" id="downloadStory" download>下载整篇 TXT</a>
+        </div>
+
+        <div class="chapter-toolbar">
+          <button class="icon-button" id="previousChapter" type="button" aria-label="上一章" title="上一章">←</button>
+          <label class="chapter-select-label" for="chapterSelect">
+            <span>当前章节</span>
+            <select id="chapterSelect"></select>
+          </label>
+          <button class="icon-button" id="nextChapter" type="button" aria-label="下一章" title="下一章">→</button>
+        </div>
+
+        <div class="chapter-meta">
+          <span id="chapterPosition"></span>
+          <span id="characterCount"></span>
+        </div>
+
+        <article class="manuscript">
+          <h3 id="chapterTitle"></h3>
+          <div class="chapter-body" id="chapterBody"></div>
+        </article>
+      </section>
+
+      <section class="empty-state" id="emptyState">
+        <p>正在整理今天的稿件…</p>
+      </section>
+    </main>
+
+    <nav class="action-bar" id="actionBar" aria-label="复制操作" hidden>
+      <button class="action-button secondary" id="copyTitle" type="button">复制标题</button>
+      <button class="action-button primary" id="copyBody" type="button">复制正文</button>
+      <button class="action-button tertiary" id="copyAll" type="button">标题 + 正文</button>
+    </nav>
+
+    <div class="toast" id="toast" role="status" aria-live="assertive"></div>
+    <script src="app.js" defer></script>
+  </body>
+</html>
