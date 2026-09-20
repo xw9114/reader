@@ -46,7 +46,7 @@ def check() -> None:
         raise RuntimeError(f"chapter is incomplete: {count} Chinese characters")
     index = json.loads((books[0] / "chapters" / "index.json").read_text(encoding="utf-8"))
     entry = next((row for row in index if row.get("number") == number), None)
-    if entry is None or entry.get("status") in {"failed", "state-degraded"}:
+    if entry is None or entry.get("status") not in {"ready-for-review", "approved"}:
         raise RuntimeError("InkOS chapter index is unhealthy")
 
     relative = publication.relative_to(REPOSITORY).as_posix()

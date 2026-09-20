@@ -102,8 +102,8 @@ def cjk_count(path: Path, number: int) -> int:
     content = path.read_text(encoding="utf-8")
     if not content.strip():
         fail(f"chapter {number} is empty")
-    if re.search(r"第\s*\d+\s*章", content[:150]) is None:
-        fail(f"chapter {number} has no numbered heading")
+    if re.search(rf"第\s*{number}\s*章", content[:150]) is None:
+        fail(f"chapter {number} has the wrong numbered heading")
     body = "\n".join(content.splitlines()[1:])
     count = len(re.findall(r"[\u3400-\u9fff]", body))
     if count < MIN_CJK:
@@ -156,6 +156,25 @@ def atomic_json(path: Path, value: dict) -> None:
     os.replace(tmp, path)
 
 
+def validate_existing_publications(book_id: str, book_dir: Path) -> None:
+    for publication in PUBLISHED.glob("*.md"):
+        match = re.fullmatch(r"(\d{4}-\d{2}-\d{2})-chapter-(\d{4})\.md", publication.name)
+        if match is None:
+            fail(f"unexpected publication filename: {publication.name}")
+        number = int(match.group(2))
+        record_path = RUNS / f"{match.group(1)}.json"
+        record = json.loads(record_path.read_text(encoding="utf-8"))
+        source = chapter_file(book_dir, number)
+        if (source is None or record.get("bookId") != book_id
+                or record.get("chapter") != number or record.get("status") != "published"):
+            fail(f"publication record or source is missing for chapter {number}")
+        digest = hashlib.sha256(publication.read_bytes()).hexdigest()
+        if digest != record.get("sha256") or digest != hashlib.sha256(source.read_bytes()).hexdigest():
+            fail(f"published chapter {number} differs from its InkOS source or record")
+        if cjk_count(publication, number) != record.get("characters"):
+            fail(f"published chapter {number} has a changed character count")
+
+
 def main() -> None:
     os.chdir(REPOSITORY)
     PUBLISHED.mkdir(exist_ok=True)
@@ -165,6 +184,9 @@ def main() -> None:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
             fail("another serial chapter job is running")
+
+        book_id, book_dir, metadata = book()
+        validate_existing_publications(book_id, book_dir)
 
         # A chapter copied before a push failure must reach GitHub before another is written.
         unpublished = [p for p in PUBLISHED.glob("*.md")
@@ -181,7 +203,6 @@ def main() -> None:
             commit = sync_git("Sync serial novel state")
             say(f"SUCCESS: today's serial chapter already published; commit={commit}")
             return
-        book_id, book_dir, metadata = book()
         published_count = len(list(PUBLISHED.glob("*-chapter-*.md")))
         number = published_count + 1
         if number > int(metadata.get("targetChapters", 0)):
@@ -214,7 +235,7 @@ def main() -> None:
             count = cjk_count(source, number)
         index = json.loads((book_dir / "chapters" / "index.json").read_text(encoding="utf-8"))
         entry = next((row for row in index if row.get("number") == number), None)
-        if entry is None or entry.get("status") in {"failed", "state-degraded"}:
+        if entry is None or entry.get("status") not in {"ready-for-review", "approved"}:
             fail(f"chapter {number} has no healthy InkOS index entry")
 
         destination = PUBLISHED / f"{publish_date.isoformat()}-chapter-{number:04d}.md"
