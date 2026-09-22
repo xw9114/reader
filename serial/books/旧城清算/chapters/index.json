@@ -32,5 +32,40 @@
       "completionTokens": 7551,
       "totalTokens": 56189
     }
+  },
+  {
+    "number": 2,
+    "title": "第017行改过号",
+    "status": "ready-for-review",
+    "wordCount": 2902,
+    "createdAt": "2026-09-22T02:32:39.671Z",
+    "updatedAt": "2026-09-22T02:40:22.260Z",
+    "auditIssues": [
+      "[critical] 本章 hook 账明确要求新开伏笔为“孙家留存的收据日期早于‘已结算’日期”，正文虽在章尾给出孙家收据日期“11月15日”，并多次称“日期对不上”，但未展示或明确孙家对应“已结算日期”为何日，因而没有完成“早于已结算日期”这一精确时间矛盾的落地。现有信息只能证明孙家有一张日期为11月15日的收据，不能证明其与结算记录构成先后倒置。",
+      "[warning] 与第1章的衔接存在时间定位缺口：第1章已写明许知微“回到租住处已经快十点”并在当晚提交申请；本章再以“许知微回到租住处时”开场，却未标明次日或具体时间跳转。随后又说明她“下午”已联系孙家，容易与上一章深夜提交申请、这一章收到补正提示的顺序混淆。",
+      "[info] 本章再次以“回到租住处”起笔，与第1章末尾“回到租住处已经快十点”的场景节点重合，虽不构成事实冲突，但会削弱章节切换的推进感。",
+      "[warning] memo 在 advance/resolve 里声明要处理 H003，但确定性关键词检查没有找到对应落点",
+      "[warning] memo 在 advance/resolve 里声明要处理 H007，但确定性关键词检查没有找到对应落点",
+      "[warning] 连续出现6个不足35字的短段，容易形成短句堆砌。"
+    ],
+    "lengthWarnings": [],
+    "lengthTelemetry": {
+      "target": 2500,
+      "softMin": 2160,
+      "softMax": 2840,
+      "hardMin": 1819,
+      "hardMax": 3181,
+      "countingMode": "zh_chars",
+      "writerCount": 3259,
+      "postReviseCount": 0,
+      "finalCount": 2902,
+      "repairApplied": true,
+      "lengthWarning": false
+    },
+    "tokenUsage": {
+      "promptTokens": 105991,
+      "completionTokens": 12262,
+      "totalTokens": 118253
+    }
   }
 ]

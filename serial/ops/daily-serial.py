@@ -122,13 +122,18 @@ def cjk_count(path: Path, number: int) -> int:
     return count
 
 
-def write_chapter(book_id: str, number: int, rewrite: bool = False) -> None:
+def write_chapter(book_id: str, number: int, rewrite: bool = False,
+                  audit_issues: list[str] | None = None) -> None:
     LOGS.mkdir(parents=True, exist_ok=True)
     log = LOGS / f"serial-chapter-{number:04d}-{'rewrite' if rewrite else 'write'}.log"
     command = [sys.executable, str(INKOS)]
     if rewrite:
+        brief = ("请写完整的连续小说正文，本章至少2000个汉字，目标2500字；"
+                 "保持既有设定和时间线，并修复上一版的所有审计问题。")
+        if audit_issues:
+            brief += "\n上一版审计问题：\n" + "\n".join(audit_issues)
         command += ["write", "rewrite", book_id, str(number), "--force", "--words", str(TARGET_WORDS),
-                    "--brief", "请写完整的连续小说正文，本章至少2000个汉字，目标2500字；保持既有设定和时间线。"]
+                    "--brief", brief]
     else:
         command += ["write", "next", book_id, "--count", "1", "--words", str(TARGET_WORDS),
                     "--context-file", str(PROJECT / "brief.md")]
@@ -165,6 +170,11 @@ def atomic_json(path: Path, value: dict) -> None:
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     os.replace(tmp, path)
+
+
+def chapter_index_entry(book_dir: Path, number: int) -> dict | None:
+    index = json.loads((book_dir / "chapters" / "index.json").read_text(encoding="utf-8"))
+    return next((row for row in index if row.get("number") == number), None)
 
 
 def validate_existing_publications(book_id: str, book_dir: Path) -> None:
@@ -235,19 +245,32 @@ def main() -> None:
             source = chapter_file(book_dir, number)
         if source is None:
             fail(f"InkOS did not save chapter {number}")
+        rewritten = False
         try:
             count = cjk_count(source, number)
         except RuntimeError as error:
             say(f"HEARTBEAT: {error}; rewriting chapter {number} once")
             write_chapter(book_id, number, rewrite=True)
+            rewritten = True
             source = chapter_file(book_dir, number)
             if source is None:
                 fail(f"rewrite did not save chapter {number}")
             count = cjk_count(source, number)
-        index = json.loads((book_dir / "chapters" / "index.json").read_text(encoding="utf-8"))
-        entry = next((row for row in index if row.get("number") == number), None)
+        entry = chapter_index_entry(book_dir, number)
+        if (entry is None or entry.get("status") not in {"ready-for-review", "approved"}) and not rewritten:
+            status = entry.get("status") if entry else "missing"
+            issues = [str(issue) for issue in (entry or {}).get("auditIssues", [])
+                      if str(issue).startswith(("[critical]", "[warning]"))]
+            say(f"HEARTBEAT: chapter {number} status={status}; rewriting once with audit feedback")
+            write_chapter(book_id, number, rewrite=True, audit_issues=issues)
+            source = chapter_file(book_dir, number)
+            if source is None:
+                fail(f"audit rewrite did not save chapter {number}")
+            count = cjk_count(source, number)
+            entry = chapter_index_entry(book_dir, number)
         if entry is None or entry.get("status") not in {"ready-for-review", "approved"}:
-            fail(f"chapter {number} has no healthy InkOS index entry")
+            status = entry.get("status") if entry else "missing"
+            fail(f"chapter {number} has no healthy InkOS index entry after one rewrite; status={status}")
 
         destination = PUBLISHED / f"{publish_date.isoformat()}-chapter-{number:04d}.md"
         if destination.exists():
