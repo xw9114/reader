@@ -1,0 +1,189 @@
+{
+  "chapter": 3,
+  "plannerInputs": [
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/author_intent.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/current_focus.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/outline/story_frame.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/outline/volume_map.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/chapter_summaries.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/book_rules.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/current_state.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/pending_hooks.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/memory.db"
+  ],
+  "composerInputs": [
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/runtime/chapter-0003.intent.md"
+  ],
+  "selectedSources": [
+    "runtime/chapter_memo",
+    "story/current_focus.md",
+    "story/author_intent.md",
+    "story/audit_drift.md",
+    "story/current_state.md",
+    "story/outline/story_frame.md#核心冲突-对手定性与前后台故事",
+    "story/outline/story_frame.md#世界观底色",
+    "story/outline/volume_map.md#各卷主题与情绪曲线",
+    "story/chapter_summaries.md#recent_titles",
+    "story/chapter_summaries.md#recent_mood_type_trail",
+    "story/chapters#recent_endings",
+    "runtime/hook_debt#H001",
+    "runtime/hook_debt#H002",
+    "runtime/hook_debt#H003",
+    "runtime/hook_debt#H004",
+    "runtime/hook_debt#H006",
+    "runtime/hook_debt#H007",
+    "story/current_state.md#当前目标",
+    "story/current_state.md#当前冲突",
+    "story/current_state.md#当前限制",
+    "story/current_state.md#当前敌我",
+    "story/chapter_summaries.md#1",
+    "story/chapter_summaries.md#2",
+    "story/pending_hooks.md#H004",
+    "story/pending_hooks.md#H003",
+    "story/pending_hooks.md#H001",
+    "story/pending_hooks.md#H002",
+    "story/pending_hooks.md#H006",
+    "story/pending_hooks.md#H007"
+  ],
+  "promptPacks": [],
+  "contextTiers": {
+    "protectedSources": [
+      "runtime/chapter_memo",
+      "story/current_focus.md",
+      "story/author_intent.md",
+      "story/audit_drift.md",
+      "story/current_state.md",
+      "story/outline/story_frame.md#核心冲突-对手定性与前后台故事",
+      "story/outline/story_frame.md#世界观底色",
+      "story/outline/volume_map.md#各卷主题与情绪曲线",
+      "runtime/hook_debt#H001",
+      "runtime/hook_debt#H002",
+      "runtime/hook_debt#H003",
+      "runtime/hook_debt#H004",
+      "runtime/hook_debt#H006",
+      "runtime/hook_debt#H007",
+      "story/current_state.md#当前目标",
+      "story/current_state.md#当前冲突",
+      "story/current_state.md#当前限制",
+      "story/current_state.md#当前敌我",
+      "story/pending_hooks.md#H004",
+      "story/pending_hooks.md#H003",
+      "story/pending_hooks.md#H001",
+      "story/pending_hooks.md#H002",
+      "story/pending_hooks.md#H006",
+      "story/pending_hooks.md#H007"
+    ],
+    "compressibleSources": [
+      "story/chapter_summaries.md#recent_titles",
+      "story/chapter_summaries.md#recent_mood_type_trail",
+      "story/chapters#recent_endings",
+      "story/chapter_summaries.md#1",
+      "story/chapter_summaries.md#2"
+    ]
+  },
+  "tokenBudget": {
+    "protectedTokens": 7571,
+    "compressibleTokens": 522,
+    "totalSelectedTokens": 8093
+  },
+  "retrieval": {
+    "engine": "sqlite-fts5-bm25",
+    "query": "锁定七日内取得两户原件核验授权的短期目标\n全书分为四卷。第一卷的主题是“名字被谁写走”，情绪从离婚后的疲惫和私人羞耻，逐渐收紧为窗口前无处可退的愤怒；它的爽感来自许知微用专业习惯从一堆“手续齐全”里抠出第一处裂缝，但裂缝后面露出的恰好是父亲。第二卷的主题是“钱去了哪里”，情绪更快、更硬，住户联盟、律所、银行和项目公司开始真正互相施压，许知微赢得程序位置，也被迫看清前夫江惟林所在律所并非旁观者。第三卷的主题是“火没有烧完”，旧火灾证据让故事进入最冷的一段，家庭秘密把许知微从受害者的位置推向复杂的继承者位置。第四卷的主题是“补救由谁付账”，高潮不只在公开责任，更在住户彼此撕扯之后仍要形成现实方案；结尾的暖意来自重新建立的秩序，而非所有伤口自动愈合。\n锁定七日内取得两户原件核验授权的短期目标\n全书分为四卷。第一卷的主题是“名字被谁写走”，情绪从离婚后的疲惫和私人羞耻，逐渐收紧为窗口前无处可退的愤怒；它的爽感来自许知微用专业习惯从一堆“手续齐全”里抠出第一处裂缝，但裂缝后面露出的恰好是父亲。第二卷的主题是“钱去了哪里”，情绪更快、更硬，住户联盟、律所、银行和项目公司开始真正互相施压，许知微赢得程序位置，也被迫看清前夫江惟林所在律所并非旁观者。第三卷的主题是“火没有烧完”，旧火灾证据让故事进入最冷的一段，家庭秘密把许知微从受害者的位置推向复杂的继承者位置。第四卷的主题是“补救由谁付账”，高潮不只在公开责任，更在住户彼此撕扯之后仍要形成现实方案；结尾的暖意来自重新建立的秩序，而非所有伤口自动愈合。\nH001\nH002\nH003\nH004\nH005\nH006\nH007",
+    "candidates": [
+      {
+        "id": "summary:1",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#1",
+        "score": 12.127412287936352
+      },
+      {
+        "id": "fact:4",
+        "kind": "fact",
+        "source": "story/current_state.md#当前目标",
+        "score": 8.296373113129583
+      },
+      {
+        "id": "fact:0",
+        "kind": "fact",
+        "source": "story/current_state.md#主角状态",
+        "score": 5.225866912717018
+      },
+      {
+        "id": "hook:H002",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H002",
+        "score": 5.222943204687499
+      },
+      {
+        "id": "hook:H006",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H006",
+        "score": 4.410188484107015
+      },
+      {
+        "id": "hook:H007",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H007",
+        "score": 4.044996968030655
+      },
+      {
+        "id": "hook:H001",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H001",
+        "score": 3.8435533250414053
+      },
+      {
+        "id": "summary:2",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#2",
+        "score": 3.8098642860755083
+      },
+      {
+        "id": "fact:2",
+        "kind": "fact",
+        "source": "story/current_state.md#当前冲突",
+        "score": 3.661379164761914
+      },
+      {
+        "id": "fact:5",
+        "kind": "fact",
+        "source": "story/current_state.md#当前限制",
+        "score": 3.474991801988885
+      },
+      {
+        "id": "hook:H004",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H004",
+        "score": 2.529990303987256
+      },
+      {
+        "id": "fact:3",
+        "kind": "fact",
+        "source": "story/current_state.md#当前敌我",
+        "score": 2.176383712486177
+      },
+      {
+        "id": "fact:1",
+        "kind": "fact",
+        "source": "story/current_state.md#当前位置",
+        "score": 1.9062558831118555
+      },
+      {
+        "id": "hook:H003",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H003",
+        "score": 1.105771242900655
+      }
+    ],
+    "semanticSelectedIds": [
+      "fact:4",
+      "summary:2",
+      "fact:2",
+      "fact:5",
+      "hook:H004",
+      "fact:3",
+      "hook:H003"
+    ]
+  },
+  "notes": []
+}

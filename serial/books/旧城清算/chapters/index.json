@@ -67,5 +67,39 @@
       "completionTokens": 12262,
       "totalTokens": 118253
     }
+  },
+  {
+    "number": 3,
+    "title": "收据上只有过渡费",
+    "status": "ready-for-review",
+    "wordCount": 3070,
+    "createdAt": "2026-09-22T11:11:37.319Z",
+    "updatedAt": "2026-09-22T11:11:37.319Z",
+    "auditIssues": [
+      "[warning] 本章开头仅写“下午四点”，虽与第2章约定的“明天下午四点”能够推知衔接关系，但没有明确标出“次日下午”或日期。第2章结束于当夜，当前开场仍存在轻微的跨章时间定位缺口，且这正是上一章审计纠偏中要求避免的问题。",
+      "[warning] memo 在 advance/resolve 里声明要处理 H005，但确定性关键词检查没有找到对应落点",
+      "[warning] 这些伏笔已经进入回收/推进压力，但本章没有真正处理：H007（中程，可回收）。",
+      "[warning] 101个段落里有74个不足35字，段落被切得过碎。",
+      "[warning] 连续出现16个不足35字的短段，容易形成短句堆砌。"
+    ],
+    "lengthWarnings": [],
+    "lengthTelemetry": {
+      "target": 2500,
+      "softMin": 2160,
+      "softMax": 2840,
+      "hardMin": 1819,
+      "hardMax": 3181,
+      "countingMode": "zh_chars",
+      "writerCount": 3733,
+      "postReviseCount": 3070,
+      "finalCount": 3070,
+      "repairApplied": true,
+      "lengthWarning": false
+    },
+    "tokenUsage": {
+      "promptTokens": 117467,
+      "completionTokens": 13402,
+      "totalTokens": 130869
+    }
   }
 ]
