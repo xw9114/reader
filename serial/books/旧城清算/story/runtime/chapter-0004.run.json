@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "kind": "long-fiction",
+  "id": "旧城清算:chapter-0004",
+  "stage": "chapter-4",
+  "model": "gpt-5.6-terra",
+  "skillIds": [
+    "inkos-long-writing"
+  ],
+  "resumeCursor": "4",
+  "status": "complete",
+  "artifacts": [
+    "chapters/0004_公告栏上的罗秀兰.md",
+    "chapters/index.json",
+    "story/current_state.md",
+    "story/pending_hooks.md",
+    "story/snapshots/4",
+    "story/runtime/chapter-0004.trace.json"
+  ],
+  "observations": [
+    {
+      "metric": "chapter-length",
+      "expected": {
+        "target": 2500,
+        "min": 1819,
+        "max": 3181,
+        "unit": "zh_chars"
+      },
+      "actual": {
+        "value": 2815,
+        "unit": "zh_chars"
+      },
+      "severity": "info",
+      "evidence": "chapters/0004_公告栏上的罗秀兰.md",
+      "repairable": false
+    }
+  ],
+  "updatedAt": "2026-09-23T09:11:36.806Z"
+}
