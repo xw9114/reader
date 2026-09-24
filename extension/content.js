@@ -5,7 +5,7 @@
     stories: [],
     activeStory: null,
     activeChapterIndex: 0,
-    fields: { title: null, body: null },
+    fields: { chapterNumber: null, title: null, body: null },
   };
 
   function isVisible(element) {
@@ -24,12 +24,31 @@
 
   function titleScore(element) {
     const text = fieldText(element);
+    const rect = element.getBoundingClientRect();
     let score = 0;
     if (/章节标题|章节名|标题|chapter.?title/.test(text)) score += 12;
     if (/请输入.*标题|title/.test(text)) score += 5;
+    if (/章节序号|章节号|章序|chapter.?number/.test(text)) score -= 18;
     if (/搜索|search|简介|书名/.test(text)) score -= 14;
     if (element instanceof HTMLInputElement) score += 3;
+    if (element instanceof HTMLInputElement && element.type === "number") score -= 18;
+    if (rect.width <= 160) score -= 8;
     if (element.maxLength > 0 && element.maxLength <= 100) score += 3;
+    return score;
+  }
+
+  function chapterNumberScore(element) {
+    const text = fieldText(element);
+    const rect = element.getBoundingClientRect();
+    let score = 0;
+    if (/章节序号|章节号|章序|chapter.?number|chapter.?index/.test(text)) score += 18;
+    if (/第\s*[^章]{0,12}\s*章/.test(text)) score += 12;
+    if (element instanceof HTMLInputElement && element.type === "number") score += 10;
+    if (element instanceof HTMLInputElement && element.inputMode === "numeric") score += 8;
+    if (element.maxLength > 0 && element.maxLength <= 8) score += 6;
+    if (rect.width <= 160 && rect.height <= 80) score += 9;
+    if (rect.width > 260 || rect.height > 100) score -= 16;
+    if (/搜索|search|正文|内容|书名/.test(text)) score -= 14;
     return score;
   }
 
@@ -54,16 +73,21 @@
   }
 
   function detectEditorFields() {
+    const chapterNumber = bestCandidate(
+      "input:not([type]), input[type='text'], input[type='number'], [contenteditable='true']",
+      chapterNumberScore,
+    );
     const title = bestCandidate(
       "input:not([type]), input[type='text'], textarea",
       titleScore,
+      chapterNumber,
     );
     const body = bestCandidate(
       "[contenteditable='true'], textarea, [role='textbox']",
       bodyScore,
       title,
     );
-    state.fields = { title, body };
+    state.fields = { chapterNumber, title, body };
     return state.fields;
   }
 
@@ -80,13 +104,56 @@
     element.dispatchEvent(new Event("blur", { bubbles: true }));
   }
 
-  function normalizeFanqieTitle(value) {
-    const title = String(value || "").trim();
-    const normalized = title.replace(
-      /^\s*(?:第\s*[0-9０-９一二三四五六七八九十百千万零〇两]+\s*[章回节篇]|chapter\s*\d+)\s*[：:、，,.。\-—_]*\s*/i,
-      "",
+  function chineseNumberToArabic(value) {
+    const digits = { 零: 0, 〇: 0, 一: 1, 二: 2, 两: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9 };
+    const units = { 十: 10, 百: 100, 千: 1000, 万: 10000 };
+    let total = 0;
+    let section = 0;
+    let number = 0;
+    for (const character of value) {
+      if (Object.hasOwn(digits, character)) {
+        number = digits[character];
+        continue;
+      }
+      const unit = units[character];
+      if (!unit) return null;
+      if (unit === 10000) {
+        section += number;
+        total += section * unit;
+        section = 0;
+      } else {
+        section += (number || 1) * unit;
+      }
+      number = 0;
+    }
+    return total + section + number;
+  }
+
+  function normalizeChapterNumber(value) {
+    if (!value) return null;
+    const halfWidth = value.replace(
+      /[０-９]/g,
+      (character) => String.fromCharCode(character.charCodeAt(0) - 0xFEE0),
     );
-    return normalized || title;
+    if (/^\d+$/.test(halfWidth)) return String(Number(halfWidth));
+    const converted = chineseNumberToArabic(halfWidth);
+    return converted === null ? null : String(converted);
+  }
+
+  function parseChapterTitle(value) {
+    const title = String(value || "").trim();
+    const match = title.match(
+      /^\s*(?:第\s*([0-9０-９一二三四五六七八九十百千万零〇两]+)\s*[章回节篇]|chapter\s*([0-9０-９]+))\s*[：:、，,.。\-—_]*\s*/i,
+    );
+    if (!match) return { chapterNumber: null, title };
+    return {
+      chapterNumber: normalizeChapterNumber(match[1] || match[2]),
+      title: title.slice(match[0].length).trim() || title,
+    };
+  }
+
+  function normalizeFanqieTitle(value) {
+    return parseChapterTitle(value).title;
   }
 
   function escapeHtml(value) {
@@ -134,14 +201,29 @@
     setEditableValue(element, value);
   }
 
-  function fillEditor(title, body) {
+  function fillEditor(title, body, fallbackChapterNumber = null) {
     const fields = detectEditorFields();
     if (!fields.title || !fields.body) {
-      return { ok: false, titleFound: Boolean(fields.title), bodyFound: Boolean(fields.body) };
+      return {
+        ok: false,
+        chapterNumberFound: Boolean(fields.chapterNumber),
+        chapterNumberFilled: false,
+        titleFound: Boolean(fields.title),
+        bodyFound: Boolean(fields.body),
+      };
     }
-    fillElement(fields.title, normalizeFanqieTitle(title));
+    const parsed = parseChapterTitle(title);
+    const chapterNumber = parsed.chapterNumber || normalizeChapterNumber(String(fallbackChapterNumber || ""));
+    if (fields.chapterNumber && chapterNumber) fillElement(fields.chapterNumber, chapterNumber);
+    fillElement(fields.title, parsed.title);
     fillElement(fields.body, body);
-    return { ok: true, titleFound: true, bodyFound: true };
+    return {
+      ok: true,
+      chapterNumberFound: Boolean(fields.chapterNumber),
+      chapterNumberFilled: Boolean(fields.chapterNumber && chapterNumber),
+      titleFound: true,
+      bodyFound: true,
+    };
   }
 
   const panelMarkup = `
@@ -274,7 +356,7 @@
     renderChapters();
     const fields = detectEditorFields();
     updateStatus(
-      `已读取 ${state.stories.length} 篇作品。标题框${fields.title ? "已识别" : "未识别"}，正文框${fields.body ? "已识别" : "未识别"}。`,
+      `已读取 ${state.stories.length} 篇作品。章序号框${fields.chapterNumber ? "已识别" : "未识别"}，标题框${fields.title ? "已识别" : "未识别"}，正文框${fields.body ? "已识别" : "未识别"}。`,
       fields.title && fields.body ? "success" : "error",
     );
   }
@@ -310,9 +392,14 @@
     ui.fill.addEventListener("click", () => {
       const chapter = currentChapter();
       if (!chapter) return;
-      const result = fillEditor(chapter.title, chapter.body);
+      const result = fillEditor(chapter.title, chapter.body, state.activeChapterIndex + 1);
       if (result.ok) {
-        updateStatus("标题和正文已填入，请核对后在番茄后台保存或发布。", "success");
+        updateStatus(
+          result.chapterNumberFilled
+            ? "章序号、标题和正文已填入，请核对后在番茄后台保存或发布。"
+            : "标题和正文已填入，但未识别章序号框，请手动填写章序号。",
+          result.chapterNumberFilled ? "success" : "error",
+        );
       } else {
         const missing = [!result.titleFound && "标题框", !result.bodyFound && "正文框"].filter(Boolean).join("、");
         updateStatus(`未识别${missing}。请先打开章节编辑页，再重新检测。`, "error");
@@ -337,6 +424,7 @@
     detectEditorFields,
     fillEditor,
     normalizeFanqieTitle,
+    parseChapterTitle,
   };
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", mountPanel, { once: true });

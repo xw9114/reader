@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Reader 番茄导入助手",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "从 Reader 发布页选择小说章节并填入番茄网页作者后台。",
   "permissions": ["storage", "activeTab"],
   "host_permissions": [
