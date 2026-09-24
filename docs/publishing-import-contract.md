@@ -79,7 +79,7 @@ or:
 { "ok": false, "error": "HTTP 404" }
 ```
 
-The content script may fill detected title and body fields. It must never click the final save or publish action.
+The content script may fill detected title and body fields. Before filling the Fanqie title field, it removes a leading chapter-number prefix such as `第1章` because Fanqie renders the chapter number separately. Rich-text body content is inserted as paragraph nodes; blank-line paragraph boundaries must not be flattened into one text block. It must never click the final save or publish action.
 
 ## 4. Validation & Error Matrix
 
@@ -91,6 +91,8 @@ The content script may fill detected title and body fields. It must never click 
 | Extension source | `extension/` exists | Bundle path is `null` when omitted |
 | Remote library | HTTP success and `stories` is an array | Panel shows a read error and does not fill |
 | Editor detection | Visible title and body fields both found | Panel lists missing fields and does not partially fill |
+| Fanqie title | Leading `第 N 章`/`Chapter N` prefix is removed | Prevents duplicated chapter numbering |
+| Rich-text body | Blank lines become separate paragraph nodes; single line breaks become `<br>` | Prevents the whole chapter becoming one paragraph |
 
 ## 5. Good / Base / Bad Cases
 
@@ -109,6 +111,8 @@ The content script may fill detected title and body fields. It must never click 
 - Browser fixture `tests/fixtures/fanqie-editor.html`
   - Assert the panel mounts.
   - Assert title and rich-text body are detected.
+  - Assert `第1章 测试` is filled as `测试`.
+  - Assert the rich-text editor contains two paragraph nodes.
   - Assert paragraph breaks survive filling.
 
 ## 7. Wrong vs Correct
@@ -117,11 +121,11 @@ The content script may fill detected title and body fields. It must never click 
 
 ```javascript
 document.querySelector("input").value = chapter.title;
-document.querySelector("[contenteditable]").textContent = chapter.body;
+document.execCommand("insertText", false, chapter.body);
 document.querySelector("button.publish").click();
 ```
 
-This selects arbitrary fields, does not notify reactive editors, and publishes without review.
+This selects arbitrary fields, duplicates the chapter number, flattens rich-text paragraphs, does not notify reactive editors, and publishes without review.
 
 ### Correct
 

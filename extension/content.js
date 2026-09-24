@@ -80,6 +80,36 @@
     element.dispatchEvent(new Event("blur", { bubbles: true }));
   }
 
+  function normalizeFanqieTitle(value) {
+    const title = String(value || "").trim();
+    const normalized = title.replace(
+      /^\s*(?:第\s*[0-9０-９一二三四五六七八九十百千万零〇两]+\s*[章回节篇]|chapter\s*\d+)\s*[：:、，,.。\-—_]*\s*/i,
+      "",
+    );
+    return normalized || title;
+  }
+
+  function escapeHtml(value) {
+    return value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  function bodyToHtml(value) {
+    const normalized = String(value || "")
+      .replace(/\r\n?/g, "\n")
+      .trim();
+    const paragraphs = normalized
+      ? normalized.split(/\n[\t \u3000]*\n+/).map((paragraph) => paragraph.trim()).filter(Boolean)
+      : [""];
+    return paragraphs
+      .map((paragraph) => `<p>${escapeHtml(paragraph).replaceAll("\n", "<br>") || "<br>"}</p>`)
+      .join("");
+  }
+
   function setEditableValue(element, value) {
     element.focus();
     const selection = window.getSelection();
@@ -87,11 +117,12 @@
     range.selectNodeContents(element);
     selection.removeAllRanges();
     selection.addRange(range);
-    const inserted = document.execCommand("insertText", false, value);
-    if (!inserted || element.textContent.trim() !== value.trim()) {
-      element.textContent = value;
+    const html = bodyToHtml(value);
+    const inserted = document.execCommand("insertHTML", false, html);
+    if (!inserted || !element.querySelector("p, div")) {
+      element.innerHTML = html;
     }
-    element.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText", data: value }));
+    element.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertFromPaste", data: null }));
     element.dispatchEvent(new Event("change", { bubbles: true }));
   }
 
@@ -108,7 +139,7 @@
     if (!fields.title || !fields.body) {
       return { ok: false, titleFound: Boolean(fields.title), bodyFound: Boolean(fields.body) };
     }
-    fillElement(fields.title, title);
+    fillElement(fields.title, normalizeFanqieTitle(title));
     fillElement(fields.body, body);
     return { ok: true, titleFound: true, bodyFound: true };
   }
@@ -301,7 +332,12 @@
     loadLibrary();
   }
 
-  globalThis.__readerFanqieImporter = { detectEditorFields, fillEditor };
+  globalThis.__readerFanqieImporter = {
+    bodyToHtml,
+    detectEditorFields,
+    fillEditor,
+    normalizeFanqieTitle,
+  };
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", mountPanel, { once: true });
   } else {
