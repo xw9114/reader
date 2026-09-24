@@ -15,7 +15,10 @@
         <p class="eyebrow">READER / DAILY</p>
         <h1>番茄发布台</h1>
       </div>
-      <p class="library-status" id="libraryStatus">正在读取作品…</p>
+      <div class="topbar-actions">
+        <a class="tool-link" id="extensionDownload" href="downloads/fanqie-publisher-extension.zip" download>下载电脑导入工具</a>
+        <p class="library-status" id="libraryStatus">正在读取作品…</p>
+      </div>
     </header>
 
     <main class="workspace" aria-live="polite">
@@ -31,7 +34,11 @@
             <p class="story-date" id="storyDate"></p>
             <h2 id="storyTitle"></h2>
           </div>
-          <a class="download-link" id="downloadStory" download>下载整篇 TXT</a>
+          <div class="download-group" aria-label="作品下载">
+            <a class="download-link" id="downloadStory" download>TXT</a>
+            <a class="download-link" id="downloadMarkdown" download>Markdown</a>
+            <a class="download-link" id="downloadZip" download>逐章 ZIP</a>
+          </div>
         </div>
 
         <div class="chapter-toolbar">

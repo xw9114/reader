@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Reader 番茄导入助手",
+  "version": "0.1.0",
+  "description": "从 Reader 发布页选择小说章节并填入番茄网页作者后台。",
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": [
+    "https://xw9114.github.io/reader/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Reader 番茄导入助手",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://fanqienovel.com/main/writer*",
+        "https://writer.muyewx.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

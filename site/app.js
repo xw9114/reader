@@ -13,7 +13,10 @@ const elements = {
   emptyState: document.querySelector("#emptyState"),
   storyDate: document.querySelector("#storyDate"),
   storyTitle: document.querySelector("#storyTitle"),
+  extensionDownload: document.querySelector("#extensionDownload"),
   downloadStory: document.querySelector("#downloadStory"),
+  downloadMarkdown: document.querySelector("#downloadMarkdown"),
+  downloadZip: document.querySelector("#downloadZip"),
   chapterSelect: document.querySelector("#chapterSelect"),
   previousChapter: document.querySelector("#previousChapter"),
   nextChapter: document.querySelector("#nextChapter"),
@@ -108,8 +111,13 @@ function renderEditor() {
   elements.actionBar.hidden = false;
   elements.storyDate.textContent = story.date || "未标日期";
   elements.storyTitle.textContent = story.title;
-  elements.downloadStory.href = story.download;
+  const downloads = story.downloads || { txt: story.download };
+  elements.downloadStory.href = downloads.txt;
   elements.downloadStory.download = `${story.title}.txt`;
+  elements.downloadMarkdown.href = downloads.md || story.source;
+  elements.downloadMarkdown.download = `${story.title}.md`;
+  elements.downloadZip.href = downloads.zip || downloads.txt;
+  elements.downloadZip.download = `${story.title}-逐章.zip`;
   elements.chapterSelect.replaceChildren();
 
   story.chapters.forEach((chapter, index) => {
@@ -202,6 +210,9 @@ async function initialize() {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     state.stories = data.stories;
+    if (data.extensionDownload) {
+      elements.extensionDownload.href = data.extensionDownload;
+    }
     elements.libraryStatus.textContent = `${data.storyCount} 篇作品`;
 
     const remembered = localStorage.getItem("reader:lastStory");
