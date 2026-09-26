@@ -1,0 +1,65 @@
+layers:
+  - id: L1
+    name: hard_facts
+    precedence: 100
+    scope: global
+  - id: L2
+    name: author_intent
+    precedence: 80
+    scope: book
+  - id: L3
+    name: planning
+    precedence: 60
+    scope: arc
+  - id: L4
+    name: current_task
+    precedence: 70
+    scope: local
+sections:
+  hard:
+    - story_frame
+    - current_state
+    - book_rules
+    - roles
+  soft:
+    - author_intent
+    - current_focus
+    - volume_map
+  diagnostic:
+    - anti_ai_checks
+    - continuity_audit
+    - style_regression_checks
+overrideEdges:
+  - from: L4
+    to: L3
+    allowed: true
+    scope: current_chapter
+  - from: L4
+    to: L2
+    allowed: false
+    scope: current_chapter
+  - from: L4
+    to: L1
+    allowed: false
+    scope: current_chapter
+activeOverrides:
+  - from: L4
+    to: L3
+    target: chapter:6/mustAvoid
+    reason: 不以巧合掉落完整证据链。
+  - from: L4
+    to: L3
+    target: chapter:6/mustAvoid
+    reason: 不让反派降智、主动坦白或无代价配合。
+  - from: L4
+    to: L3
+    target: chapter:6/mustAvoid
+    reason: 不用一个电话、一次关系饭局解决程序问题。
+  - from: L4
+    to: L3
+    target: chapter:6/mustAvoid
+    reason: 不把女性角色写成奖励、陪衬或情绪工具。
+  - from: L4
+    to: L3
+    target: chapter:6/mustAvoid
+    reason: 不以媒体曝光替代证据、责任认定与补救执行。
