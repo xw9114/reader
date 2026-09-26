@@ -1,6 +1,7 @@
 import json
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 
 from tools.build_publish import build, parse_story
@@ -23,27 +24,37 @@ class BuildPublishTests(unittest.TestCase):
         self.assertEqual(story["chapters"][0]["body"], "这是正文。")
         self.assertEqual(story["chapters"][1]["body"], "链接文字")
 
-    def test_build_writes_data_and_bom_txt(self):
+    def test_build_writes_download_formats_and_extension_bundle(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             source = root / "daily"
             site = root / "site"
             output = root / "dist"
+            extension = root / "extension"
             source.mkdir()
             site.mkdir()
+            extension.mkdir()
             (source / "2026-09-19-example.md").write_text(
                 "# 测试小说\n\n正文内容。\n",
                 encoding="utf-8",
             )
             (site / "index.html").write_text("ok", encoding="utf-8")
+            (extension / "manifest.json").write_text("{}", encoding="utf-8")
 
-            stories = build(source, site, output)
+            stories = build(source, site, output, extension_dir=extension)
             payload = json.loads((output / "data.json").read_text(encoding="utf-8"))
             txt = (output / stories[0]["download"]).read_bytes()
-
-        self.assertEqual(payload["storyCount"], 1)
-        self.assertEqual(payload["stories"][0]["chapters"][0]["body"], "正文内容。")
-        self.assertTrue(txt.startswith(b"\xef\xbb\xbf"))
+            markdown = output / stories[0]["downloads"]["md"]
+            story_zip = output / stories[0]["downloads"]["zip"]
+            extension_zip = output / payload["extensionDownload"]
+            self.assertEqual(payload["storyCount"], 1)
+            self.assertEqual(payload["stories"][0]["chapters"][0]["body"], "正文内容。")
+            self.assertTrue(txt.startswith(b"\xef\xbb\xbf"))
+            self.assertTrue(markdown.exists())
+            with zipfile.ZipFile(story_zip) as archive:
+                self.assertTrue(any(name.endswith("01-测试小说.txt") for name in archive.namelist()))
+            with zipfile.ZipFile(extension_zip) as archive:
+                self.assertIn("manifest.json", archive.namelist())
 
     def test_build_groups_serial_chapters_as_one_book(self):
         with tempfile.TemporaryDirectory() as directory:

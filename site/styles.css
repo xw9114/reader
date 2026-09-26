@@ -77,6 +77,28 @@ select {
   font-weight: 400;
 }
 
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.tool-link {
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.tool-link:hover {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .workspace {
   width: min(1180px, 100%);
   margin: 0 auto;
@@ -205,12 +227,17 @@ a:focus-visible {
 }
 
 .download-link {
-  flex: 0 0 auto;
-  margin-top: 20px;
   color: var(--color-brand);
   font-size: 13px;
   font-weight: 600;
   text-underline-offset: 4px;
+}
+
+.download-group {
+  flex: 0 0 auto;
+  margin-top: 20px;
+  display: flex;
+  gap: 13px;
 }
 
 .chapter-toolbar {
@@ -374,8 +401,18 @@ a:focus-visible {
   }
 
   .library-status {
-    max-width: 120px;
+    display: none;
+  }
+
+  .topbar-actions {
+    gap: 8px;
     text-align: right;
+  }
+
+  .tool-link {
+    max-width: 130px;
+    padding: 8px 9px;
+    font-size: 12px;
   }
 
   .workspace {
@@ -415,9 +452,9 @@ a:focus-visible {
     font-size: 27px;
   }
 
-  .download-link {
-    display: inline-block;
+  .download-group {
     margin-top: 13px;
+    flex-wrap: wrap;
   }
 
   .chapter-toolbar {
