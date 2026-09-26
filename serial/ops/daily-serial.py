@@ -156,6 +156,31 @@ def write_chapter(book_id: str, number: int, rewrite: bool = False,
             fail(f"InkOS exited {process.returncode}; log={log}")
 
 
+def repair_chapter_state(book_id: str, number: int) -> None:
+    """Repair truth files for a chapter whose body already passed audit."""
+    LOGS.mkdir(parents=True, exist_ok=True)
+    log = LOGS / f"serial-chapter-{number:04d}-repair-state.log"
+    command = [sys.executable, str(INKOS), "write", "repair-state", book_id, str(number)]
+    with log.open("w", encoding="utf-8") as output:
+        os.chmod(log, 0o600)
+        process = subprocess.Popen(command, cwd=PROJECT, stdout=output, stderr=subprocess.STDOUT,
+                                   start_new_session=True)
+        started = time.monotonic()
+        while process.poll() is None:
+            if time.monotonic() - started > MAX_SECONDS:
+                os.killpg(process.pid, signal.SIGTERM)
+                try:
+                    process.wait(timeout=15)
+                except subprocess.TimeoutExpired:
+                    os.killpg(process.pid, signal.SIGKILL)
+                fail(f"InkOS state repair timed out after {MAX_SECONDS}s; log={log}")
+            say(f"HEARTBEAT: repairing-state chapter={number} "
+                f"elapsed={int(time.monotonic()-started)}s log={log}")
+            time.sleep(20)
+        if process.returncode:
+            fail(f"InkOS state repair exited {process.returncode}; log={log}")
+
+
 def selected_date() -> date | None:
     today = datetime.now(ZoneInfo("Asia/Shanghai")).date()
     candidate = START_DATE
@@ -257,6 +282,10 @@ def main() -> None:
                 fail(f"rewrite did not save chapter {number}")
             count = cjk_count(source, number)
         entry = chapter_index_entry(book_dir, number)
+        if entry is not None and entry.get("status") == "state-degraded":
+            say(f"HEARTBEAT: chapter {number} body passed audit but state is degraded; repairing state")
+            repair_chapter_state(book_id, number)
+            entry = chapter_index_entry(book_dir, number)
         if (entry is None or entry.get("status") not in {"ready-for-review", "approved"}) and not rewritten:
             status = entry.get("status") if entry else "missing"
             issues = [str(issue) for issue in (entry or {}).get("auditIssues", [])
@@ -268,6 +297,10 @@ def main() -> None:
                 fail(f"audit rewrite did not save chapter {number}")
             count = cjk_count(source, number)
             entry = chapter_index_entry(book_dir, number)
+            if entry is not None and entry.get("status") == "state-degraded":
+                say(f"HEARTBEAT: rewritten chapter {number} has degraded state; repairing state")
+                repair_chapter_state(book_id, number)
+                entry = chapter_index_entry(book_dir, number)
         if entry is None or entry.get("status") not in {"ready-for-review", "approved"}:
             status = entry.get("status") if entry else "missing"
             fail(f"chapter {number} has no healthy InkOS index entry after one rewrite; status={status}")

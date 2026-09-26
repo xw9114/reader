@@ -137,5 +137,40 @@
       "completionTokens": 14660,
       "totalTokens": 141715
     }
+  },
+  {
+    "number": 5,
+    "title": "半小时的桌面",
+    "status": "ready-for-review",
+    "wordCount": 3023,
+    "createdAt": "2026-09-26T11:15:09.510Z",
+    "updatedAt": "2026-09-26T11:40:59.686Z",
+    "auditIssues": [
+      "[warning] 罗家受限授权的用途边界存在措辞歧义：文本写的是“撤回后不再新增提交、不作公开传播或投诉、诉讼用途”，语义上可能反过来允许许知微在撤回前将材料用于投诉、诉讼；但既有硬状态明确罗家“不授权许知微代为投诉、起诉或决定和解”，本章既定用途也应仅限资格复核补正与限范围核对。",
+      "[warning] memo 在 advance/resolve 里声明要处理 H004，但确定性关键词检查没有找到对应落点",
+      "[warning] memo 在 advance/resolve 里声明要处理 H002，但确定性关键词检查没有找到对应落点",
+      "[warning] 最近4章持续高压（冷硬、警觉、压迫 -> 冷硬、紧迫、压抑 -> 克制、冷硬、谨慎中的逼近感 -> 潮湿、克制、防备中的艰难互信），缺少明显的情绪释放。",
+      "[warning] 90个段落里有55个不足35字，段落被切得过碎。",
+      "[warning] 连续出现8个不足35字的短段，容易形成短句堆砌。"
+    ],
+    "lengthWarnings": [],
+    "lengthTelemetry": {
+      "target": 2500,
+      "softMin": 2160,
+      "softMax": 2840,
+      "hardMin": 1819,
+      "hardMax": 3181,
+      "countingMode": "zh_chars",
+      "writerCount": 3628,
+      "postReviseCount": 3023,
+      "finalCount": 3023,
+      "repairApplied": true,
+      "lengthWarning": false
+    },
+    "tokenUsage": {
+      "promptTokens": 135466,
+      "completionTokens": 15077,
+      "totalTokens": 150543
+    }
   }
 ]
