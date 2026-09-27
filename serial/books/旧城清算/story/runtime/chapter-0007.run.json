@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "kind": "long-fiction",
+  "id": "旧城清算:chapter-0007",
+  "stage": "chapter-7",
+  "model": "gpt-5.6-terra",
+  "skillIds": [
+    "inkos-long-writing"
+  ],
+  "resumeCursor": "7",
+  "status": "needs-review",
+  "artifacts": [
+    "chapters/0007_钥匙交完以后.md",
+    "chapters/index.json",
+    "story/current_state.md",
+    "story/pending_hooks.md",
+    "story/snapshots/7",
+    "story/runtime/chapter-0007.trace.json"
+  ],
+  "observations": [
+    {
+      "metric": "chapter-length",
+      "expected": {
+        "target": 2500,
+        "min": 1819,
+        "max": 3181,
+        "unit": "zh_chars"
+      },
+      "actual": {
+        "value": 2770,
+        "unit": "zh_chars"
+      },
+      "severity": "info",
+      "evidence": "chapters/0007_钥匙交完以后.md",
+      "repairable": false
+    }
+  ],
+  "updatedAt": "2026-09-27T09:14:54.814Z"
+}
