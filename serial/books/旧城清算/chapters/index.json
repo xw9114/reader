@@ -310,5 +310,39 @@
       "completionTokens": 14293,
       "totalTokens": 155151
     }
+  },
+  {
+    "number": 10,
+    "title": "纸上那句不当然",
+    "status": "ready-for-review",
+    "wordCount": 2811,
+    "createdAt": "2026-09-29T09:13:38.560Z",
+    "updatedAt": "2026-09-29T09:13:38.560Z",
+    "auditIssues": [
+      "[warning] 最近章节类型序列为：第5章“在场核验与程序补正”→第6章“双户授权补正与行政信息路径推进”→第7章“限定证词与档案路径推进”→第8章“线下核验与档案异常定位”→第9章“档案程序推进与入户催签对峙”→第10章“社区答复领取、档案登记核对与母女材料边界重申”。第10章已兑现“拒签不当然丧失续住资格”和“确认页存在调阅留痕”两项阶段回报，避免了纯停滞；但连续多章仍以窗口受理、目录字段、回执核对和边界重申为主要场面机制，节奏模式开始趋同。",
+      "[warning] memo 在 advance/resolve 里声明要处理 H005，但确定性关键词检查没有找到对应落点",
+      "[warning] 最近4章持续高压（紧迫、克制、对边界的坚持里透出微弱推进感 -> 克制、潮湿、证词带来微弱突破后的程序性压迫 -> 潮湿、克制、窗口前逐渐收紧的压迫感 -> 紧绷、克制、居住风险逼近下的有限共守），缺少明显的情绪释放。",
+      "[warning] 这些伏笔已经进入回收/推进压力，但本章没有真正处理：H002（近期，已逾期）、H004（中程，已逾期）、H010（近期，已逾期）。",
+      "[warning] 连续出现4个不足35字的短段，容易形成短句堆砌。"
+    ],
+    "lengthWarnings": [],
+    "lengthTelemetry": {
+      "target": 2500,
+      "softMin": 2160,
+      "softMax": 2840,
+      "hardMin": 1819,
+      "hardMax": 3181,
+      "countingMode": "zh_chars",
+      "writerCount": 3778,
+      "postReviseCount": 2811,
+      "finalCount": 2811,
+      "repairApplied": true,
+      "lengthWarning": false
+    },
+    "tokenUsage": {
+      "promptTokens": 131477,
+      "completionTokens": 14412,
+      "totalTokens": 145889
+    }
   }
 ]
