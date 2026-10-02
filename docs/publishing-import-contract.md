@@ -79,7 +79,7 @@ or:
 { "ok": false, "error": "HTTP 404" }
 ```
 
-The content script detects Fanqie and Qimao from the current hostname, then detects the current editor. Fanqie supports chapter and short-story modes. Qimao supports work-information and chapter modes. In Fanqie chapter mode, a leading chapter-number prefix such as `第1章` is split between the number and title fields. Fanqie's category and publishing fields belong to the same short-story page, so their presence must never change the editor mode. Short-story mode displays the local type suggestion while keeping title/body import available. In Qimao chapter mode without a separate number field, the full chapter title is preserved. Qimao work-information mode fills the story title and a reviewable synopsis draft derived from the first non-empty chapter body. It also displays a non-binding reader direction, primary category, secondary category, and tag suggestion inferred locally from the title and story text. These suggestions are never selected automatically; target reader, category, tags, roles, status, cover, and final creation remain with the user. Rich-text body content is inserted as paragraph nodes. It must never click the final save, next, create, or publish action.
+The content script detects Fanqie and Qimao from the current hostname, then detects the current editor. Fanqie supports chapter and short-story modes. Qimao supports work-information and chapter modes. In Fanqie chapter mode, a leading chapter-number prefix such as `第1章` is split between the number and title fields. Fanqie's category and publishing fields belong to the same short-story page, so their presence must never change the editor mode. Short-story mode displays the local type suggestion while keeping title/body import available. In Qimao chapter mode without a separate number field, the full chapter title is preserved. Qimao work-information mode fills the story title and a reviewable synopsis draft derived from the first non-empty chapter body. It displays a non-binding reader direction, category, and tag suggestion, plus up to two protagonist names inferred from repeated name-like text. When labeled protagonist inputs are found, those names are filled for user review. Target reader, category, tags, status, cover, and final creation remain with the user. Rich-text body content is inserted as paragraph nodes. It must never click the final save, next, create, or publish action.
 
 ## 4. Validation & Error Matrix
 
@@ -96,7 +96,7 @@ The content script detects Fanqie and Qimao from the current hostname, then dete
 | Fanqie chapter number | Leading `第 N 章`/`Chapter N` is parsed, or the selected chapter index is used | Number is written into the separate chapter-number field |
 | Fanqie title | The parsed chapter-number prefix is removed | Prevents duplicated chapter numbering |
 | Fanqie short story | Story title, merged `fullText`, and an approximate type suggestion | Entire story is filled once; category selection and final submission remain manual |
-| Qimao work information | Story title ≤ 18 characters, synopsis ≤ 500 characters, and a visible approximate type suggestion | Overlong title is truncated with a visible warning; type suggestions are guidance only and subjective required fields remain untouched |
+| Qimao work information | Story title ≤ 18 characters, synopsis ≤ 500 characters, an approximate type suggestion, and up to two inferred protagonist names | Overlong title is truncated with a visible warning; protagonist names fill only labeled protagonist inputs and remain reviewable |
 | Qimao chapter | Full chapter title and rich-text body | Full title is preserved when there is no separate number field |
 | Rich-text body | Blank lines become separate paragraph nodes; single line breaks become `<br>` | Prevents the whole chapter becoming one paragraph |
 
@@ -129,7 +129,7 @@ The content script detects Fanqie and Qimao from the current hostname, then dete
   - Assert the story title and all merged chapter content are filled.
   - Assert a combined rich-text editor receives one title heading followed by body paragraphs.
 - Browser fixtures `tests/fixtures/qimao-work-editor.html` and `qimao-chapter-editor.html`
-  - Assert Qimao work-information mode displays an approximate type suggestion and fills title and synopsis without clicking `确认创建`.
+  - Assert Qimao work-information mode displays type and protagonist suggestions, fills title, synopsis, and labeled protagonist inputs, and never clicks `确认创建`.
   - Assert Qimao chapter mode preserves the full chapter title when no number field exists.
   - Assert body paragraph structure survives filling.
 

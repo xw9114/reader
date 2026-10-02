@@ -11,6 +11,7 @@
       chapterNumber: null,
       title: null,
       summary: null,
+      protagonists: [],
       body: null,
       combinedEditor: false,
     },
@@ -108,6 +109,38 @@
     return score;
   }
 
+  function protagonistScore(element) {
+    const text = fieldText(element);
+    const rect = element.getBoundingClientRect();
+    let score = 0;
+    if (/主角名|主角姓名|角色名|人物名/.test(text)) score += 24;
+    if (/作品名称|书名|简介|章节|搜索/.test(text)) score -= 18;
+    if (element instanceof HTMLInputElement) score += 5;
+    if (rect.height <= 80 && rect.width >= 160) score += 3;
+    return score;
+  }
+
+  function findProtagonistFields(excludedTitle = null) {
+    const inputSelector = "input:not([type]), input[type='text']";
+    const found = [...document.querySelectorAll(inputSelector)]
+      .filter((element) => element !== excludedTitle && isVisible(element) && protagonistScore(element) >= 20);
+    const labels = [...document.querySelectorAll("label, span, p, div, [class*='label']")]
+      .filter((element) => isVisible(element) && /^主角名(?:称)?$/.test(String(element.textContent || "").trim()))
+      .sort((left, right) => left.childElementCount - right.childElementCount);
+    for (const label of labels) {
+      let container = label;
+      for (let depth = 0; depth < 5 && container; depth += 1, container = container.parentElement) {
+        const inputs = [...container.querySelectorAll(inputSelector)]
+          .filter((element) => element !== excludedTitle && isVisible(element));
+        inputs.forEach((element) => {
+          if (!found.includes(element)) found.push(element);
+        });
+        if (inputs.length) break;
+      }
+    }
+    return found.slice(0, 3);
+  }
+
   function chapterNumberScore(element) {
     const text = fieldText(element);
     const rect = element.getBoundingClientRect();
@@ -160,12 +193,14 @@
         summaryScore,
         title,
       );
+      const protagonists = findProtagonistFields(title);
       state.fields = {
         platform,
         mode: "work-info",
         chapterNumber: null,
         title,
         summary,
+        protagonists,
         body: null,
         combinedEditor: false,
       };
@@ -216,6 +251,7 @@
       chapterNumber: mode === "chapter" ? chapterNumber : null,
       title,
       summary: null,
+      protagonists: [],
       body,
       combinedEditor,
     };
@@ -459,6 +495,31 @@
     };
   }
 
+  function suggestProtagonists(story, limit = 2) {
+    const source = fullStoryBody(story).slice(0, 20000);
+    const surnames = "赵钱孙李周吴郑王冯陈蒋沈韩杨朱秦许何吕张曹金魏姜谢邹苏潘范彭鲁韦马方任袁柳史唐薛雷贺倪汤罗郝安常傅齐康伍余顾孟黄穆萧尹姚邵汪毛米贝戴宋庞熊纪舒屈项董梁杜阮蓝季贾路江童郭梅林钟徐邱高夏蔡田樊胡霍万卢莫房裘陆荣翁甄曲封储段巫乌焦侯全白蒲向古易廖阎连艾容石崔龚程邢裴牛温庄柴翟谭蒙乔曾关游权司黎欧阳上官司马诸葛";
+    const actionWords = ["没想到", "说道", "说", "问道", "问", "笑道", "笑", "看着", "看", "盯着", "盯", "站在", "站", "坐在", "坐", "走进", "走", "转身", "转", "抬头", "抬", "伸手", "伸", "拿起", "拿", "放下", "放", "点头", "摇头", "沉默", "开口", "皱眉", "脸色", "声音", "眼神", "手机", "没有", "终于", "忽然", "冷冷", "淡淡", "把", "将", "先", "还", "也", "却", "正在", "正", "刚", "在", "继续", "感到", "知道", "听见", "收到", "回"];
+    const expression = new RegExp(`((?:欧阳|上官|司马|诸葛)[\\u4e00-\\u9fa5]{1,2}|[${surnames}][\\u4e00-\\u9fa5]{1,2})(?=${actionWords.join("|")})`, "g");
+    const invalidNames = new Set(["自己", "有人", "没人", "所有人", "年轻人", "工作人员", "负责人", "当事人"]);
+    const invalidSuffix = /先生|女士|小姐|经理|总监|主任|科长|队长|老师|医生|律师|老板|阿姨|叔叔|爸爸|妈妈|父亲|母亲|爷爷|奶奶|总$/;
+    const candidates = new Map();
+    for (const match of source.matchAll(expression)) {
+      let name = match[1];
+      const possibleAction = `${name.at(-1)}${source.slice(match.index + name.length, match.index + name.length + 4)}`;
+      if (name.length > 2 && actionWords.some((word) => possibleAction.startsWith(word))) {
+        name = name.slice(0, -1);
+      }
+      if (invalidNames.has(name) || invalidSuffix.test(name)) continue;
+      const current = candidates.get(name) || { count: 0, index: match.index };
+      current.count += 1;
+      candidates.set(name, current);
+    }
+    return [...candidates.entries()]
+      .sort((left, right) => right[1].count - left[1].count || left[1].index - right[1].index)
+      .slice(0, limit)
+      .map(([name]) => name);
+  }
+
   function fillWorkInfo(story) {
     const fields = detectEditorFields();
     if (fields.platform !== "qimao" || fields.mode !== "work-info" || !fields.title || !fields.summary) {
@@ -471,13 +532,19 @@
     const titleLimit = fields.title.maxLength > 0 ? fields.title.maxLength : 18;
     const summaryLimit = fields.summary.maxLength > 0 ? fields.summary.maxLength : 500;
     const title = truncateText(story?.title, titleLimit);
+    const protagonists = suggestProtagonists(story);
     fillElement(fields.title, title.text);
     fillElement(fields.summary, storySynopsis(story, summaryLimit));
+    fields.protagonists.slice(0, protagonists.length).forEach((element, index) => {
+      fillElement(element, protagonists[index]);
+    });
     return {
       ok: true,
       titleFound: true,
       summaryFound: true,
       titleTruncated: title.truncated,
+      protagonists,
+      protagonistFieldsFound: fields.protagonists.length,
     };
   }
 
@@ -538,6 +605,11 @@
       .type-suggestion span { display: block; color: #71807b; font-size: 11px; }
       .type-suggestion strong { display: block; margin-top: 5px; color: #143f36; font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
       .type-suggestion small { display: block; margin-top: 4px; color: #8a9692; font-size: 10px; line-height: 1.4; }
+      .protagonist-suggestion { display: none; margin-top: 8px; padding: 9px 10px; border: 1px solid #cad4d0; border-radius: 5px; background: #fff; }
+      .panel.work-info .protagonist-suggestion { display: block; }
+      .protagonist-suggestion span { display: block; color: #71807b; font-size: 11px; }
+      .protagonist-suggestion strong { display: block; margin-top: 5px; color: #143f36; font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
+      .protagonist-suggestion small { display: block; margin-top: 4px; color: #8a9692; font-size: 10px; line-height: 1.4; }
       .actions { margin-top: 12px; display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; gap: 7px; }
       .actions button, .refresh { min-height: 40px; border: 1px solid #143f36; border-radius: 5px; background: #143f36; color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
       .actions .step { padding: 0; background: #fff; color: #143f36; font-size: 18px; }
@@ -556,6 +628,7 @@
         <label class="chapter-row">章节<select class="chapter"></select></label>
         <div class="meta"><span class="position"></span><span class="characters"></span></div>
         <div class="type-suggestion"><span>建议作品类型</span><strong class="suggestion"></strong><small>根据标题和正文粗略判断，请在七猫选择最接近的选项。</small></div>
+        <div class="protagonist-suggestion"><span>建议主角名</span><strong class="protagonists"></strong><small>根据正文中的姓名出现频率提取，请核对后使用。</small></div>
         <p class="status">正在读取作品…</p>
         <div class="actions">
           <button class="step previous" type="button" aria-label="上一章">←</button>
@@ -592,6 +665,7 @@
       Boolean(fields.chapterNumber),
       Boolean(fields.title),
       Boolean(fields.summary),
+      fields.protagonists?.length || 0,
       Boolean(fields.body),
       Boolean(fields.combinedEditor),
     ].join(":");
@@ -600,7 +674,7 @@
   function showDetectionStatus(fields) {
     if (fields.mode === "work-info") {
       updateStatus(
-        `已进入七猫作品信息模式。作品名称框${fields.title ? "已识别" : "未识别"}，简介框${fields.summary ? "已识别" : "未识别"}。`,
+        `已进入七猫作品信息模式。作品名称框${fields.title ? "已识别" : "未识别"}，简介框${fields.summary ? "已识别" : "未识别"}，主角名框识别到 ${fields.protagonists.length} 个。`,
         fields.title && fields.summary ? "success" : "error",
       );
       return;
@@ -686,6 +760,8 @@
   function renderWorkTypeSuggestion() {
     if (!ui?.suggestion || !state.activeStory) return;
     ui.suggestion.textContent = suggestWorkType(state.activeStory).text;
+    const protagonists = suggestProtagonists(state.activeStory);
+    ui.protagonists.textContent = protagonists.length ? protagonists.join("、") : "未识别到明确人名，请手动填写";
   }
 
   function setEditorMode(mode) {
@@ -779,6 +855,7 @@
       position: shadow.querySelector(".position"),
       characters: shadow.querySelector(".characters"),
       suggestion: shadow.querySelector(".suggestion"),
+      protagonists: shadow.querySelector(".protagonists"),
       status: shadow.querySelector(".status"),
       previous: shadow.querySelector(".previous"),
       next: shadow.querySelector(".next"),
@@ -797,10 +874,15 @@
       if (fields.mode === "work-info") {
         const result = fillWorkInfo(state.activeStory);
         if (result.ok) {
+          const protagonistMessage = result.protagonists.length
+            ? result.protagonistFieldsFound
+              ? `主角名“${result.protagonists.join("、")}”已填入，请核对。`
+              : `已提取主角名“${result.protagonists.join("、")}”，但未识别主角名输入框。`
+            : "未提取到明确主角名，请手动填写。";
           updateStatus(
             result.titleTruncated
-              ? "作品名称超过七猫 18 字限制，已截短；简介草稿已填入。请补充分类、标签、角色等信息。"
-              : "作品名称和简介草稿已填入。请补充读者方向、分类、标签、角色等信息后再确认创建。",
+              ? `作品名称超过七猫 18 字限制，已截短；简介草稿已填入。${protagonistMessage}`
+              : `作品名称和简介草稿已填入。${protagonistMessage} 请补充分类、标签等信息后再确认创建。`,
             result.titleTruncated ? "error" : "success",
           );
         } else {
@@ -862,6 +944,7 @@
     normalizeFanqieTitle,
     parseChapterTitle,
     storySynopsis,
+    suggestProtagonists,
     suggestWorkType,
   };
   globalThis.__readerPublisherImporter = globalThis.__readerFanqieImporter;
