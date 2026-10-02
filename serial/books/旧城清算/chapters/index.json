@@ -416,5 +416,41 @@
       "completionTokens": 14385,
       "totalTokens": 156039
     }
+  },
+  {
+    "number": 13,
+    "title": "目录上的去处",
+    "status": "ready-for-review",
+    "wordCount": 3181,
+    "createdAt": "2026-10-02T13:14:21.840Z",
+    "updatedAt": "2026-10-02T13:18:06.697Z",
+    "auditIssues": [
+      "[warning] 最近章节类型序列为：第8章“线下核验与档案异常定位”→第9章“档案程序推进与入户催签对峙”→第10章“书面答复兑现与档案流向锁定”→第11章“档案有限查阅与家庭边界重订”→第12章“档案受理与线索分流”→第13章“采购检索、目录答复与后续申请准备”。第13章确实兑现了JSG-03转交专项清算工作组、法律服务采购编号两项阶段性回报，避免了纯等待；但连续六章的主要行动仍集中在窗口、目录、回执和申请拆分，冲突载体与场景功能高度同质，读者容易把“又拿到一张纸”感受为主线的横向挪动而非波形升级。",
+      "[warning] memo 在 advance/resolve 里声明要处理 H013，但确定性关键词检查没有找到对应落点",
+      "[warning] memo 在 advance/resolve 里声明要处理 H012，但确定性关键词检查没有找到对应落点",
+      "[warning] memo 在 advance/resolve 里声明要处理 H006，但确定性关键词检查没有找到对应落点",
+      "[warning] 最近4章持续高压（紧绷、克制、居住风险逼近下的有限共守 -> 潮湿、克制、书面边界带来的短暂喘息下仍有警惕 -> 冷硬、紧绷、克制中的程序性收束 -> 冷硬、紧绷、在程序性小胜后保持警惕），缺少明显的情绪释放。",
+      "[warning] 98个段落里有61个不足35字，段落被切得过碎。",
+      "[warning] 连续出现6个不足35字的短段，容易形成短句堆砌。"
+    ],
+    "lengthWarnings": [],
+    "lengthTelemetry": {
+      "target": 2500,
+      "softMin": 2160,
+      "softMax": 2840,
+      "hardMin": 1819,
+      "hardMax": 3181,
+      "countingMode": "zh_chars",
+      "writerCount": 3811,
+      "postReviseCount": 3181,
+      "finalCount": 3181,
+      "repairApplied": true,
+      "lengthWarning": false
+    },
+    "tokenUsage": {
+      "promptTokens": 135037,
+      "completionTokens": 15513,
+      "totalTokens": 150550
+    }
   }
 ]
