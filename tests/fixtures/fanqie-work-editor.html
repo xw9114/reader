@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>番茄作品信息测试页</title>
+    <style>
+      body { margin: 40px; font-family: sans-serif; }
+      .work-form { width: 980px; }
+      .form-item { display: flex; gap: 20px; margin-bottom: 24px; }
+      label { width: 90px; }
+      input, textarea { width: 720px; padding: 12px; }
+      input { height: 48px; }
+      textarea { height: 180px; }
+    </style>
+  </head>
+  <body>
+    <main class="work-form">
+      <h1>修改作品信息</h1>
+      <div class="form-item">
+        <label for="book-title">书本名称</label>
+        <input id="book-title" type="text" maxlength="15" placeholder="请输入书本名称">
+      </div>
+      <p>目标读者</p>
+      <p>阅读标签</p>
+      <p>内容标签</p>
+      <div class="form-item">
+        <label>主角名</label>
+        <input class="protagonist-name" type="text" maxlength="5" placeholder="请输入主角名1">
+        <input class="protagonist-name" type="text" maxlength="5" placeholder="请输入主角名2">
+      </div>
+      <div class="form-item">
+        <label for="work-summary">作品简介</label>
+        <textarea id="work-summary" maxlength="500" placeholder="请输入作品简介"></textarea>
+      </div>
+      <button id="modify-now" type="button">立即修改</button>
+    </main>
+    <script>
+      window.__READER_TEST_PLATFORM__ = "fanqie";
+      window.__READER_TEST_PATHNAME__ = "/main/writer/book-info/7688994762841394200";
+      window.__FANQIE_UPDATE_CLICKS__ = 0;
+      document.querySelector("#modify-now").addEventListener("click", () => {
+        window.__FANQIE_UPDATE_CLICKS__ += 1;
+      });
+      window.__READER_TEST_LIBRARY__ = {
+        latestStoryId: "story-1",
+        storyCount: 1,
+        stories: [{
+          id: "story-1",
+          title: "我的渣男前夫成了我的下属",
+          date: "2026-10-02",
+          characters: 36,
+          chapters: [{
+            id: "chapter-1",
+            title: "第1章 重逢",
+            body: "周晓雨没想到会在公司酒会上遇见陈浩。\n\n三年了，她以为自己已经把那段婚姻彻底甩在身后。陈浩站在她面前，成了她的下属。",
+            characters: 36
+          }]
+        }]
+      };
+    </script>
+    <script src="../../extension/content.js"></script>
+  </body>
+</html>

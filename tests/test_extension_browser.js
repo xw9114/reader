@@ -89,6 +89,26 @@ async function openFixture(browser, filename) {
     assert.match(await qimaoWorkPanel.locator(".status").textContent(), /作品名称和简介草稿已填入/);
     await qimaoWorkPage.close();
 
+    const fanqieWorkPage = await openFixture(browser, "fanqie-work-editor.html");
+    const fanqieWorkPanel = fanqieWorkPage.locator("#reader-fanqie-importer");
+    assert.equal(await fanqieWorkPanel.locator(".mode").textContent(), "番茄 · 作品信息");
+    assert.equal(await fanqieWorkPanel.locator(".fill").textContent(), "填入作品信息");
+    assert.equal(await fanqieWorkPanel.locator(".chapter-row").isVisible(), false);
+    assert.equal(await fanqieWorkPanel.locator(".type-suggestion").isVisible(), true);
+    assert.equal(await fanqieWorkPanel.locator(".protagonist-suggestion").isVisible(), true);
+    assert.equal(await fanqieWorkPanel.locator(".protagonists").textContent(), "周晓雨、陈浩");
+    await fanqieWorkPanel.locator(".fill").click();
+    assert.equal(await fanqieWorkPage.locator("#book-title").inputValue(), "我的渣男前夫成了我的下属");
+    assert.match(await fanqieWorkPage.locator("#work-summary").inputValue(), /^周晓雨没想到/);
+    assert.ok((await fanqieWorkPage.locator("#work-summary").inputValue()).length <= 500);
+    assert.deepEqual(
+      await fanqieWorkPage.locator(".protagonist-name").evaluateAll((elements) => elements.map((element) => element.value)),
+      ["周晓雨", "陈浩"],
+    );
+    assert.equal(await fanqieWorkPage.evaluate(() => window.__FANQIE_UPDATE_CLICKS__), 0);
+    assert.match(await fanqieWorkPanel.locator(".status").textContent(), /作品名称和简介草稿已填入/);
+    await fanqieWorkPage.close();
+
     const qimaoChapterPage = await openFixture(browser, "qimao-chapter-editor.html");
     const qimaoChapterPanel = qimaoChapterPage.locator("#reader-fanqie-importer");
     assert.equal(await qimaoChapterPanel.locator(".mode").textContent(), "七猫 · 章节");

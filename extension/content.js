@@ -90,7 +90,7 @@
     const text = fieldText(element);
     const rect = element.getBoundingClientRect();
     let score = 0;
-    if (/作品名称|书名|请输入作品名称|book.?title/.test(text)) score += 22;
+    if (/作品名称|书本名称|书名|请输入作品名称|book.?title/.test(text)) score += 22;
     if (/最多\s*18\s*个字/.test(text)) score += 8;
     if (/章节|简介|搜索|角色/.test(text)) score -= 16;
     if (element instanceof HTMLInputElement) score += 5;
@@ -196,11 +196,18 @@
 
   function detectEditorFields() {
     const platform = currentPlatform();
+    const pathname = currentPathname();
     const pageText = document.body?.innerText || "";
-    const pageLooksLikeWorkInfo = platform === "qimao"
+    const pageLooksLikeQimaoWorkInfo = platform === "qimao"
       && /作品信息/.test(pageText)
       && /作品名称/.test(pageText)
       && /作品简介/.test(pageText);
+    const pageLooksLikeFanqieWorkInfo = platform === "fanqie"
+      && /\/book-info(?:\/|$)/.test(pathname)
+      && /(?:修改)?作品信息/.test(pageText)
+      && /书本名称|作品名称/.test(pageText)
+      && /作品简介/.test(pageText);
+    const pageLooksLikeWorkInfo = pageLooksLikeQimaoWorkInfo || pageLooksLikeFanqieWorkInfo;
     if (pageLooksLikeWorkInfo) {
       const title = bestCandidate(
         "input:not([type]), input[type='text'], textarea, [contenteditable='true'], [role='textbox']",
@@ -224,7 +231,6 @@
       };
       return state.fields;
     }
-    const pathname = currentPathname();
     const fanqieShortPath = platform === "fanqie" && /\/publish-short(?:\/|$)/.test(pathname);
     const fanqieChapterPath = platform === "fanqie" && /\/publish(?:\/|$)/.test(pathname);
     const pageLooksLikeShortStory = /未命名短故事|请输入短故事名称/.test(pageText);
@@ -582,7 +588,7 @@
 
   function fillWorkInfo(story) {
     const fields = detectEditorFields();
-    if (fields.platform !== "qimao" || fields.mode !== "work-info" || !fields.title || !fields.summary) {
+    if (fields.mode !== "work-info" || !fields.title || !fields.summary) {
       return {
         ok: false,
         titleFound: Boolean(fields.title),
@@ -605,6 +611,7 @@
       titleTruncated: title.truncated,
       protagonists,
       protagonistFieldsFound: fields.protagonists.length,
+      titleLimit,
     };
   }
 
@@ -733,8 +740,9 @@
 
   function showDetectionStatus(fields) {
     if (fields.mode === "work-info") {
+      const platformName = fields.platform === "qimao" ? "七猫" : "番茄";
       updateStatus(
-        `已进入七猫作品信息模式。作品名称框${fields.title ? "已识别" : "未识别"}，简介框${fields.summary ? "已识别" : "未识别"}，主角名框识别到 ${fields.protagonists.length} 个。`,
+        `已进入${platformName}作品信息模式。作品名称框${fields.title ? "已识别" : "未识别"}，简介框${fields.summary ? "已识别" : "未识别"}，主角名框识别到 ${fields.protagonists.length} 个。`,
         fields.title && fields.summary ? "success" : "error",
       );
       return;
@@ -941,13 +949,14 @@
             : "未提取到明确主角名，请手动填写。";
           updateStatus(
             result.titleTruncated
-              ? `作品名称超过七猫 18 字限制，已截短；简介草稿已填入。${protagonistMessage}`
-              : `作品名称和简介草稿已填入。${protagonistMessage} 请补充分类、标签等信息后再确认创建。`,
+              ? `作品名称超过平台 ${result.titleLimit} 字限制，已截短；简介草稿已填入。${protagonistMessage}`
+              : `作品名称和简介草稿已填入。${protagonistMessage} 请补充分类、标签等信息并核对后，再手动保存。`,
             result.titleTruncated ? "error" : "success",
           );
         } else {
           const missing = [!result.titleFound && "作品名称框", !result.summaryFound && "简介框"].filter(Boolean).join("、");
-          updateStatus(`未识别${missing}。请打开七猫“新建小说”的作品信息页后重新检测。`, "error");
+          const platformName = fields.platform === "qimao" ? "七猫" : "番茄";
+          updateStatus(`未识别${missing}。请打开${platformName}作品信息页后重新检测。`, "error");
         }
         return;
       }
