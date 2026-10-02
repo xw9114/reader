@@ -344,5 +344,38 @@
       "completionTokens": 14412,
       "totalTokens": 145889
     }
+  },
+  {
+    "number": 11,
+    "title": "补录那天",
+    "status": "ready-for-review",
+    "wordCount": 2852,
+    "createdAt": "2026-10-02T09:13:46.403Z",
+    "updatedAt": "2026-10-02T09:13:46.403Z",
+    "auditIssues": [
+      "[warning] 最近4章持续高压（克制、潮湿、证词带来微弱突破后的程序性压迫 -> 潮湿、克制、窗口前逐渐收紧的压迫感 -> 紧绷、克制、居住风险逼近下的有限共守 -> 潮湿、克制、书面边界带来的短暂喘息下仍有警惕），缺少明显的情绪释放。",
+      "[warning] 这些伏笔已经进入回收/推进压力，但本章没有真正处理：H002（近期，已逾期）、H004（中程，已逾期）、H010（近期，已逾期），另有 1 条。",
+      "[warning] 本章新开了 2 个伏笔，但没有回收任何旧债。",
+      "[warning] 连续出现8个不足35字的短段，容易形成短句堆砌。"
+    ],
+    "lengthWarnings": [],
+    "lengthTelemetry": {
+      "target": 2500,
+      "softMin": 2160,
+      "softMax": 2840,
+      "hardMin": 1819,
+      "hardMax": 3181,
+      "countingMode": "zh_chars",
+      "writerCount": 3294,
+      "postReviseCount": 2852,
+      "finalCount": 2852,
+      "repairApplied": true,
+      "lengthWarning": false
+    },
+    "tokenUsage": {
+      "promptTokens": 131731,
+      "completionTokens": 12342,
+      "totalTokens": 144073
+    }
   }
 ]
