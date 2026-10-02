@@ -12,16 +12,18 @@
     </style>
   </head>
   <body>
-    <main>
-      <label for="chapter-title">章节名称</label>
-      <input id="chapter-title" type="text" maxlength="50" placeholder="请输入章节名称">
-      <div class="chapter-body" contenteditable="true" data-placeholder="请输入章节正文"></div>
-    </main>
-    <aside class="note-sidebar">
-      <h2>我的随记</h2>
-      <input type="text" placeholder="请输入随记的名称或内容">
-      <div class="note-editor" contenteditable="true" data-placeholder="请输入随记内容"></div>
-    </aside>
+    <div class="book-editor-layout">
+      <main>
+        <label for="chapter-title">章节名称</label>
+        <input id="chapter-title" type="text" maxlength="50" placeholder="请输入章节名称">
+        <div class="chapter-body" contenteditable="plaintext-only" data-placeholder="请输入章节正文"></div>
+      </main>
+      <aside class="note-sidebar">
+        <h2>我的随记</h2>
+        <input type="text" placeholder="请输入随记的名称或内容">
+        <div class="note-editor" contenteditable="true" data-placeholder="请输入随记内容"></div>
+      </aside>
+    </div>
     <script>
       window.__READER_TEST_PLATFORM__ = "qimao";
       window.__READER_TEST_LIBRARY__ = {
