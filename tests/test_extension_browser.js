@@ -29,34 +29,13 @@ async function openFixture(browser, filename) {
     assert.equal(await shortStoryPanel.locator(".mode").textContent(), "番茄 · 短故事");
     assert.equal(await shortStoryPanel.locator(".fill").textContent(), "填入整篇短故事");
     assert.equal(await shortStoryPanel.locator(".chapter-row").isVisible(), false);
+    assert.equal(await shortStoryPanel.locator(".type-suggestion").isVisible(), true);
     await shortStoryPanel.locator(".fill").click();
     assert.equal(await shortStoryPage.locator(".short-story-title").textContent(), "测试短故事");
     assert.equal(await shortStoryPage.locator(".short-story-body p").count(), 4);
     assert.match(await shortStoryPage.locator(".short-story-body").innerText(), /开篇钩子[\s\S]*第1章 相遇/);
     assert.match(await shortStoryPanel.locator(".status").textContent(), /整篇正文已填入/);
-    await shortStoryPage.evaluate(() => {
-      const publishingInfo = document.createElement("section");
-      publishingInfo.textContent = "封面设置 是否使用AI 作品分类 试读比例 发布协议";
-      document.body.append(publishingInfo);
-    });
-    await shortStoryPanel.locator(".mode", { hasText: "番茄 · 发布信息" }).waitFor();
-    assert.match(await shortStoryPanel.locator(".status").textContent(), /已识别番茄短故事发布信息页/);
     await shortStoryPage.close();
-
-    const shortStoryInfoPage = await openFixture(browser, "fanqie-short-story-info.html");
-    const shortStoryInfoPanel = shortStoryInfoPage.locator("#reader-fanqie-importer");
-    assert.equal(await shortStoryInfoPanel.locator(".mode").textContent(), "番茄 · 发布信息");
-    assert.equal(await shortStoryInfoPanel.locator(".fill").textContent(), "查看分类建议");
-    assert.equal(await shortStoryInfoPanel.locator(".chapter-row").isVisible(), false);
-    assert.equal(await shortStoryInfoPanel.locator(".type-suggestion").isVisible(), true);
-    assert.equal(
-      await shortStoryInfoPanel.locator(".suggestion").textContent(),
-      "女频｜现代言情 > 职场婚恋｜标签：婚恋纠葛、职场、复仇逆袭、久别重逢",
-    );
-    assert.match(await shortStoryInfoPanel.locator(".status").textContent(), /已识别番茄短故事发布信息页/);
-    await shortStoryInfoPanel.locator(".fill").click();
-    assert.match(await shortStoryInfoPanel.locator(".status").textContent(), /分类建议已显示/);
-    await shortStoryInfoPage.close();
 
     const combinedPage = await openFixture(browser, "fanqie-short-story-combined-editor.html");
     const combinedPanel = combinedPage.locator("#reader-fanqie-importer");

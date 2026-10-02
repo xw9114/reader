@@ -146,23 +146,6 @@
   function detectEditorFields() {
     const platform = currentPlatform();
     const pageText = document.body?.innerText || "";
-    const pageLooksLikeShortStoryInfo = platform === "fanqie"
-      && /封面设置/.test(pageText)
-      && /是否使用\s*AI/i.test(pageText)
-      && /作品分类/.test(pageText)
-      && /发布协议/.test(pageText);
-    if (pageLooksLikeShortStoryInfo) {
-      state.fields = {
-        platform,
-        mode: "short-story-info",
-        chapterNumber: null,
-        title: null,
-        summary: null,
-        body: null,
-        combinedEditor: false,
-      };
-      return state.fields;
-    }
     const pageLooksLikeWorkInfo = platform === "qimao"
       && /作品信息/.test(pageText)
       && /作品名称/.test(pageText)
@@ -551,7 +534,7 @@
       select { width: 100%; min-height: 40px; margin-top: 5px; padding: 0 34px 0 10px; border: 1px solid #cad4d0; border-radius: 5px; background: #fff; color: #17201d; font: inherit; font-size: 13px; }
       .status { margin: 12px 0 0; padding: 9px 10px; border-left: 3px solid #e75b3f; background: #fff; color: #4c5b56; font-size: 12px; line-height: 1.5; }
       .type-suggestion { display: none; margin-top: 10px; padding: 9px 10px; border: 1px solid #cad4d0; border-radius: 5px; background: #fff; }
-      .panel.work-info .type-suggestion, .panel.short-story-info .type-suggestion { display: block; }
+      .panel.work-info .type-suggestion, .panel.short-story .type-suggestion { display: block; }
       .type-suggestion span { display: block; color: #71807b; font-size: 11px; }
       .type-suggestion strong { display: block; margin-top: 5px; color: #143f36; font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
       .type-suggestion small { display: block; margin-top: 4px; color: #8a9692; font-size: 10px; line-height: 1.4; }
@@ -622,10 +605,6 @@
       );
       return;
     }
-    if (fields.mode === "short-story-info") {
-      updateStatus("已识别番茄短故事发布信息页。请参考上方建议选择作品分类，并手动完成其余发布信息。", "success");
-      return;
-    }
     if (fields.mode === "short-story") {
       updateStatus(
         `已进入短故事模式。故事名称框${fields.title ? "已识别" : "未识别"}，正文框${fields.body ? "已识别" : "未识别"}。`,
@@ -679,14 +658,6 @@
   }
 
   function renderChapterMeta() {
-    if (state.fields.mode === "short-story-info") {
-      const characters = Number(state.activeStory?.characters) || fullStoryBody(state.activeStory).replace(/\s/g, "").length;
-      ui.position.textContent = `发布信息 · ${state.activeStory?.chapters?.length || 0} 个章节`;
-      ui.characters.textContent = `${characters.toLocaleString("zh-CN")} 字`;
-      ui.previous.disabled = true;
-      ui.next.disabled = true;
-      return;
-    }
     if (state.fields.mode === "work-info") {
       const characters = Number(state.activeStory?.characters) || fullStoryBody(state.activeStory).replace(/\s/g, "").length;
       ui.position.textContent = `新建作品 · ${state.activeStory?.chapters?.length || 0} 个章节`;
@@ -719,24 +690,20 @@
 
   function setEditorMode(mode) {
     const platformName = state.fields.platform === "qimao" ? "七猫" : "番茄";
-    const wholeStory = mode === "short-story" || mode === "short-story-info" || mode === "work-info";
+    const wholeStory = mode === "short-story" || mode === "work-info";
     ui.panel.classList.toggle("whole-story", wholeStory);
     ui.panel.classList.toggle("work-info", mode === "work-info");
-    ui.panel.classList.toggle("short-story-info", mode === "short-story-info");
+    ui.panel.classList.toggle("short-story", mode === "short-story");
     ui.mode.textContent = mode === "work-info"
       ? `${platformName} · 作品信息`
-      : mode === "short-story-info"
-        ? `${platformName} · 发布信息`
-        : mode === "short-story"
-          ? `${platformName} · 短故事`
-          : `${platformName} · 章节`;
+      : mode === "short-story"
+        ? `${platformName} · 短故事`
+        : `${platformName} · 章节`;
     ui.fill.textContent = mode === "work-info"
       ? "填入作品信息"
-      : mode === "short-story-info"
-        ? "查看分类建议"
-        : mode === "short-story"
-          ? "填入整篇短故事"
-          : "填入当前章节";
+      : mode === "short-story"
+        ? "填入整篇短故事"
+        : "填入当前章节";
     renderChapterMeta();
     renderWorkTypeSuggestion();
   }
@@ -827,10 +794,6 @@
     ui.fill.addEventListener("click", () => {
       const fields = detectEditorFields();
       setEditorMode(fields.mode);
-      if (fields.mode === "short-story-info") {
-        updateStatus("分类建议已显示。请手动设置封面、AI 标识、作品分类、试读比例及发布协议。", "success");
-        return;
-      }
       if (fields.mode === "work-info") {
         const result = fillWorkInfo(state.activeStory);
         if (result.ok) {
