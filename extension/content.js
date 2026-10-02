@@ -194,6 +194,23 @@
       .sort((left, right) => right.rect.width * right.rect.height - left.rect.width * left.rect.height)[0]?.element || null;
   }
 
+  function qimaoChapterBody() {
+    const selectors = [
+      ".chapter-con .q-contenteditable.edit-mask[contenteditable]:not([contenteditable='false'])",
+      ".chapter-con .q-contenteditable[contenteditable]:not([contenteditable='false'])",
+      ".chapter-editor .q-contenteditable.edit-mask[contenteditable]:not([contenteditable='false'])",
+      ".chapter-editor .q-contenteditable[contenteditable]:not([contenteditable='false'])",
+    ];
+    for (const selector of selectors) {
+      const candidates = [...document.querySelectorAll(selector)]
+        .filter((element) => element instanceof HTMLElement && element.isConnected);
+      const visible = candidates.find(isVisible);
+      if (visible) return visible;
+      if (candidates.length === 1) return candidates[0];
+    }
+    return null;
+  }
+
   function detectEditorFields() {
     const platform = currentPlatform();
     const pathname = currentPathname();
@@ -257,11 +274,14 @@
     );
     const title = mode === "short-story" ? shortStoryTitle || chapterTitle : chapterTitle;
     const bodySelector = "[contenteditable]:not([contenteditable='false']), textarea, [role='textbox']";
-    let body = bestCandidate(
-      bodySelector,
-      bodyScore,
-      title,
-    );
+    let body = platform === "qimao" ? qimaoChapterBody() : null;
+    if (!body) {
+      body = bestCandidate(
+        bodySelector,
+        bodyScore,
+        title,
+      );
+    }
     if (!body && platform === "qimao") body = largestCentralEditor(bodySelector, title);
     const combinedEditor = Boolean(
       mode === "short-story"
