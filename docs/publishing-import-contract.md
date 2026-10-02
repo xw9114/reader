@@ -79,7 +79,7 @@ or:
 { "ok": false, "error": "HTTP 404" }
 ```
 
-The content script detects Fanqie and Qimao from the current hostname, then detects the current editor. Fanqie supports chapter and short-story modes. Qimao supports work-information and chapter modes. In Fanqie chapter mode, a leading chapter-number prefix such as `第1章` is split between the number and title fields. Fanqie's category and publishing fields belong to the same short-story page, so their presence must never change the editor mode. Short-story mode displays the local type suggestion while keeping title/body import available. In Qimao chapter mode without a separate number field, the full chapter title is preserved. Qimao chapter body detection favors the large central editor and excludes side regions labeled as notes, reference material, inspiration, polishing, or naming. Qimao work-information mode fills the story title and a reviewable synopsis draft derived from the first non-empty chapter body. It displays a non-binding reader direction, category, and tag suggestion, plus up to two protagonist names inferred from repeated name-like text. When labeled protagonist inputs are found, those names are filled for user review. Target reader, category, tags, status, cover, and final creation remain with the user. Rich-text body content is inserted as paragraph nodes. It must never click the final save, next, create, or publish action.
+The content script detects Fanqie and Qimao from the current hostname, then detects the current editor. Fanqie supports chapter and short-story modes. Qimao supports work-information and chapter modes. In Fanqie chapter mode, a leading chapter-number prefix such as `第1章` is split between the number and title fields. Fanqie's category and publishing fields belong to the same short-story page, so their presence must never change the editor mode. Short-story mode displays the local type suggestion while keeping title/body import available. In Qimao chapter mode without a separate number field, the full chapter title is preserved. Qimao chapter body detection favors the large central editor and excludes side regions labeled as notes, reference material, inspiration, polishing, or naming. Qimao work-information mode fills the story title and a reviewable synopsis draft derived from the first non-empty chapter body. It displays a non-binding reader direction, category, and tag suggestion, plus up to two protagonist names inferred from repeated name-like text. When labeled protagonist inputs are found, those names are filled for user review. Imported fiction body text uses two ideographic spaces at the start of prose paragraphs, keeps one blank line between paragraphs, promotes recognized chapter markers to heading nodes, and normalizes common ASCII dialogue punctuation to Chinese typography. Target reader, category, tags, status, cover, and final creation remain with the user. It must never click the final save, next, create, or publish action.
 
 ## 4. Validation & Error Matrix
 
@@ -98,7 +98,7 @@ The content script detects Fanqie and Qimao from the current hostname, then dete
 | Fanqie short story | Story title, merged `fullText`, and an approximate type suggestion | Entire story is filled once; category selection and final submission remain manual |
 | Qimao work information | Story title ≤ 18 characters, synopsis ≤ 500 characters, an approximate type suggestion, and up to two inferred protagonist names | Overlong title is truncated with a visible warning; protagonist names fill only labeled protagonist inputs and remain reviewable |
 | Qimao chapter | Full chapter title and the large central rich-text body | Full title is preserved when there is no separate number field; side-note editors are excluded |
-| Rich-text body | Blank lines become separate paragraph nodes; single line breaks become `<br>` | Prevents the whole chapter becoming one paragraph |
+| Rich-text body | Blank lines become separate nodes; prose paragraphs receive a two-character indent; recognized chapter markers become `<h2>`; single line breaks become `<br>` | Prevents wall-of-text imports while preserving the story structure |
 
 ## 5. Good / Base / Bad Cases
 
@@ -122,6 +122,7 @@ The content script detects Fanqie and Qimao from the current hostname, then dete
   - Assert `第1章 测试` is filled as `测试`.
   - Assert the rich-text editor contains two paragraph nodes.
   - Assert paragraph breaks survive filling.
+  - Assert prose indentation and Chinese dialogue punctuation normalization survive filling.
 - Browser fixture `tests/fixtures/fanqie-short-story-editor.html`
   - Assert `/publish-short/` is detected as short-story mode.
   - Assert short-story mode is detected without a chapter-number field.

@@ -338,15 +338,47 @@
       .replaceAll("'", "&#39;");
   }
 
-  function bodyToHtml(value) {
+  function bodyParagraphs(value) {
     const normalized = String(value || "")
       .replace(/\r\n?/g, "\n")
       .trim();
-    const paragraphs = normalized
+    return normalized
       ? normalized.split(/\n[\t \u3000]*\n+/).map((paragraph) => paragraph.trim()).filter(Boolean)
       : [""];
-    return paragraphs
-      .map((paragraph) => `<p>${escapeHtml(paragraph).replaceAll("\n", "<br>") || "<br>"}</p>`)
+  }
+
+  function isBodyHeading(value) {
+    const text = String(value || "").replace(/\s+/g, " ").trim();
+    return /^(?:第\s*[0-9０-９一二三四五六七八九十百千万零〇两]+\s*[章回节篇](?:\s+.+)?|chapter\s*[0-9０-９]+(?:\s+.+)?|开篇(?:钩子)?|楔子|序章|前言|尾声|后记|番外(?:\s+.+)?)$/i.test(text);
+  }
+
+  function normalizeBodyTypography(value) {
+    const punctuation = { ",": "，", "!": "！", "?": "？", ";": "；", ":": "：" };
+    return String(value || "")
+      .replace(/"([^"\n]+)"/g, "“$1”")
+      .replace(/([\u3400-\u9fff])([,!?;:])/g, (match, character, mark) => `${character}${punctuation[mark]}`)
+      .replace(/([\u3400-\u9fff])\.(?=\s|$|["“”])/g, "$1。")
+      .replace(/[\t ]+([，。！？；：”])/g, "$1");
+  }
+
+  function formatBodyParagraph(value) {
+    const paragraph = normalizeBodyTypography(value).replace(/^[\t \u3000]+/, "");
+    return isBodyHeading(paragraph) ? paragraph : `　　${paragraph}`;
+  }
+
+  function formatBodyText(value) {
+    return bodyParagraphs(value)
+      .map(formatBodyParagraph)
+      .join("\n\n");
+  }
+
+  function bodyToHtml(value) {
+    return bodyParagraphs(value)
+      .map((paragraph) => {
+        const formatted = formatBodyParagraph(paragraph);
+        const tag = isBodyHeading(paragraph) ? "h2" : "p";
+        return `<${tag}>${escapeHtml(formatted).replaceAll("\n", "<br>") || "<br>"}</${tag}>`;
+      })
       .join("");
   }
 
@@ -358,7 +390,7 @@
     selection.removeAllRanges();
     selection.addRange(range);
     const inserted = document.execCommand("insertHTML", false, html);
-    if (!inserted || !element.querySelector("p, div, h1")) {
+    if (!inserted || !element.querySelector("p, div, h1, h2")) {
       element.innerHTML = html;
     }
     element.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertFromPaste", data: null }));
@@ -375,6 +407,14 @@
       return;
     }
     setEditableValue(element, value);
+  }
+
+  function fillBodyElement(element, value) {
+    if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+      setInputValue(element, formatBodyText(value));
+      return;
+    }
+    setEditableHtml(element, bodyToHtml(value));
   }
 
   function fillTitleElement(element, value) {
@@ -403,7 +443,7 @@
       ? String(title || "").trim()
       : parsed.title;
     fillElement(fields.title, editorTitle);
-    fillElement(fields.body, body);
+    fillBodyElement(fields.body, body);
     return {
       ok: true,
       chapterNumberFound: Boolean(fields.chapterNumber),
@@ -578,7 +618,7 @@
       setEditableHtml(fields.body, `<h1>${escapeHtml(title)}</h1>${bodyToHtml(body)}`);
     } else {
       fillTitleElement(fields.title, title);
-      fillElement(fields.body, body);
+      fillBodyElement(fields.body, body);
     }
     return {
       ok: true,
@@ -946,6 +986,7 @@
     fillEditor,
     fillShortStory,
     fillWorkInfo,
+    formatBodyText,
     fullStoryBody,
     normalizeFanqieTitle,
     parseChapterTitle,

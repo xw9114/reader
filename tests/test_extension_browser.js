@@ -22,6 +22,10 @@ async function openFixture(browser, filename) {
     assert.equal(await chapterPage.locator("#chapter-number").inputValue(), "1");
     assert.equal(await chapterPage.locator("#chapter-title").inputValue(), "测试");
     assert.equal(await chapterPage.locator(".chapter-editor p").count(), 2);
+    assert.equal(
+      await chapterPage.evaluate(() => window.__readerPublisherImporter.formatBodyText('"你好,小雨?"\n\n他说.')),
+      "　　“你好，小雨？”\n\n　　他说。",
+    );
     await chapterPage.close();
 
     const shortStoryPage = await openFixture(browser, "fanqie-short-story-editor.html");
@@ -32,7 +36,9 @@ async function openFixture(browser, filename) {
     assert.equal(await shortStoryPanel.locator(".type-suggestion").isVisible(), true);
     await shortStoryPanel.locator(".fill").click();
     assert.equal(await shortStoryPage.locator(".short-story-title").textContent(), "测试短故事");
-    assert.equal(await shortStoryPage.locator(".short-story-body p").count(), 4);
+    assert.equal(await shortStoryPage.locator(".short-story-body h2").count(), 2);
+    assert.equal(await shortStoryPage.locator(".short-story-body p").count(), 2);
+    assert.equal(await shortStoryPage.locator(".short-story-body p").first().textContent(), "　　第一段。");
     assert.match(await shortStoryPage.locator(".short-story-body").innerText(), /开篇钩子[\s\S]*第1章 相遇/);
     assert.match(await shortStoryPanel.locator(".status").textContent(), /整篇正文已填入/);
     await shortStoryPage.close();
@@ -42,7 +48,8 @@ async function openFixture(browser, filename) {
     assert.equal(await combinedPanel.locator(".mode").textContent(), "番茄 · 短故事");
     await combinedPanel.locator(".fill").click();
     assert.equal(await combinedPage.locator(".short-story-editor h1").textContent(), "合并编辑器故事");
-    assert.equal(await combinedPage.locator(".short-story-editor p").count(), 3);
+    assert.equal(await combinedPage.locator(".short-story-editor h2").textContent(), "开篇");
+    assert.equal(await combinedPage.locator(".short-story-editor p").count(), 2);
     await combinedPage.close();
 
     const qimaoWorkPage = await openFixture(browser, "qimao-work-editor.html");
@@ -89,6 +96,7 @@ async function openFixture(browser, filename) {
     await qimaoChapterPanel.locator(".fill").click();
     assert.equal(await qimaoChapterPage.locator("#chapter-title").inputValue(), "第1章 测试");
     assert.equal(await qimaoChapterPage.locator(".chapter-body p").count(), 2);
+    assert.equal(await qimaoChapterPage.locator(".chapter-body p").first().textContent(), "　　第一段。");
     assert.equal(await qimaoChapterPage.locator(".note-editor").textContent(), "");
     assert.match(await qimaoChapterPanel.locator(".status").textContent(), /七猫章节标题和正文已填入/);
     await qimaoChapterPage.close();
