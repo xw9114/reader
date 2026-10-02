@@ -1,24 +1,26 @@
 {
   "manifest_version": 3,
-  "name": "Reader 番茄导入助手",
-  "version": "0.2.0",
-  "description": "从 Reader 发布页选择小说，填入番茄章节或整篇短故事编辑器。",
+  "name": "Reader 小说平台导入助手",
+  "version": "0.3.0",
+  "description": "从 Reader 选择小说，填入番茄或七猫作者后台。",
   "permissions": ["storage", "activeTab"],
   "host_permissions": [
-    "https://xw9114.github.io/reader/*"
+    "https://xw9114.github.io/reader/*",
+    "https://zuozhe.qimao.com/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Reader 番茄导入助手",
+    "default_title": "Reader 小说平台导入助手",
     "default_popup": "popup.html"
   },
   "content_scripts": [
     {
       "matches": [
         "https://fanqienovel.com/main/writer*",
-        "https://writer.muyewx.com/*"
+        "https://writer.muyewx.com/*",
+        "https://zuozhe.qimao.com/*"
       ],
       "js": ["content.js"],
       "run_at": "document_idle"

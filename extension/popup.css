@@ -55,6 +55,20 @@ button {
   cursor: pointer;
 }
 
+.writer-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.writer-links button {
+  min-height: 48px;
+  margin-top: 0;
+  padding: 6px;
+  font-size: 12px;
+}
+
 button:hover {
   background: #0c2f28;
 }

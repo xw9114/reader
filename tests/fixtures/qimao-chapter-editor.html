@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>七猫章节编辑测试页</title>
+    <style>
+      body { margin: 40px; font-family: sans-serif; }
+      input { width: 680px; height: 48px; padding: 0 12px; }
+      .chapter-body { width: 680px; min-height: 380px; margin-top: 24px; padding: 20px; border: 1px solid #ccc; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <label for="chapter-title">章节名称</label>
+      <input id="chapter-title" type="text" maxlength="50" placeholder="请输入章节名称">
+      <div class="chapter-body" contenteditable="true" data-placeholder="请输入章节正文"></div>
+    </main>
+    <script>
+      window.__READER_TEST_PLATFORM__ = "qimao";
+      window.__READER_TEST_LIBRARY__ = {
+        latestStoryId: "story-1",
+        storyCount: 1,
+        stories: [{
+          id: "story-1",
+          title: "测试作品",
+          chapters: [{ id: "chapter-1", title: "第1章 测试", body: "第一段。\n\n第二段。", characters: 8 }]
+        }]
+      };
+    </script>
+    <script src="../../extension/content.js"></script>
+  </body>
+</html>

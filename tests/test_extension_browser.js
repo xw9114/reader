@@ -25,7 +25,7 @@ async function openFixture(browser, filename) {
 
     const shortStoryPage = await openFixture(browser, "fanqie-short-story-editor.html");
     const shortStoryPanel = shortStoryPage.locator("#reader-fanqie-importer");
-    assert.equal(await shortStoryPanel.locator(".mode").textContent(), "短故事");
+    assert.equal(await shortStoryPanel.locator(".mode").textContent(), "番茄 · 短故事");
     assert.equal(await shortStoryPanel.locator(".fill").textContent(), "填入整篇短故事");
     assert.equal(await shortStoryPanel.locator(".chapter-row").isVisible(), false);
     await shortStoryPanel.locator(".fill").click();
@@ -37,11 +37,33 @@ async function openFixture(browser, filename) {
 
     const combinedPage = await openFixture(browser, "fanqie-short-story-combined-editor.html");
     const combinedPanel = combinedPage.locator("#reader-fanqie-importer");
-    assert.equal(await combinedPanel.locator(".mode").textContent(), "短故事");
+    assert.equal(await combinedPanel.locator(".mode").textContent(), "番茄 · 短故事");
     await combinedPanel.locator(".fill").click();
     assert.equal(await combinedPage.locator(".short-story-editor h1").textContent(), "合并编辑器故事");
     assert.equal(await combinedPage.locator(".short-story-editor p").count(), 3);
     await combinedPage.close();
+
+    const qimaoWorkPage = await openFixture(browser, "qimao-work-editor.html");
+    const qimaoWorkPanel = qimaoWorkPage.locator("#reader-fanqie-importer");
+    assert.equal(await qimaoWorkPanel.locator(".mode").textContent(), "七猫 · 作品信息");
+    assert.equal(await qimaoWorkPanel.locator(".fill").textContent(), "填入作品信息");
+    assert.equal(await qimaoWorkPanel.locator(".chapter-row").isVisible(), false);
+    await qimaoWorkPanel.locator(".fill").click();
+    assert.equal(await qimaoWorkPage.locator("#work-title").inputValue(), "测试七猫作品");
+    assert.match(await qimaoWorkPage.locator("#work-summary").inputValue(), /^这是用于七猫作品简介/);
+    assert.ok((await qimaoWorkPage.locator("#work-summary").inputValue()).length <= 500);
+    assert.equal(await qimaoWorkPage.evaluate(() => window.__QIMAO_CONFIRM_CLICKS__), 0);
+    assert.match(await qimaoWorkPanel.locator(".status").textContent(), /作品名称和简介草稿已填入/);
+    await qimaoWorkPage.close();
+
+    const qimaoChapterPage = await openFixture(browser, "qimao-chapter-editor.html");
+    const qimaoChapterPanel = qimaoChapterPage.locator("#reader-fanqie-importer");
+    assert.equal(await qimaoChapterPanel.locator(".mode").textContent(), "七猫 · 章节");
+    await qimaoChapterPanel.locator(".fill").click();
+    assert.equal(await qimaoChapterPage.locator("#chapter-title").inputValue(), "第1章 测试");
+    assert.equal(await qimaoChapterPage.locator(".chapter-body p").count(), 2);
+    assert.match(await qimaoChapterPanel.locator(".status").textContent(), /七猫章节标题和正文已填入/);
+    await qimaoChapterPage.close();
   } finally {
     await browser.close();
   }

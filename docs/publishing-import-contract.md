@@ -79,7 +79,7 @@ or:
 { "ok": false, "error": "HTTP 404" }
 ```
 
-The content script detects chapter and short-story editors. In chapter mode, it may fill detected chapter-number, title, and body fields. It extracts a leading chapter-number prefix such as `第1章`, writes `1` into Fanqie's separate chapter-number field, and writes only the remaining title into the title field. If a title has no number prefix, the selected chapter's one-based index is the fallback chapter number. In short-story mode, it uses the story title as the short-story name and writes `fullText`, or a chapter-derived fallback, into the body. Rich-text body content is inserted as paragraph nodes; blank-line paragraph boundaries must not be flattened into one text block. It must never click the final save, next, or publish action.
+The content script detects Fanqie and Qimao from the current hostname, then detects the current editor. Fanqie supports chapter and short-story modes. Qimao supports work-information and chapter modes. In Fanqie chapter mode, a leading chapter-number prefix such as `第1章` is split between the number and title fields. In Qimao chapter mode without a separate number field, the full chapter title is preserved. Qimao work-information mode fills the story title and a reviewable synopsis draft derived from the first non-empty chapter body; it leaves target reader, category, tags, roles, status, cover, and final creation to the user. Rich-text body content is inserted as paragraph nodes. It must never click the final save, next, create, or publish action.
 
 ## 4. Validation & Error Matrix
 
@@ -92,9 +92,12 @@ The content script detects chapter and short-story editors. In chapter mode, it 
 | Remote library | HTTP success and `stories` is an array | Panel shows a read error and does not fill |
 | Editor detection | Visible title and body fields both found | Panel lists missing fields and does not partially fill |
 | Editor mode | Short-story title placeholder or page marker is present | Panel switches to short-story mode and hides chapter navigation |
+| Platform | `fanqienovel.com`, `writer.muyewx.com`, or `zuozhe.qimao.com` | Panel displays the detected platform and editor mode |
 | Fanqie chapter number | Leading `第 N 章`/`Chapter N` is parsed, or the selected chapter index is used | Number is written into the separate chapter-number field |
 | Fanqie title | The parsed chapter-number prefix is removed | Prevents duplicated chapter numbering |
 | Fanqie short story | Story title plus merged `fullText` | Entire story is filled once; final submission remains manual |
+| Qimao work information | Story title ≤ 18 characters and synopsis ≤ 500 characters | Overlong title is truncated with a visible warning; subjective required fields remain untouched |
+| Qimao chapter | Full chapter title and rich-text body | Full title is preserved when there is no separate number field |
 | Rich-text body | Blank lines become separate paragraph nodes; single line breaks become `<br>` | Prevents the whole chapter becoming one paragraph |
 
 ## 5. Good / Base / Bad Cases
@@ -123,6 +126,10 @@ The content script detects chapter and short-story editors. In chapter mode, it 
   - Assert chapter navigation is hidden and the action reads `填入整篇短故事`.
   - Assert the story title and all merged chapter content are filled.
   - Assert a combined rich-text editor receives one title heading followed by body paragraphs.
+- Browser fixtures `tests/fixtures/qimao-work-editor.html` and `qimao-chapter-editor.html`
+  - Assert Qimao work-information mode fills title and synopsis without clicking `确认创建`.
+  - Assert Qimao chapter mode preserves the full chapter title when no number field exists.
+  - Assert body paragraph structure survives filling.
 
 ## 7. Wrong vs Correct
 

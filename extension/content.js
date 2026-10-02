@@ -5,8 +5,21 @@
     stories: [],
     activeStory: null,
     activeChapterIndex: 0,
-    fields: { mode: "chapter", chapterNumber: null, title: null, body: null, combinedEditor: false },
+    fields: {
+      platform: "fanqie",
+      mode: "chapter",
+      chapterNumber: null,
+      title: null,
+      summary: null,
+      body: null,
+      combinedEditor: false,
+    },
   };
+
+  function currentPlatform() {
+    if (globalThis.__READER_TEST_PLATFORM__) return globalThis.__READER_TEST_PLATFORM__;
+    return location.hostname.endsWith("qimao.com") ? "qimao" : "fanqie";
+  }
 
   function isVisible(element) {
     if (!(element instanceof HTMLElement)) return false;
@@ -54,6 +67,29 @@
     return score;
   }
 
+  function workTitleScore(element) {
+    const text = fieldText(element);
+    const rect = element.getBoundingClientRect();
+    let score = 0;
+    if (/作品名称|书名|请输入作品名称|book.?title/.test(text)) score += 22;
+    if (/最多\s*18\s*个字/.test(text)) score += 8;
+    if (/章节|简介|搜索|角色/.test(text)) score -= 16;
+    if (element instanceof HTMLInputElement) score += 5;
+    if (rect.height <= 80 && rect.width >= 260) score += 4;
+    return score;
+  }
+
+  function summaryScore(element) {
+    const text = fieldText(element);
+    const rect = element.getBoundingClientRect();
+    let score = 0;
+    if (/作品简介|内容简介|故事简介|请输入.*简介|最多\s*500\s*字|synopsis|summary/.test(text)) score += 22;
+    if (/章节|标题|搜索|角色/.test(text)) score -= 14;
+    if (element instanceof HTMLTextAreaElement || element.isContentEditable) score += 5;
+    if (rect.height >= 100 && rect.width >= 320) score += 4;
+    return score;
+  }
+
   function chapterNumberScore(element) {
     const text = fieldText(element);
     const rect = element.getBoundingClientRect();
@@ -90,6 +126,33 @@
   }
 
   function detectEditorFields() {
+    const platform = currentPlatform();
+    const pageText = document.body?.innerText || "";
+    const pageLooksLikeWorkInfo = platform === "qimao"
+      && /作品信息/.test(pageText)
+      && /作品名称/.test(pageText)
+      && /作品简介/.test(pageText);
+    if (pageLooksLikeWorkInfo) {
+      const title = bestCandidate(
+        "input:not([type]), input[type='text'], textarea, [contenteditable='true'], [role='textbox']",
+        workTitleScore,
+      );
+      const summary = bestCandidate(
+        "textarea, [contenteditable='true'], [role='textbox']",
+        summaryScore,
+        title,
+      );
+      state.fields = {
+        platform,
+        mode: "work-info",
+        chapterNumber: null,
+        title,
+        summary,
+        body: null,
+        combinedEditor: false,
+      };
+      return state.fields;
+    }
     const chapterNumber = bestCandidate(
       "input:not([type]), input[type='text'], input[type='number'], [contenteditable='true']",
       chapterNumberScore,
@@ -99,7 +162,7 @@
       shortStoryTitleScore,
       chapterNumber,
     );
-    const pageLooksLikeShortStory = /未命名短故事|请输入短故事名称/.test(document.body?.innerText || "");
+    const pageLooksLikeShortStory = /未命名短故事|请输入短故事名称/.test(pageText);
     const mode = shortStoryTitle || pageLooksLikeShortStory ? "short-story" : "chapter";
     const chapterTitle = bestCandidate(
       "input:not([type]), input[type='text'], textarea",
@@ -121,9 +184,11 @@
     );
     if (combinedEditor) body = title;
     state.fields = {
+      platform,
       mode,
       chapterNumber: mode === "chapter" ? chapterNumber : null,
       title,
+      summary: null,
       body,
       combinedEditor,
     };
@@ -265,7 +330,10 @@
     const parsed = parseChapterTitle(title);
     const chapterNumber = parsed.chapterNumber || normalizeChapterNumber(String(fallbackChapterNumber || ""));
     if (fields.chapterNumber && chapterNumber) fillElement(fields.chapterNumber, chapterNumber);
-    fillElement(fields.title, parsed.title);
+    const editorTitle = fields.platform === "qimao" && !fields.chapterNumber
+      ? String(title || "").trim()
+      : parsed.title;
+    fillElement(fields.title, editorTitle);
     fillElement(fields.body, body);
     return {
       ok: true,
@@ -273,6 +341,48 @@
       chapterNumberFilled: Boolean(fields.chapterNumber && chapterNumber),
       titleFound: true,
       bodyFound: true,
+    };
+  }
+
+  function truncateText(value, limit) {
+    const characters = Array.from(String(value || "").trim());
+    return {
+      text: characters.slice(0, limit).join(""),
+      truncated: characters.length > limit,
+    };
+  }
+
+  function storySynopsis(story, limit = 500) {
+    const firstBody = story?.chapters?.find((chapter) => chapter.body?.trim())?.body;
+    const source = firstBody || fullStoryBody(story);
+    const normalized = String(source || "")
+      .replace(/\r\n?/g, "\n")
+      .split(/\n+/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .join(" ");
+    return truncateText(normalized, limit).text;
+  }
+
+  function fillWorkInfo(story) {
+    const fields = detectEditorFields();
+    if (fields.platform !== "qimao" || fields.mode !== "work-info" || !fields.title || !fields.summary) {
+      return {
+        ok: false,
+        titleFound: Boolean(fields.title),
+        summaryFound: Boolean(fields.summary),
+      };
+    }
+    const titleLimit = fields.title.maxLength > 0 ? fields.title.maxLength : 18;
+    const summaryLimit = fields.summary.maxLength > 0 ? fields.summary.maxLength : 500;
+    const title = truncateText(story?.title, titleLimit);
+    fillElement(fields.title, title.text);
+    fillElement(fields.summary, storySynopsis(story, summaryLimit));
+    return {
+      ok: true,
+      titleFound: true,
+      summaryFound: true,
+      titleTruncated: title.truncated,
     };
   }
 
@@ -331,15 +441,15 @@
       .actions { margin-top: 12px; display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; gap: 7px; }
       .actions button, .refresh { min-height: 40px; border: 1px solid #143f36; border-radius: 5px; background: #143f36; color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
       .actions .step { padding: 0; background: #fff; color: #143f36; font-size: 18px; }
-      .panel.short-story .chapter-row, .panel.short-story .step { display: none; }
-      .panel.short-story .actions { grid-template-columns: minmax(0, 1fr); }
+      .panel.whole-story .chapter-row, .panel.whole-story .step { display: none; }
+      .panel.whole-story .actions { grid-template-columns: minmax(0, 1fr); }
       .refresh { width: 100%; margin-top: 8px; border-color: #cad4d0; background: #fff; color: #143f36; font-size: 12px; }
       button:disabled { opacity: .45; cursor: not-allowed; }
       .meta { margin-top: 8px; display: flex; justify-content: space-between; color: #71807b; font-size: 11px; }
       @media (max-width: 700px) { .panel { width: min(340px, calc(100vw - 24px)); } }
     </style>
     <section class="panel">
-      <header class="header"><strong>番茄导入助手</strong><button class="collapse" type="button" aria-label="收起面板">−</button></header>
+      <header class="header"><strong>Reader 导入助手</strong><button class="collapse" type="button" aria-label="收起面板">−</button></header>
       <div class="body">
         <div class="mode-row"><span>导入模式</span><strong class="mode">正在检测…</strong></div>
         <label>作品<select class="story"></select></label>
@@ -389,6 +499,14 @@
   }
 
   function renderChapterMeta() {
+    if (state.fields.mode === "work-info") {
+      const characters = Number(state.activeStory?.characters) || fullStoryBody(state.activeStory).replace(/\s/g, "").length;
+      ui.position.textContent = `新建作品 · ${state.activeStory?.chapters?.length || 0} 个章节`;
+      ui.characters.textContent = `${characters.toLocaleString("zh-CN")} 字`;
+      ui.previous.disabled = true;
+      ui.next.disabled = true;
+      return;
+    }
     if (state.fields.mode === "short-story") {
       const body = fullStoryBody(state.activeStory);
       const characters = Number(state.activeStory?.characters) || body.replace(/\s/g, "").length;
@@ -407,10 +525,19 @@
   }
 
   function setEditorMode(mode) {
-    const shortStory = mode === "short-story";
-    ui.panel.classList.toggle("short-story", shortStory);
-    ui.mode.textContent = shortStory ? "短故事" : "章节";
-    ui.fill.textContent = shortStory ? "填入整篇短故事" : "填入当前章节";
+    const platformName = state.fields.platform === "qimao" ? "七猫" : "番茄";
+    const wholeStory = mode === "short-story" || mode === "work-info";
+    ui.panel.classList.toggle("whole-story", wholeStory);
+    ui.mode.textContent = mode === "work-info"
+      ? `${platformName} · 作品信息`
+      : mode === "short-story"
+        ? `${platformName} · 短故事`
+        : `${platformName} · 章节`;
+    ui.fill.textContent = mode === "work-info"
+      ? "填入作品信息"
+      : mode === "short-story"
+        ? "填入整篇短故事"
+        : "填入当前章节";
     renderChapterMeta();
   }
 
@@ -464,14 +591,20 @@
     renderChapters();
     const fields = detectEditorFields();
     setEditorMode(fields.mode);
-    if (fields.mode === "short-story") {
+    if (fields.mode === "work-info") {
+      updateStatus(
+        `已进入七猫作品信息模式。作品名称框${fields.title ? "已识别" : "未识别"}，简介框${fields.summary ? "已识别" : "未识别"}。`,
+        fields.title && fields.summary ? "success" : "error",
+      );
+    } else if (fields.mode === "short-story") {
       updateStatus(
         `已进入短故事模式。故事名称框${fields.title ? "已识别" : "未识别"}，正文框${fields.body ? "已识别" : "未识别"}。`,
         fields.title && fields.body ? "success" : "error",
       );
     } else {
+      const platformName = fields.platform === "qimao" ? "七猫" : "番茄";
       updateStatus(
-        `已读取 ${state.stories.length} 篇作品。章序号框${fields.chapterNumber ? "已识别" : "未识别"}，标题框${fields.title ? "已识别" : "未识别"}，正文框${fields.body ? "已识别" : "未识别"}。`,
+        `已读取 ${state.stories.length} 篇作品。${platformName}章节标题框${fields.title ? "已识别" : "未识别"}，正文框${fields.body ? "已识别" : "未识别"}。`,
         fields.title && fields.body ? "success" : "error",
       );
     }
@@ -509,6 +642,21 @@
     ui.fill.addEventListener("click", () => {
       const fields = detectEditorFields();
       setEditorMode(fields.mode);
+      if (fields.mode === "work-info") {
+        const result = fillWorkInfo(state.activeStory);
+        if (result.ok) {
+          updateStatus(
+            result.titleTruncated
+              ? "作品名称超过七猫 18 字限制，已截短；简介草稿已填入。请补充分类、标签、角色等信息。"
+              : "作品名称和简介草稿已填入。请补充读者方向、分类、标签、角色等信息后再确认创建。",
+            result.titleTruncated ? "error" : "success",
+          );
+        } else {
+          const missing = [!result.titleFound && "作品名称框", !result.summaryFound && "简介框"].filter(Boolean).join("、");
+          updateStatus(`未识别${missing}。请打开七猫“新建小说”的作品信息页后重新检测。`, "error");
+        }
+        return;
+      }
       if (fields.mode === "short-story") {
         const result = fillShortStory(state.activeStory);
         if (result.ok) {
@@ -523,12 +671,16 @@
       if (!chapter) return;
       const result = fillEditor(chapter.title, chapter.body, state.activeChapterIndex + 1);
       if (result.ok) {
-        updateStatus(
-          result.chapterNumberFilled
-            ? "章序号、标题和正文已填入，请核对后在番茄后台保存或发布。"
-            : "标题和正文已填入，但未识别章序号框，请手动填写章序号。",
-          result.chapterNumberFilled ? "success" : "error",
-        );
+        if (fields.platform === "qimao") {
+          updateStatus("七猫章节标题和正文已填入，请核对后手动保存或发布。", "success");
+        } else {
+          updateStatus(
+            result.chapterNumberFilled
+              ? "章序号、标题和正文已填入，请核对后在番茄后台保存或发布。"
+              : "标题和正文已填入，但未识别章序号框，请手动填写章序号。",
+            result.chapterNumberFilled ? "success" : "error",
+          );
+        }
       } else {
         const missing = [!result.titleFound && "标题框", !result.bodyFound && "正文框"].filter(Boolean).join("、");
         updateStatus(`未识别${missing}。请先打开章节编辑页，再重新检测。`, "error");
@@ -553,10 +705,13 @@
     detectEditorFields,
     fillEditor,
     fillShortStory,
+    fillWorkInfo,
     fullStoryBody,
     normalizeFanqieTitle,
     parseChapterTitle,
+    storySynopsis,
   };
+  globalThis.__readerPublisherImporter = globalThis.__readerFanqieImporter;
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", mountPanel, { once: true });
   } else {
