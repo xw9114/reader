@@ -159,12 +159,18 @@
   function bodyScore(element) {
     const text = fieldText(element);
     const rect = element.getBoundingClientRect();
+    const sideRegion = element.closest("aside, [class*='sidebar'], [class*='side-bar'], [class*='note'], [class*='memo']");
+    const sideText = `${sideRegion?.getAttribute("class") || ""} ${sideRegion?.textContent?.slice(0, 240) || ""}`.toLowerCase();
     let score = 0;
     if (/正文|章节内容|内容|请输入正文|content|editor/.test(text)) score += 10;
     if (/简介|搜索|标题|书名|短故事名称|故事名称/.test(text)) score -= 12;
+    if (/随记|笔记|资料|灵感|润色|起名|note|memo|sidebar|side-bar/.test(`${text} ${sideText}`)) score -= 32;
     if (element.isContentEditable) score += 6;
     if (rect.height >= 180) score += 5;
     if (rect.width >= 500) score += 3;
+    if (rect.width >= 700) score += 5;
+    if (rect.width < 420) score -= 10;
+    if (rect.left >= window.innerWidth * 0.72) score -= 18;
     return score;
   }
 

@@ -89,6 +89,7 @@ async function openFixture(browser, filename) {
     await qimaoChapterPanel.locator(".fill").click();
     assert.equal(await qimaoChapterPage.locator("#chapter-title").inputValue(), "第1章 测试");
     assert.equal(await qimaoChapterPage.locator(".chapter-body p").count(), 2);
+    assert.equal(await qimaoChapterPage.locator(".note-editor").textContent(), "");
     assert.match(await qimaoChapterPanel.locator(".status").textContent(), /七猫章节标题和正文已填入/);
     await qimaoChapterPage.close();
   } finally {

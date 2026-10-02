@@ -7,6 +7,8 @@
       body { margin: 40px; font-family: sans-serif; }
       input { width: 680px; height: 48px; padding: 0 12px; }
       .chapter-body { width: 680px; min-height: 380px; margin-top: 24px; padding: 20px; border: 1px solid #ccc; }
+      .note-sidebar { position: fixed; right: 20px; top: 80px; width: 320px; }
+      .note-editor { width: 300px; min-height: 240px; padding: 12px; border: 1px solid #ccc; }
     </style>
   </head>
   <body>
@@ -15,6 +17,11 @@
       <input id="chapter-title" type="text" maxlength="50" placeholder="请输入章节名称">
       <div class="chapter-body" contenteditable="true" data-placeholder="请输入章节正文"></div>
     </main>
+    <aside class="note-sidebar">
+      <h2>我的随记</h2>
+      <input type="text" placeholder="请输入随记的名称或内容">
+      <div class="note-editor" contenteditable="true" data-placeholder="请输入随记内容"></div>
+    </aside>
     <script>
       window.__READER_TEST_PLATFORM__ = "qimao";
       window.__READER_TEST_LIBRARY__ = {
