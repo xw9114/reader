@@ -5,7 +5,7 @@
     stories: [],
     activeStory: null,
     activeChapterIndex: 0,
-    fields: { chapterNumber: null, title: null, body: null },
+    fields: { mode: "chapter", chapterNumber: null, title: null, body: null, combinedEditor: false },
   };
 
   function isVisible(element) {
@@ -29,11 +29,28 @@
     if (/章节标题|章节名|标题|chapter.?title/.test(text)) score += 12;
     if (/请输入.*标题|title/.test(text)) score += 5;
     if (/章节序号|章节号|章序|chapter.?number/.test(text)) score -= 18;
-    if (/搜索|search|简介|书名/.test(text)) score -= 14;
+    if (/搜索|search|简介|书名|短故事名称|故事名称/.test(text)) score -= 14;
     if (element instanceof HTMLInputElement) score += 3;
     if (element instanceof HTMLInputElement && element.type === "number") score -= 18;
     if (rect.width <= 160) score -= 8;
     if (element.maxLength > 0 && element.maxLength <= 100) score += 3;
+    return score;
+  }
+
+  function shortStoryTitleScore(element) {
+    const text = fieldText(element);
+    const rect = element.getBoundingClientRect();
+    let score = 0;
+    if (/短故事名称|故事名称|请输入短故事名称|short.?story.?title/.test(text)) score += 24;
+    if (/作品名称|请输入.*名称/.test(text)) score += 7;
+    if (/章节标题|章节名|章节序号|章序/.test(text)) score -= 20;
+    if (/搜索|search|简介|正文|内容/.test(text)) score -= 12;
+    if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement || element.isContentEditable) {
+      score += 4;
+    }
+    if (rect.height <= 120) score += 4;
+    if (rect.height >= 180) score -= 6;
+    if (rect.width >= 260) score += 2;
     return score;
   }
 
@@ -57,7 +74,7 @@
     const rect = element.getBoundingClientRect();
     let score = 0;
     if (/正文|章节内容|内容|请输入正文|content|editor/.test(text)) score += 10;
-    if (/简介|搜索|标题|书名/.test(text)) score -= 12;
+    if (/简介|搜索|标题|书名|短故事名称|故事名称/.test(text)) score -= 12;
     if (element.isContentEditable) score += 6;
     if (rect.height >= 180) score += 5;
     if (rect.width >= 500) score += 3;
@@ -77,17 +94,39 @@
       "input:not([type]), input[type='text'], input[type='number'], [contenteditable='true']",
       chapterNumberScore,
     );
-    const title = bestCandidate(
+    const shortStoryTitle = bestCandidate(
+      "input:not([type]), input[type='text'], textarea, [contenteditable='true'], [role='textbox']",
+      shortStoryTitleScore,
+      chapterNumber,
+    );
+    const pageLooksLikeShortStory = /未命名短故事|请输入短故事名称/.test(document.body?.innerText || "");
+    const mode = shortStoryTitle || pageLooksLikeShortStory ? "short-story" : "chapter";
+    const chapterTitle = bestCandidate(
       "input:not([type]), input[type='text'], textarea",
       titleScore,
       chapterNumber,
     );
-    const body = bestCandidate(
+    const title = mode === "short-story" ? shortStoryTitle || chapterTitle : chapterTitle;
+    let body = bestCandidate(
       "[contenteditable='true'], textarea, [role='textbox']",
       bodyScore,
       title,
     );
-    state.fields = { chapterNumber, title, body };
+    const combinedEditor = Boolean(
+      mode === "short-story"
+      && title
+      && !body
+      && title.isContentEditable
+      && title.getBoundingClientRect().height >= 160,
+    );
+    if (combinedEditor) body = title;
+    state.fields = {
+      mode,
+      chapterNumber: mode === "chapter" ? chapterNumber : null,
+      title,
+      body,
+      combinedEditor,
+    };
     return state.fields;
   }
 
@@ -177,20 +216,23 @@
       .join("");
   }
 
-  function setEditableValue(element, value) {
+  function setEditableHtml(element, html) {
     element.focus();
     const selection = window.getSelection();
     const range = document.createRange();
     range.selectNodeContents(element);
     selection.removeAllRanges();
     selection.addRange(range);
-    const html = bodyToHtml(value);
     const inserted = document.execCommand("insertHTML", false, html);
-    if (!inserted || !element.querySelector("p, div")) {
+    if (!inserted || !element.querySelector("p, div, h1")) {
       element.innerHTML = html;
     }
     element.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertFromPaste", data: null }));
     element.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  function setEditableValue(element, value) {
+    setEditableHtml(element, bodyToHtml(value));
   }
 
   function fillElement(element, value) {
@@ -199,6 +241,14 @@
       return;
     }
     setEditableValue(element, value);
+  }
+
+  function fillTitleElement(element, value) {
+    if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+      setInputValue(element, value);
+      return;
+    }
+    setEditableHtml(element, escapeHtml(value));
   }
 
   function fillEditor(title, body, fallbackChapterNumber = null) {
@@ -226,6 +276,41 @@
     };
   }
 
+  function fullStoryBody(story) {
+    if (typeof story?.fullText === "string" && story.fullText.trim()) return story.fullText.trim();
+    return (story?.chapters || [])
+      .map((chapter) => `${chapter.title}\n\n${chapter.body}`.trim())
+      .filter(Boolean)
+      .join("\n\n");
+  }
+
+  function fillShortStory(story) {
+    const fields = detectEditorFields();
+    if (fields.mode !== "short-story" || !fields.title || !fields.body) {
+      return {
+        ok: false,
+        mode: fields.mode,
+        titleFound: Boolean(fields.title),
+        bodyFound: Boolean(fields.body),
+      };
+    }
+    const title = String(story?.title || "").trim();
+    const body = fullStoryBody(story);
+    if (fields.combinedEditor) {
+      setEditableHtml(fields.body, `<h1>${escapeHtml(title)}</h1>${bodyToHtml(body)}`);
+    } else {
+      fillTitleElement(fields.title, title);
+      fillElement(fields.body, body);
+    }
+    return {
+      ok: true,
+      mode: "short-story",
+      titleFound: true,
+      bodyFound: true,
+      combinedEditor: fields.combinedEditor,
+    };
+  }
+
   const panelMarkup = `
     <style>
       :host { all: initial; }
@@ -238,11 +323,16 @@
       .panel.collapsed .body { display: none; }
       label { display: block; margin-top: 10px; color: #60706b; font-size: 11px; font-weight: 600; }
       label:first-child { margin-top: 0; }
+      .mode-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; color: #60706b; font-size: 11px; }
+      .mode-row strong { color: #143f36; font-size: 12px; }
+      .mode-row + label { margin-top: 0; }
       select { width: 100%; min-height: 40px; margin-top: 5px; padding: 0 34px 0 10px; border: 1px solid #cad4d0; border-radius: 5px; background: #fff; color: #17201d; font: inherit; font-size: 13px; }
       .status { margin: 12px 0 0; padding: 9px 10px; border-left: 3px solid #e75b3f; background: #fff; color: #4c5b56; font-size: 12px; line-height: 1.5; }
       .actions { margin-top: 12px; display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; gap: 7px; }
       .actions button, .refresh { min-height: 40px; border: 1px solid #143f36; border-radius: 5px; background: #143f36; color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
       .actions .step { padding: 0; background: #fff; color: #143f36; font-size: 18px; }
+      .panel.short-story .chapter-row, .panel.short-story .step { display: none; }
+      .panel.short-story .actions { grid-template-columns: minmax(0, 1fr); }
       .refresh { width: 100%; margin-top: 8px; border-color: #cad4d0; background: #fff; color: #143f36; font-size: 12px; }
       button:disabled { opacity: .45; cursor: not-allowed; }
       .meta { margin-top: 8px; display: flex; justify-content: space-between; color: #71807b; font-size: 11px; }
@@ -251,8 +341,9 @@
     <section class="panel">
       <header class="header"><strong>番茄导入助手</strong><button class="collapse" type="button" aria-label="收起面板">−</button></header>
       <div class="body">
+        <div class="mode-row"><span>导入模式</span><strong class="mode">正在检测…</strong></div>
         <label>作品<select class="story"></select></label>
-        <label>章节<select class="chapter"></select></label>
+        <label class="chapter-row">章节<select class="chapter"></select></label>
         <div class="meta"><span class="position"></span><span class="characters"></span></div>
         <p class="status">正在读取作品…</p>
         <div class="actions">
@@ -298,12 +389,29 @@
   }
 
   function renderChapterMeta() {
+    if (state.fields.mode === "short-story") {
+      const body = fullStoryBody(state.activeStory);
+      const characters = Number(state.activeStory?.characters) || body.replace(/\s/g, "").length;
+      ui.position.textContent = `整篇 · ${state.activeStory?.chapters?.length || 0} 个章节`;
+      ui.characters.textContent = `${characters.toLocaleString("zh-CN")} 字`;
+      ui.previous.disabled = true;
+      ui.next.disabled = true;
+      return;
+    }
     const chapter = currentChapter();
     if (!chapter) return;
     ui.position.textContent = `${state.activeChapterIndex + 1} / ${state.activeStory.chapters.length}`;
     ui.characters.textContent = `${chapter.characters.toLocaleString("zh-CN")} 字`;
     ui.previous.disabled = state.activeChapterIndex === 0;
     ui.next.disabled = state.activeChapterIndex === state.activeStory.chapters.length - 1;
+  }
+
+  function setEditorMode(mode) {
+    const shortStory = mode === "short-story";
+    ui.panel.classList.toggle("short-story", shortStory);
+    ui.mode.textContent = shortStory ? "短故事" : "章节";
+    ui.fill.textContent = shortStory ? "填入整篇短故事" : "填入当前章节";
+    renderChapterMeta();
   }
 
   function selectStory(storyId) {
@@ -355,10 +463,18 @@
     ui.story.value = state.activeStory.id;
     renderChapters();
     const fields = detectEditorFields();
-    updateStatus(
-      `已读取 ${state.stories.length} 篇作品。章序号框${fields.chapterNumber ? "已识别" : "未识别"}，标题框${fields.title ? "已识别" : "未识别"}，正文框${fields.body ? "已识别" : "未识别"}。`,
-      fields.title && fields.body ? "success" : "error",
-    );
+    setEditorMode(fields.mode);
+    if (fields.mode === "short-story") {
+      updateStatus(
+        `已进入短故事模式。故事名称框${fields.title ? "已识别" : "未识别"}，正文框${fields.body ? "已识别" : "未识别"}。`,
+        fields.title && fields.body ? "success" : "error",
+      );
+    } else {
+      updateStatus(
+        `已读取 ${state.stories.length} 篇作品。章序号框${fields.chapterNumber ? "已识别" : "未识别"}，标题框${fields.title ? "已识别" : "未识别"}，正文框${fields.body ? "已识别" : "未识别"}。`,
+        fields.title && fields.body ? "success" : "error",
+      );
+    }
   }
 
   function mountPanel() {
@@ -373,6 +489,7 @@
     ui = {
       panel: shadow.querySelector(".panel"),
       collapse: shadow.querySelector(".collapse"),
+      mode: shadow.querySelector(".mode"),
       story: shadow.querySelector(".story"),
       chapter: shadow.querySelector(".chapter"),
       position: shadow.querySelector(".position"),
@@ -390,6 +507,18 @@
     ui.next.addEventListener("click", () => selectChapter(state.activeChapterIndex + 1));
     ui.refresh.addEventListener("click", loadLibrary);
     ui.fill.addEventListener("click", () => {
+      const fields = detectEditorFields();
+      setEditorMode(fields.mode);
+      if (fields.mode === "short-story") {
+        const result = fillShortStory(state.activeStory);
+        if (result.ok) {
+          updateStatus("短故事名称和整篇正文已填入，请核对后在番茄后台保存或进入下一步。", "success");
+        } else {
+          const missing = [!result.titleFound && "故事名称框", !result.bodyFound && "正文框"].filter(Boolean).join("、");
+          updateStatus(`未识别${missing}。请打开短故事编辑页后重新检测。`, "error");
+        }
+        return;
+      }
       const chapter = currentChapter();
       if (!chapter) return;
       const result = fillEditor(chapter.title, chapter.body, state.activeChapterIndex + 1);
@@ -423,6 +552,8 @@
     bodyToHtml,
     detectEditorFields,
     fillEditor,
+    fillShortStory,
+    fullStoryBody,
     normalizeFanqieTitle,
     parseChapterTitle,
   };

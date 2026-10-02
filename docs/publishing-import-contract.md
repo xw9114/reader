@@ -79,7 +79,7 @@ or:
 { "ok": false, "error": "HTTP 404" }
 ```
 
-The content script may fill detected chapter-number, title, and body fields. It extracts a leading chapter-number prefix such as `第1章`, writes `1` into Fanqie's separate chapter-number field, and writes only the remaining title into the title field. If a title has no number prefix, the selected chapter's one-based index is the fallback chapter number. Rich-text body content is inserted as paragraph nodes; blank-line paragraph boundaries must not be flattened into one text block. It must never click the final save or publish action.
+The content script detects chapter and short-story editors. In chapter mode, it may fill detected chapter-number, title, and body fields. It extracts a leading chapter-number prefix such as `第1章`, writes `1` into Fanqie's separate chapter-number field, and writes only the remaining title into the title field. If a title has no number prefix, the selected chapter's one-based index is the fallback chapter number. In short-story mode, it uses the story title as the short-story name and writes `fullText`, or a chapter-derived fallback, into the body. Rich-text body content is inserted as paragraph nodes; blank-line paragraph boundaries must not be flattened into one text block. It must never click the final save, next, or publish action.
 
 ## 4. Validation & Error Matrix
 
@@ -91,8 +91,10 @@ The content script may fill detected chapter-number, title, and body fields. It 
 | Extension source | `extension/` exists | Bundle path is `null` when omitted |
 | Remote library | HTTP success and `stories` is an array | Panel shows a read error and does not fill |
 | Editor detection | Visible title and body fields both found | Panel lists missing fields and does not partially fill |
+| Editor mode | Short-story title placeholder or page marker is present | Panel switches to short-story mode and hides chapter navigation |
 | Fanqie chapter number | Leading `第 N 章`/`Chapter N` is parsed, or the selected chapter index is used | Number is written into the separate chapter-number field |
 | Fanqie title | The parsed chapter-number prefix is removed | Prevents duplicated chapter numbering |
+| Fanqie short story | Story title plus merged `fullText` | Entire story is filled once; final submission remains manual |
 | Rich-text body | Blank lines become separate paragraph nodes; single line breaks become `<br>` | Prevents the whole chapter becoming one paragraph |
 
 ## 5. Good / Base / Bad Cases
@@ -116,6 +118,11 @@ The content script may fill detected chapter-number, title, and body fields. It 
   - Assert `第1章 测试` is filled as `测试`.
   - Assert the rich-text editor contains two paragraph nodes.
   - Assert paragraph breaks survive filling.
+- Browser fixture `tests/fixtures/fanqie-short-story-editor.html`
+  - Assert short-story mode is detected without a chapter-number field.
+  - Assert chapter navigation is hidden and the action reads `填入整篇短故事`.
+  - Assert the story title and all merged chapter content are filled.
+  - Assert a combined rich-text editor receives one title heading followed by body paragraphs.
 
 ## 7. Wrong vs Correct
 
