@@ -21,6 +21,10 @@
     return location.hostname.endsWith("qimao.com") ? "qimao" : "fanqie";
   }
 
+  function currentPathname() {
+    return globalThis.__READER_TEST_PATHNAME__ || location.pathname;
+  }
+
   function isVisible(element) {
     if (!(element instanceof HTMLElement)) return false;
     const style = getComputedStyle(element);
@@ -44,6 +48,7 @@
     if (/章节序号|章节号|章序|chapter.?number/.test(text)) score -= 18;
     if (/搜索|search|简介|书名|短故事名称|故事名称/.test(text)) score -= 14;
     if (element instanceof HTMLInputElement) score += 3;
+    if (element.isContentEditable) score += 3;
     if (element instanceof HTMLInputElement && element.type === "number") score -= 18;
     if (rect.width <= 160) score -= 8;
     if (element.maxLength > 0 && element.maxLength <= 100) score += 3;
@@ -64,6 +69,19 @@
     if (rect.height <= 120) score += 4;
     if (rect.height >= 180) score -= 6;
     if (rect.width >= 260) score += 2;
+    return score;
+  }
+
+  function shortStoryFallbackScore(element) {
+    const text = fieldText(element);
+    const rect = element.getBoundingClientRect();
+    let score = 0;
+    if (element.isContentEditable) score += 8;
+    if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) score += 4;
+    if (rect.width >= 400) score += 4;
+    if (rect.height <= 120) score += 6;
+    else if (rect.height >= 180) score += 2;
+    if (/搜索|评论|简介|章节序号|章序/.test(text)) score -= 14;
     return score;
   }
 
@@ -153,19 +171,28 @@
       };
       return state.fields;
     }
+    const pathname = currentPathname();
+    const fanqieShortPath = platform === "fanqie" && /\/publish-short(?:\/|$)/.test(pathname);
+    const fanqieChapterPath = platform === "fanqie" && /\/publish(?:\/|$)/.test(pathname);
+    const pageLooksLikeShortStory = /未命名短故事|请输入短故事名称/.test(pageText);
+    const mode = fanqieShortPath
+      ? "short-story"
+      : fanqieChapterPath
+        ? "chapter"
+        : pageLooksLikeShortStory
+          ? "short-story"
+          : "chapter";
     const chapterNumber = bestCandidate(
       "input:not([type]), input[type='text'], input[type='number'], [contenteditable='true']",
       chapterNumberScore,
     );
-    const shortStoryTitle = bestCandidate(
-      "input:not([type]), input[type='text'], textarea, [contenteditable='true'], [role='textbox']",
-      shortStoryTitleScore,
-      chapterNumber,
-    );
-    const pageLooksLikeShortStory = /未命名短故事|请输入短故事名称/.test(pageText);
-    const mode = shortStoryTitle || pageLooksLikeShortStory ? "short-story" : "chapter";
+    const shortStorySelector = "input:not([type]), input[type='text'], textarea, [contenteditable='true'], [role='textbox']";
+    const shortStoryTitle = mode === "short-story"
+      ? bestCandidate(shortStorySelector, shortStoryTitleScore, chapterNumber)
+        || bestCandidate(shortStorySelector, shortStoryFallbackScore, chapterNumber)
+      : null;
     const chapterTitle = bestCandidate(
-      "input:not([type]), input[type='text'], textarea",
+      "input:not([type]), input[type='text'], textarea, [contenteditable='true'], [role='textbox']",
       titleScore,
       chapterNumber,
     );

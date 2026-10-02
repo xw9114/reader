@@ -91,7 +91,7 @@ The content script detects Fanqie and Qimao from the current hostname, then dete
 | Extension source | `extension/` exists | Bundle path is `null` when omitted |
 | Remote library | HTTP success and `stories` is an array | Panel shows a read error and does not fill |
 | Editor detection | Visible title and body fields both found | Panel lists missing fields and does not partially fill |
-| Editor mode | Short-story title placeholder or page marker is present | Panel switches to short-story mode and hides chapter navigation |
+| Fanqie editor mode | `/publish-short/` is short-story; `/publish/` is chapter | URL takes priority over DOM heuristics, preventing the two editors from being reversed |
 | Platform | `fanqienovel.com`, `writer.muyewx.com`, or `zuozhe.qimao.com` | Panel displays the detected platform and editor mode |
 | Fanqie chapter number | Leading `第 N 章`/`Chapter N` is parsed, or the selected chapter index is used | Number is written into the separate chapter-number field |
 | Fanqie title | The parsed chapter-number prefix is removed | Prevents duplicated chapter numbering |
@@ -115,6 +115,7 @@ The content script detects Fanqie and Qimao from the current hostname, then dete
   - Assert extension ZIP contains `manifest.json`.
   - Assert serial chapters remain grouped and ordered.
 - Browser fixture `tests/fixtures/fanqie-editor.html`
+  - Assert `/publish/` is detected as chapter mode.
   - Assert the panel mounts.
   - Assert title and rich-text body are detected.
   - Assert the chapter-number field receives `1`.
@@ -122,6 +123,7 @@ The content script detects Fanqie and Qimao from the current hostname, then dete
   - Assert the rich-text editor contains two paragraph nodes.
   - Assert paragraph breaks survive filling.
 - Browser fixture `tests/fixtures/fanqie-short-story-editor.html`
+  - Assert `/publish-short/` is detected as short-story mode.
   - Assert short-story mode is detected without a chapter-number field.
   - Assert chapter navigation is hidden and the action reads `填入整篇短故事`.
   - Assert the story title and all merged chapter content are filled.

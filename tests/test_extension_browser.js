@@ -17,6 +17,7 @@ async function openFixture(browser, filename) {
   try {
     const chapterPage = await openFixture(browser, "fanqie-editor.html");
     const chapterPanel = chapterPage.locator("#reader-fanqie-importer");
+    assert.equal(await chapterPanel.locator(".mode").textContent(), "番茄 · 章节");
     await chapterPanel.locator(".fill").click();
     assert.equal(await chapterPage.locator("#chapter-number").inputValue(), "1");
     assert.equal(await chapterPage.locator("#chapter-title").inputValue(), "测试");
