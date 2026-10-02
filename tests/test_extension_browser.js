@@ -49,6 +49,24 @@ async function openFixture(browser, filename) {
     assert.equal(await qimaoWorkPanel.locator(".mode").textContent(), "七猫 · 作品信息");
     assert.equal(await qimaoWorkPanel.locator(".fill").textContent(), "填入作品信息");
     assert.equal(await qimaoWorkPanel.locator(".chapter-row").isVisible(), false);
+    assert.equal(await qimaoWorkPanel.locator(".type-suggestion").isVisible(), true);
+    assert.equal(
+      await qimaoWorkPanel.locator(".suggestion").textContent(),
+      "方向待定｜都市 > 都市生活｜标签：都市生活",
+    );
+    const suggestedType = await qimaoWorkPage.evaluate(() => (
+      window.__readerPublisherImporter.suggestWorkType({
+        title: "我的渣男前夫成了我的下属",
+        chapters: [{
+          title: "第1章 重逢",
+          body: "三年后，她在公司酒会上重逢前夫。曾经的集团总监，如今成了她的下属。",
+        }],
+      }).text
+    ));
+    assert.equal(
+      suggestedType,
+      "女频｜现代言情 > 职场婚恋｜标签：婚恋纠葛、职场、复仇逆袭、久别重逢",
+    );
     await qimaoWorkPanel.locator(".fill").click();
     assert.equal(await qimaoWorkPage.locator("#work-title").inputValue(), "测试七猫作品");
     assert.match(await qimaoWorkPage.locator("#work-summary").inputValue(), /^这是用于七猫作品简介/);
@@ -60,6 +78,7 @@ async function openFixture(browser, filename) {
     const qimaoChapterPage = await openFixture(browser, "qimao-chapter-editor.html");
     const qimaoChapterPanel = qimaoChapterPage.locator("#reader-fanqie-importer");
     assert.equal(await qimaoChapterPanel.locator(".mode").textContent(), "七猫 · 章节");
+    assert.equal(await qimaoChapterPanel.locator(".type-suggestion").isVisible(), false);
     await qimaoChapterPanel.locator(".fill").click();
     assert.equal(await qimaoChapterPage.locator("#chapter-title").inputValue(), "第1章 测试");
     assert.equal(await qimaoChapterPage.locator(".chapter-body p").count(), 2);

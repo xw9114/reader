@@ -391,6 +391,74 @@
     return truncateText(normalized, limit).text;
   }
 
+  function hasAny(value, expressions) {
+    return expressions.some((expression) => expression.test(value));
+  }
+
+  function signalScore(title, body, expression) {
+    return (expression.test(title) ? 3 : 0) + (expression.test(body) ? 1 : 0);
+  }
+
+  function suggestWorkType(story) {
+    const title = String(story?.title || "");
+    const body = fullStoryBody(story).slice(0, 12000);
+    const source = `${title}\n${body}`;
+    const femaleSignals = /前夫|渣男|丈夫|老公|婆婆|闺蜜|怀孕|王妃|嫡女|千金|夫人|追妻/;
+    const maleSignals = /前妻|老婆|赘婿|战神|奶爸|校花|女总裁|岳父|岳母|兄弟|她才知道我是/;
+    const femaleScore = signalScore(title, body, femaleSignals);
+    const maleScore = signalScore(title, body, maleSignals);
+    const audience = femaleScore > maleScore ? "女频" : maleScore > femaleScore ? "男频" : "方向待定";
+
+    let primary = "都市";
+    let secondary = "都市生活";
+    if (hasAny(source, [/修仙|仙尊|灵根|宗门|渡劫|飞升|灵气/, /玄幻|武魂|斗气|魔法|异世界/])) {
+      primary = "玄幻奇幻";
+      secondary = hasAny(source, [/修仙|仙尊|宗门|渡劫|飞升/]) ? "东方玄幻" : "异世大陆";
+    } else if (hasAny(source, [/皇帝|王爷|王妃|侯府|嫡女|庶女|后宫|朝堂|古代/])) {
+      primary = "古代言情";
+      secondary = hasAny(source, [/后宫|嫡女|庶女|侯府|宅斗/]) ? "宫斗宅斗" : "古代情缘";
+    } else if (hasAny(source, [/末世|丧尸|星际|机甲|宇宙|外星|赛博/])) {
+      primary = "科幻";
+      secondary = hasAny(source, [/末世|丧尸/]) ? "末世危机" : "未来世界";
+    } else if (hasAny(source, [/凶手|命案|尸体|破案|刑警|侦探|悬疑|谜案/])) {
+      primary = "悬疑";
+      secondary = "推理探案";
+    } else if (audience === "女频" || hasAny(source, [/爱情|恋爱|婚姻|离婚|前夫|丈夫|老公|男友|女友/])) {
+      primary = "现代言情";
+      secondary = hasAny(source, [/公司|集团|总裁|董事长|上司|下属|职场|项目|助理/])
+        ? "职场婚恋"
+        : hasAny(source, [/豪门|总裁|千金|继承人/])
+          ? "豪门总裁"
+          : "都市情感";
+    }
+
+    const tagRules = [
+      ["婚恋纠葛", /离婚|前夫|前妻|婚姻|复婚|假离婚/],
+      ["职场", /公司|集团|上司|下属|职场|项目|助理|总监/],
+      ["复仇逆袭", /复仇|反杀|清算|逆袭|打脸|渣男|陷阱/],
+      ["豪门", /豪门|总裁|董事长|千金|继承人/],
+      ["久别重逢", /久别重逢|多年后|三年后|五年后|再次见到|重逢/],
+      ["破镜重圆", /破镜重圆|复婚|重新开始|追回|追妻/],
+      ["重生", /重生|前世|上一世/],
+      ["穿越", /穿越|穿书|异世/],
+      ["系统", /系统|签到|任务奖励/],
+      ["悬疑", /凶手|命案|尸体|破案|刑警|侦探|谜案/],
+    ];
+    const tags = tagRules
+      .filter(([, expression]) => expression.test(source))
+      .map(([tag]) => tag)
+      .slice(0, 4);
+    if (!tags.length) tags.push(primary === "都市" ? "都市生活" : secondary);
+
+    return {
+      audience,
+      primary,
+      secondary,
+      tags,
+      text: `${audience}｜${primary} > ${secondary}｜标签：${tags.join("、")}`,
+    };
+  }
+
   function fillWorkInfo(story) {
     const fields = detectEditorFields();
     if (fields.platform !== "qimao" || fields.mode !== "work-info" || !fields.title || !fields.summary) {
@@ -465,6 +533,11 @@
       .mode-row + label { margin-top: 0; }
       select { width: 100%; min-height: 40px; margin-top: 5px; padding: 0 34px 0 10px; border: 1px solid #cad4d0; border-radius: 5px; background: #fff; color: #17201d; font: inherit; font-size: 13px; }
       .status { margin: 12px 0 0; padding: 9px 10px; border-left: 3px solid #e75b3f; background: #fff; color: #4c5b56; font-size: 12px; line-height: 1.5; }
+      .type-suggestion { display: none; margin-top: 10px; padding: 9px 10px; border: 1px solid #cad4d0; border-radius: 5px; background: #fff; }
+      .panel.work-info .type-suggestion { display: block; }
+      .type-suggestion span { display: block; color: #71807b; font-size: 11px; }
+      .type-suggestion strong { display: block; margin-top: 5px; color: #143f36; font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
+      .type-suggestion small { display: block; margin-top: 4px; color: #8a9692; font-size: 10px; line-height: 1.4; }
       .actions { margin-top: 12px; display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; gap: 7px; }
       .actions button, .refresh { min-height: 40px; border: 1px solid #143f36; border-radius: 5px; background: #143f36; color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
       .actions .step { padding: 0; background: #fff; color: #143f36; font-size: 18px; }
@@ -482,6 +555,7 @@
         <label>作品<select class="story"></select></label>
         <label class="chapter-row">章节<select class="chapter"></select></label>
         <div class="meta"><span class="position"></span><span class="characters"></span></div>
+        <div class="type-suggestion"><span>建议作品类型</span><strong class="suggestion"></strong><small>根据标题和正文粗略判断，请在七猫选择最接近的选项。</small></div>
         <p class="status">正在读取作品…</p>
         <div class="actions">
           <button class="step previous" type="button" aria-label="上一章">←</button>
@@ -523,6 +597,7 @@
     state.activeChapterIndex = Math.min(state.activeChapterIndex, state.activeStory.chapters.length - 1);
     ui.chapter.value = String(state.activeChapterIndex);
     renderChapterMeta();
+    renderWorkTypeSuggestion();
   }
 
   function renderChapterMeta() {
@@ -551,10 +626,16 @@
     ui.next.disabled = state.activeChapterIndex === state.activeStory.chapters.length - 1;
   }
 
+  function renderWorkTypeSuggestion() {
+    if (!ui?.suggestion || !state.activeStory) return;
+    ui.suggestion.textContent = suggestWorkType(state.activeStory).text;
+  }
+
   function setEditorMode(mode) {
     const platformName = state.fields.platform === "qimao" ? "七猫" : "番茄";
     const wholeStory = mode === "short-story" || mode === "work-info";
     ui.panel.classList.toggle("whole-story", wholeStory);
+    ui.panel.classList.toggle("work-info", mode === "work-info");
     ui.mode.textContent = mode === "work-info"
       ? `${platformName} · 作品信息`
       : mode === "short-story"
@@ -566,6 +647,7 @@
         ? "填入整篇短故事"
         : "填入当前章节";
     renderChapterMeta();
+    renderWorkTypeSuggestion();
   }
 
   function selectStory(storyId) {
@@ -654,6 +736,7 @@
       chapter: shadow.querySelector(".chapter"),
       position: shadow.querySelector(".position"),
       characters: shadow.querySelector(".characters"),
+      suggestion: shadow.querySelector(".suggestion"),
       status: shadow.querySelector(".status"),
       previous: shadow.querySelector(".previous"),
       next: shadow.querySelector(".next"),
@@ -737,6 +820,7 @@
     normalizeFanqieTitle,
     parseChapterTitle,
     storySynopsis,
+    suggestWorkType,
   };
   globalThis.__readerPublisherImporter = globalThis.__readerFanqieImporter;
   if (document.readyState === "loading") {
