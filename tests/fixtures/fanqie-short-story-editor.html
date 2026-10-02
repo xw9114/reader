@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>番茄短故事编辑器测试页</title>
+    <style>
+      body { margin: 40px; font-family: sans-serif; }
+      .short-story-card { width: 760px; min-height: 620px; padding: 48px; border: 1px solid #ddd; }
+      .short-story-title { width: 620px; min-height: 56px; font-size: 28px; }
+      .short-story-body { width: 680px; min-height: 420px; margin-top: 24px; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <header>未命名短故事</header>
+    <main class="short-story-card">
+      <div class="short-story-title" contenteditable="true" role="textbox" data-placeholder="请输入短故事名称"></div>
+      <div class="short-story-body" contenteditable="true" role="textbox" data-placeholder="请输入正文"></div>
+      <section class="publishing-fields">
+        <p>封面设置</p>
+        <p>是否使用AI</p>
+        <p>作品分类</p>
+        <p>试读比例</p>
+        <p>发布协议</p>
+      </section>
+    </main>
+    <script>
+      window.__READER_TEST_PATHNAME__ = "/main/writer/publish-short/456";
+      window.__READER_TEST_LIBRARY__ = {
+        latestStoryId: "story-1",
+        storyCount: 1,
+        stories: [{
+          id: "story-1",
+          title: "测试短故事",
+          date: "2026-10-02",
+          characters: 18,
+          fullText: "开篇钩子\n\n第一段。\n\n第1章 相遇\n\n第二段。",
+          chapters: [
+            { id: "chapter-1", title: "开篇钩子", body: "第一段。", characters: 4 },
+            { id: "chapter-2", title: "第1章 相遇", body: "第二段。", characters: 4 }
+          ]
+        }]
+      };
+    </script>
+    <script src="../../extension/content.js"></script>
+  </body>
+</html>

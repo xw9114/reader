@@ -5,8 +5,26 @@
     stories: [],
     activeStory: null,
     activeChapterIndex: 0,
-    fields: { chapterNumber: null, title: null, body: null },
+    fields: {
+      platform: "fanqie",
+      mode: "chapter",
+      chapterNumber: null,
+      title: null,
+      summary: null,
+      protagonists: [],
+      body: null,
+      combinedEditor: false,
+    },
   };
+
+  function currentPlatform() {
+    if (globalThis.__READER_TEST_PLATFORM__) return globalThis.__READER_TEST_PLATFORM__;
+    return location.hostname.endsWith("qimao.com") ? "qimao" : "fanqie";
+  }
+
+  function currentPathname() {
+    return globalThis.__READER_TEST_PATHNAME__ || location.pathname;
+  }
 
   function isVisible(element) {
     if (!(element instanceof HTMLElement)) return false;
@@ -29,12 +47,98 @@
     if (/章节标题|章节名|标题|chapter.?title/.test(text)) score += 12;
     if (/请输入.*标题|title/.test(text)) score += 5;
     if (/章节序号|章节号|章序|chapter.?number/.test(text)) score -= 18;
-    if (/搜索|search|简介|书名/.test(text)) score -= 14;
+    if (/搜索|search|简介|书名|短故事名称|故事名称/.test(text)) score -= 14;
     if (element instanceof HTMLInputElement) score += 3;
+    if (element.isContentEditable) score += 3;
     if (element instanceof HTMLInputElement && element.type === "number") score -= 18;
     if (rect.width <= 160) score -= 8;
     if (element.maxLength > 0 && element.maxLength <= 100) score += 3;
     return score;
+  }
+
+  function shortStoryTitleScore(element) {
+    const text = fieldText(element);
+    const rect = element.getBoundingClientRect();
+    let score = 0;
+    if (/短故事名称|故事名称|请输入短故事名称|short.?story.?title/.test(text)) score += 24;
+    if (/作品名称|请输入.*名称/.test(text)) score += 7;
+    if (/章节标题|章节名|章节序号|章序/.test(text)) score -= 20;
+    if (/搜索|search|简介|正文|内容/.test(text)) score -= 12;
+    if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement || element.isContentEditable) {
+      score += 4;
+    }
+    if (rect.height <= 120) score += 4;
+    if (rect.height >= 180) score -= 6;
+    if (rect.width >= 260) score += 2;
+    return score;
+  }
+
+  function shortStoryFallbackScore(element) {
+    const text = fieldText(element);
+    const rect = element.getBoundingClientRect();
+    let score = 0;
+    if (element.isContentEditable) score += 8;
+    if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) score += 4;
+    if (rect.width >= 400) score += 4;
+    if (rect.height <= 120) score += 6;
+    else if (rect.height >= 180) score += 2;
+    if (/搜索|评论|简介|章节序号|章序/.test(text)) score -= 14;
+    return score;
+  }
+
+  function workTitleScore(element) {
+    const text = fieldText(element);
+    const rect = element.getBoundingClientRect();
+    let score = 0;
+    if (/作品名称|书本名称|书名|请输入作品名称|book.?title/.test(text)) score += 22;
+    if (/最多\s*18\s*个字/.test(text)) score += 8;
+    if (/章节|简介|搜索|角色/.test(text)) score -= 16;
+    if (element instanceof HTMLInputElement) score += 5;
+    if (rect.height <= 80 && rect.width >= 260) score += 4;
+    return score;
+  }
+
+  function summaryScore(element) {
+    const text = fieldText(element);
+    const rect = element.getBoundingClientRect();
+    let score = 0;
+    if (/作品简介|内容简介|故事简介|请输入.*简介|最多\s*500\s*字|synopsis|summary/.test(text)) score += 22;
+    if (/章节|标题|搜索|角色/.test(text)) score -= 14;
+    if (element instanceof HTMLTextAreaElement || element.isContentEditable) score += 5;
+    if (rect.height >= 100 && rect.width >= 320) score += 4;
+    return score;
+  }
+
+  function protagonistScore(element) {
+    const text = fieldText(element);
+    const rect = element.getBoundingClientRect();
+    let score = 0;
+    if (/主角名|主角姓名|角色名|人物名/.test(text)) score += 24;
+    if (/作品名称|书名|简介|章节|搜索/.test(text)) score -= 18;
+    if (element instanceof HTMLInputElement) score += 5;
+    if (rect.height <= 80 && rect.width >= 160) score += 3;
+    return score;
+  }
+
+  function findProtagonistFields(excludedTitle = null) {
+    const inputSelector = "input:not([type]), input[type='text']";
+    const found = [...document.querySelectorAll(inputSelector)]
+      .filter((element) => element !== excludedTitle && isVisible(element) && protagonistScore(element) >= 20);
+    const labels = [...document.querySelectorAll("label, span, p, div, [class*='label']")]
+      .filter((element) => isVisible(element) && /^主角名(?:称)?$/.test(String(element.textContent || "").trim()))
+      .sort((left, right) => left.childElementCount - right.childElementCount);
+    for (const label of labels) {
+      let container = label;
+      for (let depth = 0; depth < 5 && container; depth += 1, container = container.parentElement) {
+        const inputs = [...container.querySelectorAll(inputSelector)]
+          .filter((element) => element !== excludedTitle && isVisible(element));
+        inputs.forEach((element) => {
+          if (!found.includes(element)) found.push(element);
+        });
+        if (inputs.length) break;
+      }
+    }
+    return found.slice(0, 3);
   }
 
   function chapterNumberScore(element) {
@@ -55,12 +159,22 @@
   function bodyScore(element) {
     const text = fieldText(element);
     const rect = element.getBoundingClientRect();
+    const ownText = ["placeholder", "aria-label", "name", "id", "class", "data-placeholder"]
+      .map((name) => element.getAttribute(name) || "")
+      .join(" ")
+      .toLowerCase();
+    const sideRegion = element.closest("aside, [class*='sidebar'], [class*='side-bar'], [class*='note'], [class*='memo']");
+    const sideText = `${sideRegion?.getAttribute("class") || ""} ${sideRegion?.textContent?.slice(0, 240) || ""}`.toLowerCase();
     let score = 0;
     if (/正文|章节内容|内容|请输入正文|content|editor/.test(text)) score += 10;
-    if (/简介|搜索|标题|书名/.test(text)) score -= 12;
+    if (/简介|搜索|标题|书名|短故事名称|故事名称/.test(text)) score -= 12;
+    if (/随记|笔记|资料|灵感|润色|起名|note|memo|sidebar|side-bar/.test(`${ownText} ${sideText}`)) score -= 32;
     if (element.isContentEditable) score += 6;
     if (rect.height >= 180) score += 5;
     if (rect.width >= 500) score += 3;
+    if (rect.width >= 700) score += 5;
+    if (rect.width < 420) score -= 10;
+    if (rect.left >= window.innerWidth * 0.72) score -= 18;
     return score;
   }
 
@@ -72,22 +186,121 @@
       .sort((left, right) => right.score - left.score)[0]?.element || null;
   }
 
+  function largestCentralEditor(selector, excluded = null) {
+    return [...document.querySelectorAll(selector)]
+      .filter((element) => element !== excluded && isVisible(element))
+      .map((element) => ({ element, rect: element.getBoundingClientRect() }))
+      .filter(({ rect }) => rect.width >= 600 && rect.height >= 160 && rect.left < window.innerWidth * 0.72)
+      .sort((left, right) => right.rect.width * right.rect.height - left.rect.width * left.rect.height)[0]?.element || null;
+  }
+
+  function qimaoChapterBody() {
+    const selectors = [
+      ".chapter-con .q-contenteditable.edit-mask[contenteditable]:not([contenteditable='false'])",
+      ".chapter-con .q-contenteditable[contenteditable]:not([contenteditable='false'])",
+      ".chapter-editor .q-contenteditable.edit-mask[contenteditable]:not([contenteditable='false'])",
+      ".chapter-editor .q-contenteditable[contenteditable]:not([contenteditable='false'])",
+    ];
+    for (const selector of selectors) {
+      const candidates = [...document.querySelectorAll(selector)]
+        .filter((element) => element instanceof HTMLElement && element.isConnected);
+      const visible = candidates.find(isVisible);
+      if (visible) return visible;
+      if (candidates.length === 1) return candidates[0];
+    }
+    return null;
+  }
+
   function detectEditorFields() {
+    const platform = currentPlatform();
+    const pathname = currentPathname();
+    const pageText = document.body?.innerText || "";
+    const pageLooksLikeQimaoWorkInfo = platform === "qimao"
+      && /作品信息/.test(pageText)
+      && /作品名称/.test(pageText)
+      && /作品简介/.test(pageText);
+    const pageLooksLikeFanqieWorkInfo = platform === "fanqie"
+      && /\/book-info(?:\/|$)/.test(pathname)
+      && /(?:修改)?作品信息/.test(pageText)
+      && /书本名称|作品名称/.test(pageText)
+      && /作品简介/.test(pageText);
+    const pageLooksLikeWorkInfo = pageLooksLikeQimaoWorkInfo || pageLooksLikeFanqieWorkInfo;
+    if (pageLooksLikeWorkInfo) {
+      const title = bestCandidate(
+        "input:not([type]), input[type='text'], textarea, [contenteditable='true'], [role='textbox']",
+        workTitleScore,
+      );
+      const summary = bestCandidate(
+        "textarea, [contenteditable='true'], [role='textbox']",
+        summaryScore,
+        title,
+      );
+      const protagonists = findProtagonistFields(title);
+      state.fields = {
+        platform,
+        mode: "work-info",
+        chapterNumber: null,
+        title,
+        summary,
+        protagonists,
+        body: null,
+        combinedEditor: false,
+      };
+      return state.fields;
+    }
+    const fanqieShortPath = platform === "fanqie" && /\/publish-short(?:\/|$)/.test(pathname);
+    const fanqieChapterPath = platform === "fanqie" && /\/publish(?:\/|$)/.test(pathname);
+    const pageLooksLikeShortStory = /未命名短故事|请输入短故事名称/.test(pageText);
+    const mode = fanqieShortPath
+      ? "short-story"
+      : fanqieChapterPath
+        ? "chapter"
+        : pageLooksLikeShortStory
+          ? "short-story"
+          : "chapter";
     const chapterNumber = bestCandidate(
       "input:not([type]), input[type='text'], input[type='number'], [contenteditable='true']",
       chapterNumberScore,
     );
-    const title = bestCandidate(
-      "input:not([type]), input[type='text'], textarea",
+    const shortStorySelector = "input:not([type]), input[type='text'], textarea, [contenteditable='true'], [role='textbox']";
+    const shortStoryTitle = mode === "short-story"
+      ? bestCandidate(shortStorySelector, shortStoryTitleScore, chapterNumber)
+        || bestCandidate(shortStorySelector, shortStoryFallbackScore, chapterNumber)
+      : null;
+    const chapterTitle = bestCandidate(
+      "input:not([type]), input[type='text'], textarea, [contenteditable='true'], [role='textbox']",
       titleScore,
       chapterNumber,
     );
-    const body = bestCandidate(
-      "[contenteditable='true'], textarea, [role='textbox']",
-      bodyScore,
-      title,
+    const title = mode === "short-story" ? shortStoryTitle || chapterTitle : chapterTitle;
+    const bodySelector = "[contenteditable]:not([contenteditable='false']), textarea, [role='textbox']";
+    let body = platform === "qimao" ? qimaoChapterBody() : null;
+    if (!body) {
+      body = bestCandidate(
+        bodySelector,
+        bodyScore,
+        title,
+      );
+    }
+    if (!body && platform === "qimao") body = largestCentralEditor(bodySelector, title);
+    const combinedEditor = Boolean(
+      mode === "short-story"
+      && title
+      && !body
+      && title.isContentEditable
+      && title.getBoundingClientRect().height >= 160,
     );
-    state.fields = { chapterNumber, title, body };
+    if (combinedEditor) body = title;
+    state.fields = {
+      platform,
+      mode,
+      chapterNumber: mode === "chapter" ? chapterNumber : null,
+      title,
+      summary: null,
+      protagonists: [],
+      body,
+      combinedEditor,
+    };
     return state.fields;
   }
 
@@ -165,32 +378,67 @@
       .replaceAll("'", "&#39;");
   }
 
-  function bodyToHtml(value) {
+  function bodyParagraphs(value) {
     const normalized = String(value || "")
       .replace(/\r\n?/g, "\n")
       .trim();
-    const paragraphs = normalized
+    return normalized
       ? normalized.split(/\n[\t \u3000]*\n+/).map((paragraph) => paragraph.trim()).filter(Boolean)
       : [""];
-    return paragraphs
-      .map((paragraph) => `<p>${escapeHtml(paragraph).replaceAll("\n", "<br>") || "<br>"}</p>`)
+  }
+
+  function isBodyHeading(value) {
+    const text = String(value || "").replace(/\s+/g, " ").trim();
+    return /^(?:第\s*[0-9０-９一二三四五六七八九十百千万零〇两]+\s*[章回节篇](?:\s+.+)?|chapter\s*[0-9０-９]+(?:\s+.+)?|开篇(?:钩子)?|楔子|序章|前言|尾声|后记|番外(?:\s+.+)?)$/i.test(text);
+  }
+
+  function normalizeBodyTypography(value) {
+    const punctuation = { ",": "，", "!": "！", "?": "？", ";": "；", ":": "：" };
+    return String(value || "")
+      .replace(/"([^"\n]+)"/g, "“$1”")
+      .replace(/([\u3400-\u9fff])([,!?;:])/g, (match, character, mark) => `${character}${punctuation[mark]}`)
+      .replace(/([\u3400-\u9fff])\.(?=\s|$|["“”])/g, "$1。")
+      .replace(/[\t ]+([，。！？；：”])/g, "$1");
+  }
+
+  function formatBodyParagraph(value) {
+    const paragraph = normalizeBodyTypography(value).replace(/^[\t \u3000]+/, "");
+    return isBodyHeading(paragraph) ? paragraph : `　　${paragraph}`;
+  }
+
+  function formatBodyText(value) {
+    return bodyParagraphs(value)
+      .map(formatBodyParagraph)
+      .join("\n\n");
+  }
+
+  function bodyToHtml(value) {
+    return bodyParagraphs(value)
+      .map((paragraph) => {
+        const formatted = formatBodyParagraph(paragraph);
+        const tag = isBodyHeading(paragraph) ? "h2" : "p";
+        return `<${tag}>${escapeHtml(formatted).replaceAll("\n", "<br>") || "<br>"}</${tag}>`;
+      })
       .join("");
   }
 
-  function setEditableValue(element, value) {
+  function setEditableHtml(element, html) {
     element.focus();
     const selection = window.getSelection();
     const range = document.createRange();
     range.selectNodeContents(element);
     selection.removeAllRanges();
     selection.addRange(range);
-    const html = bodyToHtml(value);
     const inserted = document.execCommand("insertHTML", false, html);
-    if (!inserted || !element.querySelector("p, div")) {
+    if (!inserted || !element.querySelector("p, div, h1, h2")) {
       element.innerHTML = html;
     }
     element.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertFromPaste", data: null }));
     element.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  function setEditableValue(element, value) {
+    setEditableHtml(element, bodyToHtml(value));
   }
 
   function fillElement(element, value) {
@@ -199,6 +447,22 @@
       return;
     }
     setEditableValue(element, value);
+  }
+
+  function fillBodyElement(element, value) {
+    if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+      setInputValue(element, formatBodyText(value));
+      return;
+    }
+    setEditableHtml(element, bodyToHtml(value));
+  }
+
+  function fillTitleElement(element, value) {
+    if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+      setInputValue(element, value);
+      return;
+    }
+    setEditableHtml(element, escapeHtml(value));
   }
 
   function fillEditor(title, body, fallbackChapterNumber = null) {
@@ -215,14 +479,194 @@
     const parsed = parseChapterTitle(title);
     const chapterNumber = parsed.chapterNumber || normalizeChapterNumber(String(fallbackChapterNumber || ""));
     if (fields.chapterNumber && chapterNumber) fillElement(fields.chapterNumber, chapterNumber);
-    fillElement(fields.title, parsed.title);
-    fillElement(fields.body, body);
+    const editorTitle = fields.platform === "qimao" && !fields.chapterNumber
+      ? String(title || "").trim()
+      : parsed.title;
+    fillElement(fields.title, editorTitle);
+    fillBodyElement(fields.body, body);
     return {
       ok: true,
       chapterNumberFound: Boolean(fields.chapterNumber),
       chapterNumberFilled: Boolean(fields.chapterNumber && chapterNumber),
       titleFound: true,
       bodyFound: true,
+    };
+  }
+
+  function truncateText(value, limit) {
+    const characters = Array.from(String(value || "").trim());
+    return {
+      text: characters.slice(0, limit).join(""),
+      truncated: characters.length > limit,
+    };
+  }
+
+  function storySynopsis(story, limit = 500) {
+    const firstBody = story?.chapters?.find((chapter) => chapter.body?.trim())?.body;
+    const source = firstBody || fullStoryBody(story);
+    const normalized = String(source || "")
+      .replace(/\r\n?/g, "\n")
+      .split(/\n+/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .join(" ");
+    return truncateText(normalized, limit).text;
+  }
+
+  function hasAny(value, expressions) {
+    return expressions.some((expression) => expression.test(value));
+  }
+
+  function signalScore(title, body, expression) {
+    return (expression.test(title) ? 3 : 0) + (expression.test(body) ? 1 : 0);
+  }
+
+  function suggestWorkType(story) {
+    const title = String(story?.title || "");
+    const body = fullStoryBody(story).slice(0, 12000);
+    const source = `${title}\n${body}`;
+    const femaleSignals = /前夫|渣男|丈夫|老公|婆婆|闺蜜|怀孕|王妃|嫡女|千金|夫人|追妻/;
+    const maleSignals = /前妻|老婆|赘婿|战神|奶爸|校花|女总裁|岳父|岳母|兄弟|她才知道我是/;
+    const femaleScore = signalScore(title, body, femaleSignals);
+    const maleScore = signalScore(title, body, maleSignals);
+    const audience = femaleScore > maleScore ? "女频" : maleScore > femaleScore ? "男频" : "方向待定";
+
+    let primary = "都市";
+    let secondary = "都市生活";
+    if (hasAny(source, [/修仙|仙尊|灵根|宗门|渡劫|飞升|灵气/, /玄幻|武魂|斗气|魔法|异世界/])) {
+      primary = "玄幻奇幻";
+      secondary = hasAny(source, [/修仙|仙尊|宗门|渡劫|飞升/]) ? "东方玄幻" : "异世大陆";
+    } else if (hasAny(source, [/皇帝|王爷|王妃|侯府|嫡女|庶女|后宫|朝堂|古代/])) {
+      primary = "古代言情";
+      secondary = hasAny(source, [/后宫|嫡女|庶女|侯府|宅斗/]) ? "宫斗宅斗" : "古代情缘";
+    } else if (hasAny(source, [/末世|丧尸|星际|机甲|宇宙|外星|赛博/])) {
+      primary = "科幻";
+      secondary = hasAny(source, [/末世|丧尸/]) ? "末世危机" : "未来世界";
+    } else if (hasAny(source, [/凶手|命案|尸体|破案|刑警|侦探|悬疑|谜案/])) {
+      primary = "悬疑";
+      secondary = "推理探案";
+    } else if (audience === "女频" || hasAny(source, [/爱情|恋爱|婚姻|离婚|前夫|丈夫|老公|男友|女友/])) {
+      primary = "现代言情";
+      secondary = hasAny(source, [/公司|集团|总裁|董事长|上司|下属|职场|项目|助理/])
+        ? "职场婚恋"
+        : hasAny(source, [/豪门|总裁|千金|继承人/])
+          ? "豪门总裁"
+          : "都市情感";
+    }
+
+    const tagRules = [
+      ["婚恋纠葛", /离婚|前夫|前妻|婚姻|复婚|假离婚/],
+      ["职场", /公司|集团|上司|下属|职场|项目|助理|总监/],
+      ["复仇逆袭", /复仇|反杀|清算|逆袭|打脸|渣男|陷阱/],
+      ["豪门", /豪门|总裁|董事长|千金|继承人/],
+      ["久别重逢", /久别重逢|多年后|三年后|五年后|再次见到|重逢/],
+      ["破镜重圆", /破镜重圆|复婚|重新开始|追回|追妻/],
+      ["重生", /重生|前世|上一世/],
+      ["穿越", /穿越|穿书|异世/],
+      ["系统", /系统|签到|任务奖励/],
+      ["悬疑", /凶手|命案|尸体|破案|刑警|侦探|谜案/],
+    ];
+    const tags = tagRules
+      .filter(([, expression]) => expression.test(source))
+      .map(([tag]) => tag)
+      .slice(0, 4);
+    if (!tags.length) tags.push(primary === "都市" ? "都市生活" : secondary);
+
+    return {
+      audience,
+      primary,
+      secondary,
+      tags,
+      text: `${audience}｜${primary} > ${secondary}｜标签：${tags.join("、")}`,
+    };
+  }
+
+  function suggestProtagonists(story, limit = 2) {
+    const source = fullStoryBody(story).slice(0, 20000);
+    const surnames = "赵钱孙李周吴郑王冯陈蒋沈韩杨朱秦许何吕张曹金魏姜谢邹苏潘范彭鲁韦马方任袁柳史唐薛雷贺倪汤罗郝安常傅齐康伍余顾孟黄穆萧尹姚邵汪毛米贝戴宋庞熊纪舒屈项董梁杜阮蓝季贾路江童郭梅林钟徐邱高夏蔡田樊胡霍万卢莫房裘陆荣翁甄曲封储段巫乌焦侯全白蒲向古易廖阎连艾容石崔龚程邢裴牛温庄柴翟谭蒙乔曾关游权司黎欧阳上官司马诸葛";
+    const actionWords = ["没想到", "说道", "说", "问道", "问", "笑道", "笑", "看着", "看", "盯着", "盯", "站在", "站", "坐在", "坐", "走进", "走", "转身", "转", "抬头", "抬", "伸手", "伸", "拿起", "拿", "放下", "放", "点头", "摇头", "沉默", "开口", "皱眉", "脸色", "声音", "眼神", "手机", "没有", "终于", "忽然", "冷冷", "淡淡", "把", "将", "先", "还", "也", "却", "正在", "正", "刚", "在", "继续", "感到", "知道", "听见", "收到", "回"];
+    const expression = new RegExp(`((?:欧阳|上官|司马|诸葛)[\\u4e00-\\u9fa5]{1,2}|[${surnames}][\\u4e00-\\u9fa5]{1,2})(?=${actionWords.join("|")})`, "g");
+    const invalidNames = new Set(["自己", "有人", "没人", "所有人", "年轻人", "工作人员", "负责人", "当事人"]);
+    const invalidSuffix = /先生|女士|小姐|经理|总监|主任|科长|队长|老师|医生|律师|老板|阿姨|叔叔|爸爸|妈妈|父亲|母亲|爷爷|奶奶|总$/;
+    const candidates = new Map();
+    for (const match of source.matchAll(expression)) {
+      let name = match[1];
+      const possibleAction = `${name.at(-1)}${source.slice(match.index + name.length, match.index + name.length + 4)}`;
+      if (name.length > 2 && actionWords.some((word) => possibleAction.startsWith(word))) {
+        name = name.slice(0, -1);
+      }
+      if (invalidNames.has(name) || invalidSuffix.test(name)) continue;
+      const current = candidates.get(name) || { count: 0, index: match.index };
+      current.count += 1;
+      candidates.set(name, current);
+    }
+    return [...candidates.entries()]
+      .sort((left, right) => right[1].count - left[1].count || left[1].index - right[1].index)
+      .slice(0, limit)
+      .map(([name]) => name);
+  }
+
+  function fillWorkInfo(story) {
+    const fields = detectEditorFields();
+    if (fields.mode !== "work-info" || !fields.title || !fields.summary) {
+      return {
+        ok: false,
+        titleFound: Boolean(fields.title),
+        summaryFound: Boolean(fields.summary),
+      };
+    }
+    const titleLimit = fields.title.maxLength > 0 ? fields.title.maxLength : 18;
+    const summaryLimit = fields.summary.maxLength > 0 ? fields.summary.maxLength : 500;
+    const title = truncateText(story?.title, titleLimit);
+    const protagonists = suggestProtagonists(story);
+    fillElement(fields.title, title.text);
+    fillElement(fields.summary, storySynopsis(story, summaryLimit));
+    fields.protagonists.slice(0, protagonists.length).forEach((element, index) => {
+      fillElement(element, protagonists[index]);
+    });
+    return {
+      ok: true,
+      titleFound: true,
+      summaryFound: true,
+      titleTruncated: title.truncated,
+      protagonists,
+      protagonistFieldsFound: fields.protagonists.length,
+      titleLimit,
+    };
+  }
+
+  function fullStoryBody(story) {
+    if (typeof story?.fullText === "string" && story.fullText.trim()) return story.fullText.trim();
+    return (story?.chapters || [])
+      .map((chapter) => `${chapter.title}\n\n${chapter.body}`.trim())
+      .filter(Boolean)
+      .join("\n\n");
+  }
+
+  function fillShortStory(story) {
+    const fields = detectEditorFields();
+    if (fields.mode !== "short-story" || !fields.title || !fields.body) {
+      return {
+        ok: false,
+        mode: fields.mode,
+        titleFound: Boolean(fields.title),
+        bodyFound: Boolean(fields.body),
+      };
+    }
+    const title = String(story?.title || "").trim();
+    const body = fullStoryBody(story);
+    if (fields.combinedEditor) {
+      setEditableHtml(fields.body, `<h1>${escapeHtml(title)}</h1>${bodyToHtml(body)}`);
+    } else {
+      fillTitleElement(fields.title, title);
+      fillBodyElement(fields.body, body);
+    }
+    return {
+      ok: true,
+      mode: "short-story",
+      titleFound: true,
+      bodyFound: true,
+      combinedEditor: fields.combinedEditor,
     };
   }
 
@@ -238,22 +682,40 @@
       .panel.collapsed .body { display: none; }
       label { display: block; margin-top: 10px; color: #60706b; font-size: 11px; font-weight: 600; }
       label:first-child { margin-top: 0; }
+      .mode-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; color: #60706b; font-size: 11px; }
+      .mode-row strong { color: #143f36; font-size: 12px; }
+      .mode-row + label { margin-top: 0; }
       select { width: 100%; min-height: 40px; margin-top: 5px; padding: 0 34px 0 10px; border: 1px solid #cad4d0; border-radius: 5px; background: #fff; color: #17201d; font: inherit; font-size: 13px; }
       .status { margin: 12px 0 0; padding: 9px 10px; border-left: 3px solid #e75b3f; background: #fff; color: #4c5b56; font-size: 12px; line-height: 1.5; }
+      .type-suggestion { display: none; margin-top: 10px; padding: 9px 10px; border: 1px solid #cad4d0; border-radius: 5px; background: #fff; }
+      .panel.work-info .type-suggestion, .panel.short-story .type-suggestion { display: block; }
+      .type-suggestion span { display: block; color: #71807b; font-size: 11px; }
+      .type-suggestion strong { display: block; margin-top: 5px; color: #143f36; font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
+      .type-suggestion small { display: block; margin-top: 4px; color: #8a9692; font-size: 10px; line-height: 1.4; }
+      .protagonist-suggestion { display: none; margin-top: 8px; padding: 9px 10px; border: 1px solid #cad4d0; border-radius: 5px; background: #fff; }
+      .panel.work-info .protagonist-suggestion { display: block; }
+      .protagonist-suggestion span { display: block; color: #71807b; font-size: 11px; }
+      .protagonist-suggestion strong { display: block; margin-top: 5px; color: #143f36; font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
+      .protagonist-suggestion small { display: block; margin-top: 4px; color: #8a9692; font-size: 10px; line-height: 1.4; }
       .actions { margin-top: 12px; display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; gap: 7px; }
       .actions button, .refresh { min-height: 40px; border: 1px solid #143f36; border-radius: 5px; background: #143f36; color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
       .actions .step { padding: 0; background: #fff; color: #143f36; font-size: 18px; }
+      .panel.whole-story .chapter-row, .panel.whole-story .step { display: none; }
+      .panel.whole-story .actions { grid-template-columns: minmax(0, 1fr); }
       .refresh { width: 100%; margin-top: 8px; border-color: #cad4d0; background: #fff; color: #143f36; font-size: 12px; }
       button:disabled { opacity: .45; cursor: not-allowed; }
       .meta { margin-top: 8px; display: flex; justify-content: space-between; color: #71807b; font-size: 11px; }
       @media (max-width: 700px) { .panel { width: min(340px, calc(100vw - 24px)); } }
     </style>
     <section class="panel">
-      <header class="header"><strong>番茄导入助手</strong><button class="collapse" type="button" aria-label="收起面板">−</button></header>
+      <header class="header"><strong>Reader 导入助手</strong><button class="collapse" type="button" aria-label="收起面板">−</button></header>
       <div class="body">
+        <div class="mode-row"><span>导入模式</span><strong class="mode">正在检测…</strong></div>
         <label>作品<select class="story"></select></label>
-        <label>章节<select class="chapter"></select></label>
+        <label class="chapter-row">章节<select class="chapter"></select></label>
         <div class="meta"><span class="position"></span><span class="characters"></span></div>
+        <div class="type-suggestion"><span>建议作品类型</span><strong class="suggestion"></strong><small>根据标题和正文粗略判断，请在七猫选择最接近的选项。</small></div>
+        <div class="protagonist-suggestion"><span>建议主角名</span><strong class="protagonists"></strong><small>根据正文中的姓名出现频率提取，请核对后使用。</small></div>
         <p class="status">正在读取作品…</p>
         <div class="actions">
           <button class="step previous" type="button" aria-label="上一章">←</button>
@@ -284,6 +746,65 @@
     ui.status.style.borderLeftColor = kind === "error" ? "#b42318" : kind === "success" ? "#1f7a57" : "#e75b3f";
   }
 
+  function detectionSignature(fields) {
+    return [
+      fields.mode,
+      Boolean(fields.chapterNumber),
+      Boolean(fields.title),
+      Boolean(fields.summary),
+      fields.protagonists?.length || 0,
+      Boolean(fields.body),
+      Boolean(fields.combinedEditor),
+    ].join(":");
+  }
+
+  function showDetectionStatus(fields) {
+    if (fields.mode === "work-info") {
+      const platformName = fields.platform === "qimao" ? "七猫" : "番茄";
+      updateStatus(
+        `已进入${platformName}作品信息模式。作品名称框${fields.title ? "已识别" : "未识别"}，简介框${fields.summary ? "已识别" : "未识别"}，主角名框识别到 ${fields.protagonists.length} 个。`,
+        fields.title && fields.summary ? "success" : "error",
+      );
+      return;
+    }
+    if (fields.mode === "short-story") {
+      updateStatus(
+        `已进入短故事模式。故事名称框${fields.title ? "已识别" : "未识别"}，正文框${fields.body ? "已识别" : "未识别"}。`,
+        fields.title && fields.body ? "success" : "error",
+      );
+      return;
+    }
+    const platformName = fields.platform === "qimao" ? "七猫" : "番茄";
+    updateStatus(
+      `已读取 ${state.stories.length} 篇作品。${platformName}章节标题框${fields.title ? "已识别" : "未识别"}，正文框${fields.body ? "已识别" : "未识别"}。`,
+      fields.title && fields.body ? "success" : "error",
+    );
+  }
+
+  let editorObserver = null;
+  let editorDetectionTimer = null;
+
+  function watchEditorChanges() {
+    if (editorObserver || !document.body) return;
+    editorObserver = new MutationObserver(() => {
+      clearTimeout(editorDetectionTimer);
+      editorDetectionTimer = setTimeout(() => {
+        if (!state.activeStory) return;
+        const previousSignature = detectionSignature(state.fields);
+        const fields = detectEditorFields();
+        if (detectionSignature(fields) === previousSignature) return;
+        setEditorMode(fields.mode);
+        showDetectionStatus(fields);
+      }, 250);
+    });
+    editorObserver.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class", "style", "hidden"],
+      childList: true,
+      subtree: true,
+    });
+  }
+
   function renderChapters() {
     ui.chapter.replaceChildren();
     state.activeStory.chapters.forEach((chapter, index) => {
@@ -295,15 +816,60 @@
     state.activeChapterIndex = Math.min(state.activeChapterIndex, state.activeStory.chapters.length - 1);
     ui.chapter.value = String(state.activeChapterIndex);
     renderChapterMeta();
+    renderWorkTypeSuggestion();
   }
 
   function renderChapterMeta() {
+    if (state.fields.mode === "work-info") {
+      const characters = Number(state.activeStory?.characters) || fullStoryBody(state.activeStory).replace(/\s/g, "").length;
+      ui.position.textContent = `新建作品 · ${state.activeStory?.chapters?.length || 0} 个章节`;
+      ui.characters.textContent = `${characters.toLocaleString("zh-CN")} 字`;
+      ui.previous.disabled = true;
+      ui.next.disabled = true;
+      return;
+    }
+    if (state.fields.mode === "short-story") {
+      const body = fullStoryBody(state.activeStory);
+      const characters = Number(state.activeStory?.characters) || body.replace(/\s/g, "").length;
+      ui.position.textContent = `整篇 · ${state.activeStory?.chapters?.length || 0} 个章节`;
+      ui.characters.textContent = `${characters.toLocaleString("zh-CN")} 字`;
+      ui.previous.disabled = true;
+      ui.next.disabled = true;
+      return;
+    }
     const chapter = currentChapter();
     if (!chapter) return;
     ui.position.textContent = `${state.activeChapterIndex + 1} / ${state.activeStory.chapters.length}`;
     ui.characters.textContent = `${chapter.characters.toLocaleString("zh-CN")} 字`;
     ui.previous.disabled = state.activeChapterIndex === 0;
     ui.next.disabled = state.activeChapterIndex === state.activeStory.chapters.length - 1;
+  }
+
+  function renderWorkTypeSuggestion() {
+    if (!ui?.suggestion || !state.activeStory) return;
+    ui.suggestion.textContent = suggestWorkType(state.activeStory).text;
+    const protagonists = suggestProtagonists(state.activeStory);
+    ui.protagonists.textContent = protagonists.length ? protagonists.join("、") : "未识别到明确人名，请手动填写";
+  }
+
+  function setEditorMode(mode) {
+    const platformName = state.fields.platform === "qimao" ? "七猫" : "番茄";
+    const wholeStory = mode === "short-story" || mode === "work-info";
+    ui.panel.classList.toggle("whole-story", wholeStory);
+    ui.panel.classList.toggle("work-info", mode === "work-info");
+    ui.panel.classList.toggle("short-story", mode === "short-story");
+    ui.mode.textContent = mode === "work-info"
+      ? `${platformName} · 作品信息`
+      : mode === "short-story"
+        ? `${platformName} · 短故事`
+        : `${platformName} · 章节`;
+    ui.fill.textContent = mode === "work-info"
+      ? "填入作品信息"
+      : mode === "short-story"
+        ? "填入整篇短故事"
+        : "填入当前章节";
+    renderChapterMeta();
+    renderWorkTypeSuggestion();
   }
 
   function selectStory(storyId) {
@@ -355,10 +921,8 @@
     ui.story.value = state.activeStory.id;
     renderChapters();
     const fields = detectEditorFields();
-    updateStatus(
-      `已读取 ${state.stories.length} 篇作品。章序号框${fields.chapterNumber ? "已识别" : "未识别"}，标题框${fields.title ? "已识别" : "未识别"}，正文框${fields.body ? "已识别" : "未识别"}。`,
-      fields.title && fields.body ? "success" : "error",
-    );
+    setEditorMode(fields.mode);
+    showDetectionStatus(fields);
   }
 
   function mountPanel() {
@@ -373,10 +937,13 @@
     ui = {
       panel: shadow.querySelector(".panel"),
       collapse: shadow.querySelector(".collapse"),
+      mode: shadow.querySelector(".mode"),
       story: shadow.querySelector(".story"),
       chapter: shadow.querySelector(".chapter"),
       position: shadow.querySelector(".position"),
       characters: shadow.querySelector(".characters"),
+      suggestion: shadow.querySelector(".suggestion"),
+      protagonists: shadow.querySelector(".protagonists"),
       status: shadow.querySelector(".status"),
       previous: shadow.querySelector(".previous"),
       next: shadow.querySelector(".next"),
@@ -390,16 +957,53 @@
     ui.next.addEventListener("click", () => selectChapter(state.activeChapterIndex + 1));
     ui.refresh.addEventListener("click", loadLibrary);
     ui.fill.addEventListener("click", () => {
+      const fields = detectEditorFields();
+      setEditorMode(fields.mode);
+      if (fields.mode === "work-info") {
+        const result = fillWorkInfo(state.activeStory);
+        if (result.ok) {
+          const protagonistMessage = result.protagonists.length
+            ? result.protagonistFieldsFound
+              ? `主角名“${result.protagonists.join("、")}”已填入，请核对。`
+              : `已提取主角名“${result.protagonists.join("、")}”，但未识别主角名输入框。`
+            : "未提取到明确主角名，请手动填写。";
+          updateStatus(
+            result.titleTruncated
+              ? `作品名称超过平台 ${result.titleLimit} 字限制，已截短；简介草稿已填入。${protagonistMessage}`
+              : `作品名称和简介草稿已填入。${protagonistMessage} 请补充分类、标签等信息并核对后，再手动保存。`,
+            result.titleTruncated ? "error" : "success",
+          );
+        } else {
+          const missing = [!result.titleFound && "作品名称框", !result.summaryFound && "简介框"].filter(Boolean).join("、");
+          const platformName = fields.platform === "qimao" ? "七猫" : "番茄";
+          updateStatus(`未识别${missing}。请打开${platformName}作品信息页后重新检测。`, "error");
+        }
+        return;
+      }
+      if (fields.mode === "short-story") {
+        const result = fillShortStory(state.activeStory);
+        if (result.ok) {
+          updateStatus("短故事名称和整篇正文已填入，请核对后在番茄后台保存或进入下一步。", "success");
+        } else {
+          const missing = [!result.titleFound && "故事名称框", !result.bodyFound && "正文框"].filter(Boolean).join("、");
+          updateStatus(`未识别${missing}。请打开短故事编辑页后重新检测。`, "error");
+        }
+        return;
+      }
       const chapter = currentChapter();
       if (!chapter) return;
       const result = fillEditor(chapter.title, chapter.body, state.activeChapterIndex + 1);
       if (result.ok) {
-        updateStatus(
-          result.chapterNumberFilled
-            ? "章序号、标题和正文已填入，请核对后在番茄后台保存或发布。"
-            : "标题和正文已填入，但未识别章序号框，请手动填写章序号。",
-          result.chapterNumberFilled ? "success" : "error",
-        );
+        if (fields.platform === "qimao") {
+          updateStatus("七猫章节标题和正文已填入，请核对后手动保存或发布。", "success");
+        } else {
+          updateStatus(
+            result.chapterNumberFilled
+              ? "章序号、标题和正文已填入，请核对后在番茄后台保存或发布。"
+              : "标题和正文已填入，但未识别章序号框，请手动填写章序号。",
+            result.chapterNumberFilled ? "success" : "error",
+          );
+        }
       } else {
         const missing = [!result.titleFound && "标题框", !result.bodyFound && "正文框"].filter(Boolean).join("、");
         updateStatus(`未识别${missing}。请先打开章节编辑页，再重新检测。`, "error");
@@ -416,16 +1020,24 @@
       ui.panel.classList.toggle("collapsed", Boolean(stored.collapsed));
       ui.collapse.textContent = stored.collapsed ? "+" : "−";
     });
-    loadLibrary();
+    loadLibrary().then(watchEditorChanges);
   }
 
   globalThis.__readerFanqieImporter = {
     bodyToHtml,
     detectEditorFields,
     fillEditor,
+    fillShortStory,
+    fillWorkInfo,
+    formatBodyText,
+    fullStoryBody,
     normalizeFanqieTitle,
     parseChapterTitle,
+    storySynopsis,
+    suggestProtagonists,
+    suggestWorkType,
   };
+  globalThis.__readerPublisherImporter = globalThis.__readerFanqieImporter;
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", mountPanel, { once: true });
   } else {

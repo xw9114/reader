@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>番茄短故事合并编辑器测试页</title>
+    <style>
+      body { margin: 40px; font-family: sans-serif; }
+      .short-story-editor { width: 720px; min-height: 560px; padding: 48px; border: 1px solid #ddd; }
+    </style>
+  </head>
+  <body>
+    <header>未命名短故事</header>
+    <div class="short-story-editor" contenteditable="true" role="textbox" data-placeholder="请输入短故事名称"></div>
+    <script>
+      window.__READER_TEST_PATHNAME__ = "/main/writer/publish-short/456";
+      window.__READER_TEST_LIBRARY__ = {
+        latestStoryId: "story-1",
+        storyCount: 1,
+        stories: [{
+          id: "story-1",
+          title: "合并编辑器故事",
+          fullText: "开篇\n\n第一段。\n\n第二段。",
+          chapters: [{ id: "chapter-1", title: "开篇", body: "第一段。\n\n第二段。", characters: 8 }]
+        }]
+      };
+    </script>
+    <script src="../../extension/content.js"></script>
+  </body>
+</html>

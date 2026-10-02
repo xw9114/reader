@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>七猫作品信息测试页</title>
+    <style>
+      body { margin: 40px; font-family: sans-serif; }
+      .work-form { width: 980px; }
+      .form-item { display: flex; gap: 20px; margin-bottom: 24px; }
+      label { width: 90px; }
+      input, textarea { width: 720px; padding: 12px; }
+      input { height: 48px; }
+      textarea { height: 180px; }
+    </style>
+  </head>
+  <body>
+    <main class="work-form">
+      <h1>作品信息</h1>
+      <div class="form-item">
+        <label for="work-title">作品名称</label>
+        <input id="work-title" type="text" maxlength="18" placeholder="请输入作品名称，最多18个字">
+      </div>
+      <p>目标读者</p>
+      <p>作品类型</p>
+      <div class="form-item">
+        <label>主角名</label>
+        <input class="protagonist-name" type="text">
+        <input class="protagonist-name" type="text">
+        <input class="protagonist-name" type="text">
+      </div>
+      <div class="form-item">
+        <label for="work-summary">作品简介</label>
+        <textarea id="work-summary" maxlength="500" placeholder="请简要介绍作品，最多500个字"></textarea>
+      </div>
+      <button id="confirm-create" type="button">确认创建</button>
+    </main>
+    <script>
+      window.__READER_TEST_PLATFORM__ = "qimao";
+      window.__QIMAO_CONFIRM_CLICKS__ = 0;
+      document.querySelector("#confirm-create").addEventListener("click", () => {
+        window.__QIMAO_CONFIRM_CLICKS__ += 1;
+      });
+      window.__READER_TEST_LIBRARY__ = {
+        latestStoryId: "story-1",
+        storyCount: 1,
+        stories: [{
+          id: "story-1",
+          title: "测试七猫作品",
+          date: "2026-10-02",
+          characters: 18,
+          chapters: [{
+            id: "chapter-1",
+            title: "第1章 测试",
+            body: "这是用于七猫作品简介的开篇内容。周晓雨没想到会再次遇见陈浩。\n\n陈浩站在门口，周晓雨看着他。正文第二段。",
+            characters: 18
+          }]
+        }]
+      };
+    </script>
+    <script src="../../extension/content.js"></script>
+  </body>
+</html>

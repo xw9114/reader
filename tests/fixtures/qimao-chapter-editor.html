@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>七猫章节编辑测试页</title>
+    <style>
+      body { margin: 40px; font-family: sans-serif; }
+      input { width: 680px; height: 48px; padding: 0 12px; }
+      .chapter-con { width: 680px; min-height: 380px; margin-top: 24px; padding: 20px; border: 1px solid #ccc; }
+      .q-highlight-box-content { position: relative; min-height: 380px; }
+      .q-contenteditable { min-height: 380px; }
+      .search-mask, .line-mask, .contrast-mask { display: none; }
+      .note-sidebar { position: fixed; right: 20px; top: 80px; width: 320px; }
+      .note-editor { width: 300px; min-height: 240px; padding: 12px; border: 1px solid #ccc; }
+    </style>
+  </head>
+  <body>
+    <div class="book-editor-layout">
+      <main>
+        <label for="chapter-title">章节名称</label>
+        <input id="chapter-title" type="text" maxlength="50" placeholder="请输入章节名称">
+        <div class="chapter-editor">
+          <div class="chapter-con q-highlight-box">
+            <div class="q-highlight-box-content">
+              <div class="q-contenteditable book font-size-16 edit-mask" contenteditable="true" data-placeholder="请输入章节正文"></div>
+              <div class="q-contenteditable book font-size-16 search-mask" id="js-search"></div>
+              <div class="q-contenteditable book font-size-16 line-mask" id="js-line"></div>
+              <div class="q-contenteditable book font-size-16 contrast-mask" id="js-contrast"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <aside class="note-sidebar">
+        <h2>我的随记</h2>
+        <input type="text" placeholder="请输入随记的名称或内容">
+        <div class="note-editor" contenteditable="true" data-placeholder="请输入随记内容"></div>
+      </aside>
+    </div>
+    <script>
+      window.__READER_TEST_PLATFORM__ = "qimao";
+      window.__READER_TEST_LIBRARY__ = {
+        latestStoryId: "story-1",
+        storyCount: 1,
+        stories: [{
+          id: "story-1",
+          title: "测试作品",
+          chapters: [{ id: "chapter-1", title: "第1章 测试", body: "第一段。\n\n第二段。", characters: 8 }]
+        }]
+      };
+    </script>
+    <script src="../../extension/content.js"></script>
+  </body>
+</html>

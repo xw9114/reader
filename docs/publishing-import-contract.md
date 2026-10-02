@@ -79,7 +79,7 @@ or:
 { "ok": false, "error": "HTTP 404" }
 ```
 
-The content script may fill detected chapter-number, title, and body fields. It extracts a leading chapter-number prefix such as `第1章`, writes `1` into Fanqie's separate chapter-number field, and writes only the remaining title into the title field. If a title has no number prefix, the selected chapter's one-based index is the fallback chapter number. Rich-text body content is inserted as paragraph nodes; blank-line paragraph boundaries must not be flattened into one text block. It must never click the final save or publish action.
+The content script detects Fanqie and Qimao from the current hostname, then detects the current editor. Fanqie supports chapter, short-story, and work-information modes. Qimao supports work-information and chapter modes. Fanqie's `/book-info/` route is work-information mode and fills the book title, a reviewable synopsis draft, and up to two labeled protagonist-name inputs. In Fanqie chapter mode, a leading chapter-number prefix such as `第1章` is split between the number and title fields. Fanqie's category and publishing fields belong to the same short-story page, so their presence must never change the editor mode. Short-story mode displays the local type suggestion while keeping title/body import available. In Qimao chapter mode without a separate number field, the full chapter title is preserved. Qimao chapter body detection first selects the live `.q-contenteditable.edit-mask` inside `.chapter-con`, avoiding the sibling search, line, contrast, audit, author-note, and sidebar editors. It then falls back to semantic scoring and finally the largest central editable area. Work-information mode fills the story title and a reviewable synopsis draft derived from the first non-empty chapter body. It displays a non-binding reader direction, category, and tag suggestion, plus up to two protagonist names inferred from repeated name-like text. When labeled protagonist inputs are found, those names are filled for user review. Imported fiction body text uses two ideographic spaces at the start of prose paragraphs, keeps one blank line between paragraphs, promotes recognized chapter markers to heading nodes, and normalizes common ASCII dialogue punctuation to Chinese typography. Target reader, category, tags, status, cover, and final creation remain with the user. It must never click the final save, next, create, modify, or publish action.
 
 ## 4. Validation & Error Matrix
 
@@ -91,9 +91,15 @@ The content script may fill detected chapter-number, title, and body fields. It 
 | Extension source | `extension/` exists | Bundle path is `null` when omitted |
 | Remote library | HTTP success and `stories` is an array | Panel shows a read error and does not fill |
 | Editor detection | Visible title and body fields both found | Panel lists missing fields and does not partially fill |
+| Fanqie editor mode | `/publish-short/` is short-story; `/publish/` is chapter | URL takes priority over DOM heuristics, preventing the two editors from being reversed |
+| Platform | `fanqienovel.com`, `writer.muyewx.com`, or `zuozhe.qimao.com` | Panel displays the detected platform and editor mode |
 | Fanqie chapter number | Leading `第 N 章`/`Chapter N` is parsed, or the selected chapter index is used | Number is written into the separate chapter-number field |
 | Fanqie title | The parsed chapter-number prefix is removed | Prevents duplicated chapter numbering |
-| Rich-text body | Blank lines become separate paragraph nodes; single line breaks become `<br>` | Prevents the whole chapter becoming one paragraph |
+| Fanqie short story | Story title, merged `fullText`, and an approximate type suggestion | Entire story is filled once; category selection and final submission remain manual |
+| Fanqie work information | `/book-info/`; book title length follows the detected field limit (normally 15), synopsis ≤ 500 characters, an approximate type suggestion, and up to two inferred protagonist names | Overlong title is truncated with a visible warning; only labeled protagonist inputs are filled; `立即修改` remains manual |
+| Qimao work information | Story title ≤ 18 characters, synopsis ≤ 500 characters, an approximate type suggestion, and up to two inferred protagonist names | Overlong title is truncated with a visible warning; protagonist names fill only labeled protagonist inputs and remain reviewable |
+| Qimao chapter | Full chapter title and the large central rich-text body | Full title is preserved when there is no separate number field; side-note editors are excluded |
+| Rich-text body | Blank lines become separate nodes; prose paragraphs receive a two-character indent; recognized chapter markers become `<h2>`; single line breaks become `<br>` | Prevents wall-of-text imports while preserving the story structure |
 
 ## 5. Good / Base / Bad Cases
 
@@ -110,12 +116,29 @@ The content script may fill detected chapter-number, title, and body fields. It 
   - Assert extension ZIP contains `manifest.json`.
   - Assert serial chapters remain grouped and ordered.
 - Browser fixture `tests/fixtures/fanqie-editor.html`
+  - Assert `/publish/` is detected as chapter mode.
   - Assert the panel mounts.
   - Assert title and rich-text body are detected.
   - Assert the chapter-number field receives `1`.
   - Assert `第1章 测试` is filled as `测试`.
   - Assert the rich-text editor contains two paragraph nodes.
   - Assert paragraph breaks survive filling.
+  - Assert prose indentation and Chinese dialogue punctuation normalization survive filling.
+- Browser fixture `tests/fixtures/fanqie-short-story-editor.html`
+  - Assert `/publish-short/` is detected as short-story mode.
+  - Assert short-story mode is detected without a chapter-number field.
+  - Assert chapter navigation is hidden and the action reads `填入整篇短故事`.
+  - Assert the story title and all merged chapter content are filled.
+  - Assert a combined rich-text editor receives one title heading followed by body paragraphs.
+- Browser fixture `tests/fixtures/fanqie-work-editor.html`
+  - Assert `/book-info/` is detected as Fanqie work-information mode rather than chapter mode.
+  - Assert the book title, synopsis, and labeled protagonist inputs are filled.
+  - Assert the extension never clicks `立即修改`.
+- Browser fixtures `tests/fixtures/qimao-work-editor.html` and `qimao-chapter-editor.html`
+  - Assert Qimao work-information mode displays type and protagonist suggestions, fills title, synopsis, and labeled protagonist inputs, and never clicks `确认创建`.
+  - Assert Qimao chapter mode preserves the full chapter title when no number field exists.
+  - Assert chapter content goes to `.chapter-con .q-contenteditable.edit-mask` while its sibling masks and the `随记` editor remain empty.
+  - Assert body paragraph structure survives filling.
 
 ## 7. Wrong vs Correct
 
