@@ -524,7 +524,7 @@
       .join("");
   }
 
-  function qimaoChapterBodyToHtml(title, body) {
+  function qimaoChapterBodyToHtml(title, body, includeTitle = true) {
     const chapterTitle = String(title || "").trim();
     const paragraphs = bodyParagraphs(body);
     const comparable = (value) => String(value || "")
@@ -533,7 +533,7 @@
       .trim();
     if (chapterTitle && comparable(paragraphs[0]) === comparable(chapterTitle)) paragraphs.shift();
     const bodyHtml = bodyToHtml(paragraphs.join("\n\n"));
-    return chapterTitle ? `<h3>${escapeHtml(chapterTitle)}</h3>${bodyHtml}` : bodyHtml;
+    return includeTitle && chapterTitle ? `<h3>${escapeHtml(chapterTitle)}</h3>${bodyHtml}` : bodyHtml;
   }
 
   function qimaoWholeStoryToHtml(story) {
@@ -581,16 +581,16 @@
     setEditableHtml(element, bodyToHtml(value));
   }
 
-  function fillQimaoChapterBody(element, title, body) {
+  function fillQimaoChapterBody(element, title, body, includeTitle = true) {
     if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
       const paragraphs = bodyParagraphs(body);
       const chapterTitle = String(title || "").trim();
       if (chapterTitle && paragraphs[0]?.replace(/^[\t \u3000]+/, "").trim() === chapterTitle) paragraphs.shift();
       const formattedBody = formatBodyText(paragraphs.join("\n\n"));
-      setInputValue(element, [chapterTitle, formattedBody].filter(Boolean).join("\n\n"));
+      setInputValue(element, [includeTitle && chapterTitle, formattedBody].filter(Boolean).join("\n\n"));
       return;
     }
-    setEditableHtml(element, qimaoChapterBodyToHtml(title, body));
+    setEditableHtml(element, qimaoChapterBodyToHtml(title, body, includeTitle));
   }
 
   function fillTitleElement(element, value) {
@@ -619,7 +619,7 @@
       ? String(title || "").trim()
       : parsed.title;
     fillElement(fields.title, editorTitle);
-    if (fields.platform === "qimao") fillQimaoChapterBody(fields.body, title, body);
+    if (fields.platform === "qimao") fillQimaoChapterBody(fields.body, title, body, false);
     else fillBodyElement(fields.body, body);
     return {
       ok: true,
@@ -1575,7 +1575,7 @@
       const result = fillEditor(chapter.title, chapter.body, state.activeChapterIndex + 1);
       if (result.ok) {
         if (fields.platform === "qimao") {
-          updateStatus("七猫章节标题已作为正文标题写入，正文也已填入，请核对后手动保存或发布。", "success");
+          updateStatus("七猫章节标题框和正文已分别填入，请核对后手动保存或发布。", "success");
         } else {
           updateStatus(
             result.chapterNumberFilled

@@ -206,13 +206,12 @@ async function openFixture(browser, filename) {
     assert.equal(await qimaoChapterPanel.locator(".tag-settings").isVisible(), false);
     await qimaoChapterPanel.locator(".fill").click();
     assert.equal(await qimaoChapterPage.locator("#chapter-title").inputValue(), "第1章 测试");
-    assert.equal(await qimaoChapterPage.locator(".chapter-con .edit-mask h3").count(), 1);
-    assert.equal(await qimaoChapterPage.locator(".chapter-con .edit-mask h3").textContent(), "第1章 测试");
+    assert.equal(await qimaoChapterPage.locator(".chapter-con .edit-mask h3").count(), 0);
     assert.equal(await qimaoChapterPage.locator(".chapter-con .edit-mask p").count(), 2);
     assert.equal(await qimaoChapterPage.locator(".chapter-con .edit-mask p").first().textContent(), "　　第一段。");
     assert.equal(await qimaoChapterPage.locator(".chapter-con .search-mask").textContent(), "");
     assert.equal(await qimaoChapterPage.locator(".note-editor").textContent(), "");
-    assert.match(await qimaoChapterPanel.locator(".status").textContent(), /七猫章节标题已作为正文标题写入/);
+    assert.match(await qimaoChapterPanel.locator(".status").textContent(), /章节标题框和正文已分别填入/);
     await qimaoChapterPage.close();
 
     const qimaoShortStoryPage = await openFixture(browser, "qimao-short-story-editor.html");
