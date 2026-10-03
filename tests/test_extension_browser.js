@@ -74,6 +74,7 @@ async function openFixture(browser, filename) {
     );
     assert.equal(await qimaoWorkPanel.locator(".protagonist-suggestion").isVisible(), true);
     assert.equal(await qimaoWorkPanel.locator(".protagonists").textContent(), "周晓雨、陈浩");
+    assert.match(await qimaoWorkPanel.locator(".status").textContent(), /主角名框识别到 3 个/);
     const suggestedType = await qimaoWorkPage.evaluate(() => (
       window.__readerPublisherImporter.suggestWorkType({
         title: "我的渣男前夫成了我的下属",
@@ -143,7 +144,7 @@ async function openFixture(browser, filename) {
     assert.match(await qimaoWorkPage.locator("#work-summary").inputValue(), /^这是用于七猫作品简介/);
     assert.ok((await qimaoWorkPage.locator("#work-summary").inputValue()).length <= 500);
     assert.deepEqual(
-      await qimaoWorkPage.locator(".protagonist-name").evaluateAll((elements) => elements.map((element) => element.value)),
+      await qimaoWorkPage.locator("[data-test-protagonist]").allTextContents(),
       ["周晓雨", "陈浩", ""],
     );
     assert.deepEqual(

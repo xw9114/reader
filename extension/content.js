@@ -150,23 +150,41 @@
     if (element === excludedTitle || !isVisible(element) || element.disabled || element.readOnly) return false;
     if (element.getAttribute("role") === "combobox" || element.getAttribute("aria-haspopup") === "listbox") return false;
     if (element.closest("select, [role='combobox'], [class*='select'], [class*='dropdown'], [class*='cascader']")) return false;
-    if (/作品类型|作品标签|阅读标签|内容标签|目标读者|一级分类|二级分类/.test(protagonistOwnText(element))) return false;
+    if (/作品类型|作品标签|阅读标签|内容标签|目标读者|一级分类|二级分类/.test(fieldText(element))) return false;
+    const rect = element.getBoundingClientRect();
+    if (rect.height > 100 || rect.width < 60) return false;
     return true;
   }
 
   function findProtagonistFields(excludedTitle = null) {
-    const inputSelector = "input:not([type]), input[type='text']";
-    const found = [...document.querySelectorAll(inputSelector)]
+    const inputSelector = "input:not([type]), input[type='text'], textarea, [contenteditable='true'], [role='textbox']";
+    const candidates = [...document.querySelectorAll(inputSelector)]
       .filter((element) => isSafeProtagonistField(element, excludedTitle))
+      .filter((element, index, values) => values.indexOf(element) === index);
+    const found = candidates
       .filter((element) => /主角名|主角姓名|角色名|人物名/.test(protagonistOwnText(element)));
     const labels = [...document.querySelectorAll("label, span, p, div, [class*='label']")]
-      .filter((element) => isVisible(element) && /^主角名(?:称)?$/.test(String(element.textContent || "").trim()))
+      .filter((element) => isVisible(element) && /^(?:主角名(?:称)?|添加角色)$/.test(String(element.textContent || "").trim()))
       .sort((left, right) => left.childElementCount - right.childElementCount);
     for (const label of labels) {
       const labelRect = label.getBoundingClientRect();
       const labelCenter = labelRect.top + labelRect.height / 2;
+      const labelText = String(label.textContent || "").trim();
+      candidates
+        .filter((element) => {
+          const rect = element.getBoundingClientRect();
+          const center = rect.top + rect.height / 2;
+          const onSameRow = Math.abs(center - labelCenter) <= Math.max(52, labelRect.height * 3);
+          const onExpectedSide = labelText === "添加角色"
+            ? rect.right <= labelRect.right + 16
+            : rect.left >= labelRect.left;
+          return onSameRow && onExpectedSide;
+        })
+        .forEach((element) => {
+          if (!found.includes(element)) found.push(element);
+        });
       let container = label;
-      for (let depth = 0; depth < 5 && container; depth += 1, container = container.parentElement) {
+      for (let depth = 0; depth < 8 && container; depth += 1, container = container.parentElement) {
         const inputs = [...container.querySelectorAll(inputSelector)]
           .filter((element) => isSafeProtagonistField(element, excludedTitle))
           .filter((element) => {
@@ -181,7 +199,15 @@
         if (inputs.length) break;
       }
     }
-    return found.slice(0, 3);
+    return found
+      .sort((left, right) => {
+        const leftRect = left.getBoundingClientRect();
+        const rightRect = right.getBoundingClientRect();
+        return Math.abs(leftRect.top - rightRect.top) < 12
+          ? leftRect.left - rightRect.left
+          : leftRect.top - rightRect.top;
+      })
+      .slice(0, 3);
   }
 
   function chapterNumberScore(element) {
@@ -544,7 +570,7 @@
       setInputValue(element, value);
       return;
     }
-    setEditableValue(element, value);
+    setEditableHtml(element, escapeHtml(value));
   }
 
   function fillBodyElement(element, value) {

@@ -8,9 +8,10 @@
       .work-form { width: 980px; }
       .form-item { display: flex; gap: 20px; margin-bottom: 24px; }
       label { width: 90px; }
-      input, textarea { width: 720px; padding: 12px; }
+      input, textarea, [role="textbox"] { width: 720px; padding: 12px; border: 1px solid #999; }
       input { height: 48px; }
       textarea { height: 180px; }
+      .role-field { width: 210px; min-height: 48px; }
     </style>
   </head>
   <body>
@@ -28,9 +29,10 @@
       </div>
       <div class="form-item">
         <label>主角名</label>
-        <input class="protagonist-name" type="text">
-        <input class="protagonist-name" type="text">
-        <input class="protagonist-name" type="text">
+        <div class="role-field" data-test-protagonist role="textbox" contenteditable="true"></div>
+        <div class="role-field" data-test-protagonist role="textbox" contenteditable="true"></div>
+        <div class="role-field" data-test-protagonist role="textbox" contenteditable="true"></div>
+        <span>添加角色</span>
       </div>
       <div class="form-item">
         <label for="work-summary">作品简介</label>
