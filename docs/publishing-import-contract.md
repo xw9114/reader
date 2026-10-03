@@ -35,6 +35,8 @@ The extension requests the library through this message:
 
 It requests a same-origin Reader cover through `{ "type": "FETCH_COVER", "coverUrl": "covers/serial-main.svg" }`. The background returns a checked `data:image/*` URL and refuses cross-origin cover proxying.
 
+The offline cover generator calls the authenticated OpenAI-compatible endpoint `POST https://api.xw9114.online/v1/images/generations`. It defaults to `gpt-image-2`, `1024x1536`, and PNG output. The Gateway Token is accepted only through `READER_IMAGE_API_KEY` and is never emitted into `dist/` or the extension bundle.
+
 ## 3. Contracts
 
 `dist/data.json` contains:
@@ -123,6 +125,7 @@ The content script detects Fanqie and Qimao from the current hostname, then dete
 | Story cover | Matching `covers/<story-id>.(png|jpg|jpeg|webp|svg)` | A deterministic 768×1024 SVG is generated for that story |
 | Cover fetch | Same origin as configured Reader `data.json`; image MIME; ≤ 12 MiB | Request is rejected and no file input is changed |
 | Cover upload | Image file input associated with cover controls | The image is assigned and events dispatched; platform save remains manual |
+| Cover generation API | Authenticated OpenAI-compatible `data[0].b64_json` or HTTPS `data[0].url`; PNG/JPEG/WebP; ≤ 12 MiB | Generation stops with an explicit error; no existing cover is overwritten |
 | Remote library | HTTP success and `stories` is an array | Panel shows a read error and does not fill |
 | Editor detection | Visible title and body fields both found | Panel lists missing fields and does not partially fill |
 | Fanqie editor mode | `/publish-short/` is short-story; `/publish/` is chapter | URL takes priority over DOM heuristics, preventing the two editors from being reversed |
@@ -152,6 +155,7 @@ The content script detects Fanqie and Qimao from the current hostname, then dete
   - Assert story ZIP contains per-chapter TXT files.
   - Assert extension ZIP contains `manifest.json`.
   - Assert every story has a cover artifact and custom matching covers override the generated default.
+  - Assert the cover generator uses the configured `/images/generations` endpoint and decodes an official `b64_json` response.
   - Assert serial chapters remain grouped and ordered.
   - Assert every built chapter has a short reader interaction ending in a question and comment invitation.
 - Browser fixture `tests/fixtures/fanqie-editor.html`

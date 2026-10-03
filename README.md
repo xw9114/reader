@@ -15,18 +15,18 @@
 
 构建器会为没有自定义图片的作品生成独立默认封面。要替换封面，可以把 `PNG/JPEG/WebP/SVG` 放进 `covers/`，文件名使用作品 `id`（例如 `serial-main.png`），然后重新构建。
 
-也可以使用 OpenAI 兼容的图片接口批量生成封面：
+也可以使用已经配置好的 Sub2API 图片接口批量生成封面。脚本默认调用
+`https://api.xw9114.online/v1/images/generations`，模型为 `gpt-image-2`，只需在本机临时设置当前 Gateway Token：
 
 ```powershell
 python tools/build_publish.py
-$env:READER_IMAGE_BASE_URL = "https://你的图片接口/v1"
-$env:READER_IMAGE_MODEL = "你的图片模型"
-$env:READER_IMAGE_API_KEY = "你的密钥"
+$env:READER_IMAGE_API_KEY = "当前 Gateway Token"
 python tools/generate_covers.py
 python tools/build_publish.py
+$env:READER_IMAGE_API_KEY = $null
 ```
 
-可通过 `--story-id serial-main` 只生成指定作品；已有图片默认跳过，需重做时加 `--force`。当前服务器已有的文本模型网关不保证开放图片端点，因此图片模型和密钥独立配置。
+可通过 `--story-id serial-main` 只生成指定作品；已有图片默认跳过，需重做时加 `--force`。如需切换其他 OpenAI 兼容服务，可覆盖 `READER_IMAGE_BASE_URL`、`READER_IMAGE_MODEL`、`READER_IMAGE_SIZE` 和 `READER_IMAGE_OUTPUT_FORMAT`。Gateway Token 不写入仓库、网页或扩展。
 
 ## 本地预览
 
