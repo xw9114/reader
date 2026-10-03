@@ -600,6 +600,7 @@
       : [];
     if (!audience && !readingTags.length && !contentTags.length) return null;
     return {
+      source: hint.source === "inkos" ? "inkos" : "metadata",
       audience: audience || "方向待定",
       readingTags,
       contentTags,
@@ -675,6 +676,7 @@
       const readingText = curated.readingTags.length ? curated.readingTags.join("、") : "待选择";
       const contentText = curated.contentTags.length ? curated.contentTags.join("、") : "待选择";
       return {
+        source: curated.source,
         audience: curated.audience,
         primary: curated.readingTags[0] || "待选择",
         secondary: curated.readingTags[1] || "",
@@ -797,6 +799,7 @@
     const readingTags = [secondary];
 
     return {
+      source: "inferred",
       audience,
       primary,
       secondary,
@@ -952,7 +955,7 @@
         <label>作品<select class="story"></select></label>
         <label class="chapter-row">章节<select class="chapter"></select></label>
         <div class="meta"><span class="position"></span><span class="characters"></span></div>
-        <div class="type-suggestion"><span>建议作品类型</span><strong class="suggestion"></strong><small>根据标题和正文粗略判断，请在平台选择最接近的选项。</small></div>
+        <div class="type-suggestion"><span>建议作品类型</span><strong class="suggestion"></strong><small class="type-source"></small></div>
         <div class="tag-settings">
           <span>番茄内容标签设定</span>
           <div class="settings-grid">
@@ -1105,6 +1108,11 @@
     const workType = suggestWorkType(state.activeStory);
     const settings = suggestTagDimensions(state.activeStory, workType);
     ui.suggestion.textContent = workType.text;
+    ui.typeSource.textContent = workType.source === "inkos"
+      ? "标签来源：InkOS book.json（大纲、角色卡与世界观）"
+      : workType.source === "metadata"
+        ? "标签来源：作品结构化元数据"
+        : "标签来源：旧作品正文推断；该作品没有 InkOS 发布分类。";
     ui.plotSettings.textContent = settings.plot.length ? settings.plot.join("、") : "不选";
     ui.emotionSettings.textContent = settings.emotion.length ? settings.emotion.join("、") : "不选";
     ui.personaSettings.textContent = settings.persona.length ? settings.persona.join("、") : "不选";
@@ -1204,6 +1212,7 @@
       position: shadow.querySelector(".position"),
       characters: shadow.querySelector(".characters"),
       suggestion: shadow.querySelector(".suggestion"),
+      typeSource: shadow.querySelector(".type-source"),
       plotSettings: shadow.querySelector(".plot-settings"),
       emotionSettings: shadow.querySelector(".emotion-settings"),
       personaSettings: shadow.querySelector(".persona-settings"),

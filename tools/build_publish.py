@@ -17,12 +17,64 @@ HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
 DATE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})")
 SERIAL_FILE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})-chapter-(\d{4})\.md$")
 INVALID_FILENAME_RE = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
+PUBLISHING_AUDIENCES = {"男频", "女频", "方向待定"}
+PUBLISHING_DIMENSION_LIMITS = {"plot": 4, "emotion": 2, "persona": 4, "worldview": 1}
 
 
 @dataclass
 class Section:
     title: str
     body: str
+
+
+def publishing_string_list(value: object, field: str, minimum: int, maximum: int) -> list[str]:
+    if not isinstance(value, list):
+        raise ValueError(f"{field} must be an array")
+    result: list[str] = []
+    for item in value:
+        if not isinstance(item, str) or not item.strip():
+            raise ValueError(f"{field} contains an empty or non-string value")
+        normalized = item.strip()
+        if normalized not in result:
+            result.append(normalized)
+    if not minimum <= len(result) <= maximum:
+        raise ValueError(f"{field} must contain {minimum}-{maximum} unique values")
+    return result
+
+
+def validate_publishing_hint(value: object) -> dict:
+    """Validate the InkOS-to-Reader publishing metadata contract."""
+    if not isinstance(value, dict):
+        raise ValueError("Serial book publishingHint must be an object")
+    if value.get("schemaVersion") != 1:
+        raise ValueError("Serial book publishingHint.schemaVersion must be 1")
+    if value.get("source") != "inkos":
+        raise ValueError("Serial book publishingHint.source must be inkos")
+    audience = value.get("audience")
+    if isinstance(audience, str):
+        audience = audience.strip()
+    if audience not in PUBLISHING_AUDIENCES:
+        raise ValueError("Serial book publishingHint.audience is invalid")
+    dimensions = value.get("tagDimensions")
+    if not isinstance(dimensions, dict):
+        raise ValueError("Serial book publishingHint.tagDimensions must be an object")
+    return {
+        "schemaVersion": 1,
+        "source": "inkos",
+        "audience": audience,
+        "readingTags": publishing_string_list(
+            value.get("readingTags"), "publishingHint.readingTags", 1, 2
+        ),
+        "contentTags": publishing_string_list(
+            value.get("contentTags"), "publishingHint.contentTags", 1, 4
+        ),
+        "tagDimensions": {
+            key: publishing_string_list(
+                dimensions.get(key), f"publishingHint.tagDimensions.{key}", 0, limit
+            )
+            for key, limit in PUBLISHING_DIMENSION_LIMITS.items()
+        },
+    }
 
 
 def inline_to_text(value: str) -> str:
@@ -209,9 +261,7 @@ def parse_serial_book(serial_dir: Path) -> tuple[dict, list[Path]] | None:
         "chapters": chapters,
         "fullText": full_text,
     }
-    publishing_hint = book.get("publishingHint")
-    if isinstance(publishing_hint, dict):
-        story["publishingHint"] = publishing_hint
+    story["publishingHint"] = validate_publishing_hint(book.get("publishingHint"))
     return story, [path for _, _, path in numbered]
 
 

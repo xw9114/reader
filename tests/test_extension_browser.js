@@ -58,6 +58,7 @@ async function openFixture(browser, filename) {
     assert.equal(await qimaoWorkPanel.locator(".fill").textContent(), "填入作品信息");
     assert.equal(await qimaoWorkPanel.locator(".chapter-row").isVisible(), false);
     assert.equal(await qimaoWorkPanel.locator(".type-suggestion").isVisible(), true);
+    assert.match(await qimaoWorkPanel.locator(".type-source").textContent(), /旧作品正文推断/);
     assert.equal(await qimaoWorkPanel.locator(".tag-settings").isVisible(), true);
     assert.equal(await qimaoWorkPanel.locator(".worldview-settings").textContent(), "不选（现代现实）");
     assert.equal(
@@ -97,17 +98,19 @@ async function openFixture(browser, filename) {
       window.__readerPublisherImporter.suggestWorkType({
         title: "旧城清算",
         publishingHint: {
+          source: "inkos",
           audience: "女频",
           readingTags: ["都市悬疑"],
           contentTags: ["调查取证", "现实题材", "职场博弈", "家庭关系"],
         },
         chapters: [],
-      }).text
+      })
     ));
     assert.equal(
-      curatedType,
+      curatedType.text,
       "女频｜阅读标签：都市悬疑｜内容标签：调查取证、现实题材、职场博弈、家庭关系",
     );
+    assert.equal(curatedType.source, "inkos");
     const curatedSettings = await qimaoWorkPage.evaluate(() => (
       window.__readerPublisherImporter.suggestTagDimensions({
         title: "旧城清算",

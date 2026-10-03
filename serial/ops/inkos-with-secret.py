@@ -3,19 +3,39 @@
 
 import json
 import os
+import re
 import sqlite3
 import stat
+import subprocess
 import sys
+from pathlib import Path
+
+from publishing_metadata import generate_and_write
 
 
 STATE_DB = "/root/.openclaw/state/openclaw.sqlite"
 SECRET_NAME = "XW9114_API_KEY"
 EXPECTED_HOST = "api.xw9114.online"
+BASE_URL = "https://api.xw9114.online/v1"
+
+
+def project_root(start: Path) -> Path:
+    for candidate in (start, *start.parents):
+        if (candidate / "inkos.json").is_file():
+            return candidate
+    raise RuntimeError("InkOS project root was not found")
+
+
+def book_directories(root: Path) -> set[Path]:
+    books = root / "books"
+    if not books.is_dir():
+        return set()
+    return {path for path in books.iterdir() if path.is_dir() and (path / "book.json").is_file()}
 
 
 def main() -> None:
     if len(sys.argv) < 2:
-        raise SystemExit("usage: inkos-with-secret.py <inkos arguments...>")
+        raise SystemExit("usage: inkos-with-secret.py <inkos arguments...> | publishing refresh <book-id>")
     if stat.S_IMODE(os.stat(STATE_DB).st_mode) & 0o077:
         raise SystemExit("OpenClaw state database permissions are too broad")
 
@@ -40,16 +60,51 @@ def main() -> None:
     environment["INKOS_LLM_API_KEY"] = row[0]
     environment["INKOS_SERIAL_MAX_TOKENS"] = "6144"
     model = os.environ.get("SERIAL_NOVEL_MODEL", "gpt-5.6-terra")
+    arguments = sys.argv[1:]
+    root = project_root(Path.cwd())
+
+    if arguments[:2] == ["publishing", "refresh"]:
+        if len(arguments) != 3 or not re.fullmatch(r"[^/\\.][^/\\]*", arguments[2]):
+            raise SystemExit("usage: inkos-with-secret.py publishing refresh <book-id>")
+        book_dir = root / "books" / arguments[2]
+        if not (book_dir / "book.json").is_file():
+            raise SystemExit(f"book not found: {arguments[2]}")
+        generate_and_write(book_dir, api_key=row[0], base_url=BASE_URL, model=model)
+        print(f"InkOS publishing metadata saved: {book_dir / 'book.json'}", flush=True)
+        return
+
+    command = [
+        "inkos",
+        "--api-key-env", SECRET_NAME,
+        "--base-url", BASE_URL,
+        "--model", model,
+        "--stream",
+        *arguments,
+    ]
+    if arguments[:2] == ["book", "create"]:
+        before = book_directories(root)
+        completed = subprocess.run(command, env=environment, check=False)
+        if completed.returncode:
+            raise SystemExit(completed.returncode)
+        created = sorted(book_directories(root) - before)
+        if len(created) != 1:
+            raise SystemExit(
+                "InkOS book was created, but its directory could not be identified for publishing metadata; "
+                "run: inkos-with-secret.py publishing refresh <book-id>"
+            )
+        try:
+            generate_and_write(created[0], api_key=row[0], base_url=BASE_URL, model=model)
+        except Exception as error:
+            raise SystemExit(
+                "InkOS book was created, but publishing metadata generation failed: "
+                f"{error}. Run: inkos-with-secret.py publishing refresh {created[0].name}"
+            ) from error
+        print(f"InkOS publishing metadata saved: {created[0] / 'book.json'}", flush=True)
+        return
+
     os.execvpe(
         "inkos",
-        [
-            "inkos",
-            "--api-key-env", SECRET_NAME,
-            "--base-url", "https://api.xw9114.online/v1",
-            "--model", model,
-            "--stream",
-            *sys.argv[1:],
-        ],
+        command,
         environment,
     )
 

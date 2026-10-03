@@ -8,6 +8,8 @@
   "chapterWordCount": 2500,
   "language": "zh",
   "publishingHint": {
+    "schemaVersion": 1,
+    "source": "inkos",
     "audience": "女频",
     "readingTags": ["都市悬疑"],
     "contentTags": ["调查取证", "现实题材", "职场博弈", "家庭关系"],
@@ -15,7 +17,7 @@
       "plot": ["推理", "调查取证", "职场博弈", "真相追踪"],
       "emotion": ["亲情", "情感克制"],
       "persona": ["女强", "职场精英", "理性清醒", "坚韧成长"],
-      "worldview": ["不选（现代现实）"]
+      "worldview": []
     }
   },
   "createdAt": "2026-09-20T05:05:40.031Z",

@@ -71,8 +71,10 @@ class BuildPublishTests(unittest.TestCase):
             book_dir = serial / "books" / "旧城清算"
             book_dir.mkdir(parents=True)
             (book_dir / "book.json").write_text(
-                '{"title":"旧城清算","publishingHint":{"audience":"女频",'
-                '"readingTags":["都市悬疑"],"contentTags":["调查取证"]}}',
+                '{"title":"旧城清算","publishingHint":{"schemaVersion":1,"source":"inkos",'
+                '"audience":"女频","readingTags":["都市悬疑"],'
+                '"contentTags":["调查取证"],"tagDimensions":{"plot":["推理"],'
+                '"emotion":[],"persona":["理性清醒"],"worldview":[]}}}',
                 encoding="utf-8",
             )
             (published / "2026-09-20-chapter-0001.md").write_text(
@@ -90,8 +92,31 @@ class BuildPublishTests(unittest.TestCase):
         self.assertEqual(stories[0]["title"], "旧城清算")
         self.assertEqual(stories[0]["date"], "2026-09-21")
         self.assertEqual(stories[0]["publishingHint"]["readingTags"], ["都市悬疑"])
+        self.assertEqual(stories[0]["publishingHint"]["source"], "inkos")
         self.assertEqual([chapter["title"] for chapter in stories[0]["chapters"]],
                          ["第1章 签收", "第2章 回执"])
+
+    def test_serial_build_rejects_missing_publishing_metadata(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "daily"
+            site = root / "site"
+            serial = root / "serial"
+            output = root / "dist"
+            source.mkdir()
+            site.mkdir()
+            (site / "index.html").write_text("ok", encoding="utf-8")
+            published = serial / "published"
+            published.mkdir(parents=True)
+            book_dir = serial / "books" / "book"
+            book_dir.mkdir(parents=True)
+            (book_dir / "book.json").write_text('{"title":"缺少标签"}', encoding="utf-8")
+            (published / "2026-09-20-chapter-0001.md").write_text(
+                "# 第1章\n\n正文。\n", encoding="utf-8"
+            )
+
+            with self.assertRaisesRegex(ValueError, "publishingHint"):
+                build(source, site, output)
 
 
 if __name__ == "__main__":
