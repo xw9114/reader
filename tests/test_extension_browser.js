@@ -123,6 +123,21 @@ async function openFixture(browser, filename) {
     assert.equal(await qimaoChapterPage.locator(".note-editor").textContent(), "");
     assert.match(await qimaoChapterPanel.locator(".status").textContent(), /七猫章节标题已作为正文标题写入/);
     await qimaoChapterPage.close();
+
+    const qimaoShortStoryPage = await openFixture(browser, "qimao-short-story-editor.html");
+    const qimaoShortStoryPanel = qimaoShortStoryPage.locator("#reader-fanqie-importer");
+    assert.equal(await qimaoShortStoryPanel.locator(".mode").textContent(), "七猫 · 短故事");
+    assert.equal(await qimaoShortStoryPanel.locator(".fill").textContent(), "填入整篇短故事");
+    assert.equal(await qimaoShortStoryPanel.locator(".chapter-row").isVisible(), false);
+    await qimaoShortStoryPanel.locator(".fill").click();
+    assert.deepEqual(
+      await qimaoShortStoryPage.locator(".chapter-con .edit-mask h3").allTextContents(),
+      ["第1章 相遇", "第2章 选择"],
+    );
+    assert.equal(await qimaoShortStoryPage.locator(".chapter-con .edit-mask p").count(), 3);
+    assert.equal(await qimaoShortStoryPage.locator(".note-editor").textContent(), "");
+    assert.match(await qimaoShortStoryPanel.locator(".status").textContent(), /整篇短故事已一次填入，共 2 章/);
+    await qimaoShortStoryPage.close();
   } finally {
     await browser.close();
   }

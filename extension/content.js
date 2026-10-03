@@ -215,6 +215,7 @@
     const platform = currentPlatform();
     const pathname = currentPathname();
     const pageText = document.body?.innerText || "";
+    const pageSourceText = document.body?.textContent || pageText;
     const pageLooksLikeQimaoWorkInfo = platform === "qimao"
       && /作品信息/.test(pageText)
       && /作品名称/.test(pageText)
@@ -250,12 +251,18 @@
     }
     const fanqieShortPath = platform === "fanqie" && /\/publish-short(?:\/|$)/.test(pathname);
     const fanqieChapterPath = platform === "fanqie" && /\/publish(?:\/|$)/.test(pathname);
-    const pageLooksLikeShortStory = /未命名短故事|请输入短故事名称/.test(pageText);
-    const mode = fanqieShortPath
+    const pageLooksLikeFanqieShortStory = platform === "fanqie"
+      && /未命名短故事|请输入短故事名称/.test(pageText);
+    const pageLooksLikeQimaoShortStory = platform === "qimao"
+      && (
+        /将[“"]?正文[”"]?切换为[“"]?标题/.test(pageSourceText)
+        || /正文字数最少\s*4000\s*字[^\n]{0,40}最多\s*70000\s*字/.test(pageSourceText)
+      );
+    const mode = fanqieShortPath || pageLooksLikeQimaoShortStory
       ? "short-story"
       : fanqieChapterPath
         ? "chapter"
-        : pageLooksLikeShortStory
+        : pageLooksLikeFanqieShortStory
           ? "short-story"
           : "chapter";
     const chapterNumber = bestCandidate(
@@ -263,7 +270,7 @@
       chapterNumberScore,
     );
     const shortStorySelector = "input:not([type]), input[type='text'], textarea, [contenteditable='true'], [role='textbox']";
-    const shortStoryTitle = mode === "short-story"
+    const shortStoryTitle = mode === "short-story" && platform === "fanqie"
       ? bestCandidate(shortStorySelector, shortStoryTitleScore, chapterNumber)
         || bestCandidate(shortStorySelector, shortStoryFallbackScore, chapterNumber)
       : null;
@@ -272,7 +279,9 @@
       titleScore,
       chapterNumber,
     );
-    const title = mode === "short-story" ? shortStoryTitle || chapterTitle : chapterTitle;
+    const title = mode === "short-story"
+      ? platform === "qimao" ? null : shortStoryTitle || chapterTitle
+      : chapterTitle;
     const bodySelector = "[contenteditable]:not([contenteditable='false']), textarea, [role='textbox']";
     let body = platform === "qimao" ? qimaoChapterBody() : null;
     if (!body) {
@@ -432,6 +441,16 @@
     if (chapterTitle && comparable(paragraphs[0]) === comparable(chapterTitle)) paragraphs.shift();
     const bodyHtml = bodyToHtml(paragraphs.join("\n\n"));
     return chapterTitle ? `<h3>${escapeHtml(chapterTitle)}</h3>${bodyHtml}` : bodyHtml;
+  }
+
+  function qimaoWholeStoryToHtml(story) {
+    const chapters = Array.isArray(story?.chapters) ? story.chapters : [];
+    if (chapters.length) {
+      return chapters
+        .map((chapter) => qimaoChapterBodyToHtml(chapter.title, chapter.body))
+        .join("");
+    }
+    return bodyToHtml(fullStoryBody(story)).replaceAll("<h2>", "<h3>").replaceAll("</h2>", "</h3>");
   }
 
   function setEditableHtml(element, html) {
@@ -670,7 +689,8 @@
 
   function fillShortStory(story) {
     const fields = detectEditorFields();
-    if (fields.mode !== "short-story" || !fields.title || !fields.body) {
+    const titleRequired = fields.platform !== "qimao";
+    if (fields.mode !== "short-story" || (titleRequired && !fields.title) || !fields.body) {
       return {
         ok: false,
         mode: fields.mode,
@@ -680,7 +700,9 @@
     }
     const title = String(story?.title || "").trim();
     const body = fullStoryBody(story);
-    if (fields.combinedEditor) {
+    if (fields.platform === "qimao") {
+      setEditableHtml(fields.body, qimaoWholeStoryToHtml(story));
+    } else if (fields.combinedEditor) {
       setEditableHtml(fields.body, `<h1>${escapeHtml(title)}</h1>${bodyToHtml(body)}`);
     } else {
       fillTitleElement(fields.title, title);
@@ -692,6 +714,8 @@
       titleFound: true,
       bodyFound: true,
       combinedEditor: fields.combinedEditor,
+      chapterCount: story?.chapters?.length || 0,
+      characters: body.replace(/\s/g, "").length,
     };
   }
 
@@ -793,6 +817,13 @@
       return;
     }
     if (fields.mode === "short-story") {
+      if (fields.platform === "qimao") {
+        updateStatus(
+          `已进入七猫短故事模式。正文框${fields.body ? "已识别" : "未识别"}，将一次填入整篇作品。`,
+          fields.body ? "success" : "error",
+        );
+        return;
+      }
       updateStatus(
         `已进入短故事模式。故事名称框${fields.title ? "已识别" : "未识别"}，正文框${fields.body ? "已识别" : "未识别"}。`,
         fields.title && fields.body ? "success" : "error",
@@ -1008,9 +1039,19 @@
       if (fields.mode === "short-story") {
         const result = fillShortStory(state.activeStory);
         if (result.ok) {
-          updateStatus("短故事名称和整篇正文已填入，请核对后在番茄后台保存或进入下一步。", "success");
+          if (fields.platform === "qimao") {
+            const lengthWarning = result.characters < 4000 || result.characters > 70000
+              ? ` 当前约 ${result.characters.toLocaleString("zh-CN")} 字，超出七猫 4000–70000 字范围，请调整。`
+              : "";
+            updateStatus(
+              `整篇短故事已一次填入，共 ${result.chapterCount} 章；每章标题已设为标题格式。${lengthWarning} 请核对后手动保存或发布。`,
+              lengthWarning ? "error" : "success",
+            );
+          } else {
+            updateStatus("短故事名称和整篇正文已填入，请核对后在番茄后台保存或进入下一步。", "success");
+          }
         } else {
-          const missing = [!result.titleFound && "故事名称框", !result.bodyFound && "正文框"].filter(Boolean).join("、");
+          const missing = [fields.platform !== "qimao" && !result.titleFound && "故事名称框", !result.bodyFound && "正文框"].filter(Boolean).join("、");
           updateStatus(`未识别${missing}。请打开短故事编辑页后重新检测。`, "error");
         }
         return;

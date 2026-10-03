@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>七猫短故事编辑测试页</title>
+    <style>
+      body { margin: 40px; font-family: sans-serif; }
+      .chapter-con { width: 760px; min-height: 500px; padding: 20px; border: 1px solid #ccc; }
+      .q-contenteditable { min-height: 500px; }
+      .note-sidebar { position: fixed; right: 20px; top: 80px; width: 320px; }
+      .note-editor { width: 300px; min-height: 240px; border: 1px solid #ccc; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <ul class="editor-placeholder">
+        <li>在顶部工具栏将“正文”切换为“标题”，即可将光标所在段落转换为章节标题。</li>
+        <li>请输入正文（正文字数最少4000字，最多70000字）</li>
+      </ul>
+      <div class="chapter-editor">
+        <div class="chapter-con q-highlight-box">
+          <div class="q-contenteditable book font-size-16 edit-mask" contenteditable="true"></div>
+        </div>
+      </div>
+    </main>
+    <aside class="note-sidebar">
+      <h2>我的随记</h2>
+      <div class="note-editor" contenteditable="true"></div>
+    </aside>
+    <script>
+      window.__READER_TEST_PLATFORM__ = "qimao";
+      window.__READER_TEST_LIBRARY__ = {
+        latestStoryId: "story-1",
+        storyCount: 1,
+        stories: [{
+          id: "story-1",
+          title: "完整短故事",
+          characters: 16,
+          chapters: [
+            { id: "chapter-1", title: "第1章 相遇", body: "第一段。\n\n第二段。", characters: 8 },
+            { id: "chapter-2", title: "第2章 选择", body: "第2章 选择\n\n第三段。", characters: 4 }
+          ]
+        }]
+      };
+    </script>
+    <script src="../../extension/content.js"></script>
+  </body>
+</html>
