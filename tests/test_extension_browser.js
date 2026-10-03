@@ -115,11 +115,13 @@ async function openFixture(browser, filename) {
     assert.equal(await qimaoChapterPanel.locator(".type-suggestion").isVisible(), false);
     await qimaoChapterPanel.locator(".fill").click();
     assert.equal(await qimaoChapterPage.locator("#chapter-title").inputValue(), "第1章 测试");
+    assert.equal(await qimaoChapterPage.locator(".chapter-con .edit-mask h3").count(), 1);
+    assert.equal(await qimaoChapterPage.locator(".chapter-con .edit-mask h3").textContent(), "第1章 测试");
     assert.equal(await qimaoChapterPage.locator(".chapter-con .edit-mask p").count(), 2);
     assert.equal(await qimaoChapterPage.locator(".chapter-con .edit-mask p").first().textContent(), "　　第一段。");
     assert.equal(await qimaoChapterPage.locator(".chapter-con .search-mask").textContent(), "");
     assert.equal(await qimaoChapterPage.locator(".note-editor").textContent(), "");
-    assert.match(await qimaoChapterPanel.locator(".status").textContent(), /七猫章节标题和正文已填入/);
+    assert.match(await qimaoChapterPanel.locator(".status").textContent(), /七猫章节标题已作为正文标题写入/);
     await qimaoChapterPage.close();
   } finally {
     await browser.close();
