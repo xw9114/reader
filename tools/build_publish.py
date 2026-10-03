@@ -19,6 +19,7 @@ SERIAL_FILE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})-chapter-(\d{4})\.md$")
 INVALID_FILENAME_RE = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
 PUBLISHING_AUDIENCES = {"男频", "女频", "方向待定"}
 PUBLISHING_DIMENSION_LIMITS = {"plot": 4, "emotion": 2, "persona": 4, "worldview": 1}
+MAX_VOLUMES = 12
 
 
 @dataclass
@@ -75,6 +76,38 @@ def validate_publishing_hint(value: object) -> dict:
             for key, limit in PUBLISHING_DIMENSION_LIMITS.items()
         },
     }
+
+
+def validate_volumes(value: object, target_chapters: object = None) -> list[dict]:
+    if not isinstance(value, list) or not 1 <= len(value) <= MAX_VOLUMES:
+        raise ValueError(f"Serial book volumes must contain 1-{MAX_VOLUMES} items")
+    volumes: list[dict] = []
+    expected_start = 1
+    for index, item in enumerate(value, start=1):
+        if not isinstance(item, dict):
+            raise ValueError(f"Serial book volumes[{index - 1}] must be an object")
+        number = item.get("number")
+        title = item.get("title")
+        start = item.get("startChapter")
+        end = item.get("endChapter")
+        if number != index:
+            raise ValueError("Serial book volume numbers must be consecutive from 1")
+        if not isinstance(title, str) or not 1 <= len(title.strip()) <= 30:
+            raise ValueError(f"Serial book volumes[{index - 1}].title is invalid")
+        if not isinstance(start, int) or isinstance(start, bool) or start != expected_start:
+            raise ValueError("Serial book volume chapter ranges must be continuous from chapter 1")
+        if not isinstance(end, int) or isinstance(end, bool) or end < start:
+            raise ValueError(f"Serial book volumes[{index - 1}].endChapter is invalid")
+        volumes.append({
+            "number": number,
+            "title": title.strip(),
+            "startChapter": start,
+            "endChapter": end,
+        })
+        expected_start = end + 1
+    if isinstance(target_chapters, int) and target_chapters > 0 and volumes[-1]["endChapter"] != target_chapters:
+        raise ValueError("Serial book volume plan must end at targetChapters")
+    return volumes
 
 
 def inline_to_text(value: str) -> str:
@@ -227,6 +260,8 @@ def parse_serial_book(serial_dir: Path) -> tuple[dict, list[Path]] | None:
         raise ValueError("Expected exactly one serial book configuration")
     book = json.loads(books[0].read_text(encoding="utf-8"))
     title = str(book["title"])
+    publishing_hint = validate_publishing_hint(book.get("publishingHint"))
+    volumes = validate_volumes(book.get("volumes"), book.get("targetChapters"))
     chapters = []
 
     for number, _, path in numbered:
@@ -237,12 +272,16 @@ def parse_serial_book(serial_dir: Path) -> tuple[dict, list[Path]] | None:
         body = markdown_lines_to_text(lines[1:])
         if not body:
             raise ValueError(f"Empty serial chapter: {path}")
+        volume = next((item for item in volumes if item["startChapter"] <= number <= item["endChapter"]), None)
+        if volume is None:
+            raise ValueError(f"Serial chapter {number} is outside the configured volume plan")
         chapters.append(
             {
                 "id": f"chapter-{number}",
                 "title": inline_to_text(heading.group(2)),
                 "body": body,
                 "characters": len(re.sub(r"\s", "", body)),
+                "volume": {"number": volume["number"], "title": volume["title"]},
             }
         )
 
@@ -260,8 +299,9 @@ def parse_serial_book(serial_dir: Path) -> tuple[dict, list[Path]] | None:
         "characters": len(re.sub(r"\s", "", full_text)),
         "chapters": chapters,
         "fullText": full_text,
+        "volumes": volumes,
     }
-    story["publishingHint"] = validate_publishing_hint(book.get("publishingHint"))
+    story["publishingHint"] = publishing_hint
     return story, [path for _, _, path in numbered]
 
 

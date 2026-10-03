@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <title>番茄章节管理分卷测试页</title>
+    <style>
+      body { margin: 40px; font-family: sans-serif; }
+      button, input { min-width: 180px; min-height: 42px; margin: 8px; }
+      .dialog { display: none; width: 520px; padding: 24px; border: 1px solid #ddd; }
+      .dialog.open { display: block; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>旧城清算</h1>
+      <nav>章节管理　草稿箱</nav>
+      <button id="edit-volumes" type="button">编辑分卷</button>
+      <button type="button">新建章节</button>
+      <input id="chapter-search" type="text" placeholder="搜索章节">
+      <section class="dialog" role="dialog" aria-label="编辑分卷">
+        <label>分卷名称<input class="volume-name-input" type="text" maxlength="20" placeholder="请输入分卷名称"></label>
+        <button id="save-volume" type="button">保存</button>
+      </section>
+    </main>
+    <script>
+      window.__READER_TEST_PLATFORM__ = "fanqie";
+      window.__READER_TEST_PATHNAME__ = "/main/writer/chapter-manage/123/book";
+      window.__FANQIE_VOLUME_SAVE_CLICKS__ = 0;
+      document.querySelector("#edit-volumes").addEventListener("click", () => {
+        document.querySelector(".dialog").classList.add("open");
+      });
+      document.querySelector("#save-volume").addEventListener("click", () => {
+        window.__FANQIE_VOLUME_SAVE_CLICKS__ += 1;
+      });
+      window.__READER_TEST_LIBRARY__ = {
+        latestStoryId: "serial-main",
+        storyCount: 1,
+        stories: [{
+          id: "serial-main",
+          title: "旧城清算",
+          date: "2026-10-03",
+          characters: 6000,
+          volumes: [
+            { number: 1, title: "名字被谁写走", startChapter: 1, endChapter: 25 },
+            { number: 2, title: "钱去了哪里", startChapter: 26, endChapter: 50 },
+            { number: 3, title: "火没有烧完", startChapter: 51, endChapter: 75 },
+            { number: 4, title: "补救由谁付账", startChapter: 76, endChapter: 100 }
+          ],
+          chapters: [{
+            id: "chapter-1",
+            title: "第1章 名字已经签收",
+            body: "第一章正文。",
+            characters: 6,
+            volume: { number: 1, title: "名字被谁写走" }
+          }]
+        }]
+      };
+    </script>
+    <script src="../../extension/content.js"></script>
+  </body>
+</html>

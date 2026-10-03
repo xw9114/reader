@@ -1,10 +1,11 @@
 (() => {
   const ROOT_ID = "reader-fanqie-importer";
-  const STORAGE_DEFAULTS = { storyId: "", chapterIndex: 0, collapsed: false };
+  const STORAGE_DEFAULTS = { storyId: "", chapterIndex: 0, volumeIndex: 0, collapsed: false };
   const state = {
     stories: [],
     activeStory: null,
     activeChapterIndex: 0,
+    activeVolumeIndex: 0,
     fields: {
       platform: "fanqie",
       mode: "chapter",
@@ -12,6 +13,7 @@
       title: null,
       summary: null,
       protagonists: [],
+      volumeName: null,
       body: null,
       combinedEditor: false,
     },
@@ -106,6 +108,17 @@
     if (/章节|标题|搜索|角色/.test(text)) score -= 14;
     if (element instanceof HTMLTextAreaElement || element.isContentEditable) score += 5;
     if (rect.height >= 100 && rect.width >= 320) score += 4;
+    return score;
+  }
+
+  function volumeNameScore(element) {
+    const text = fieldText(element);
+    const rect = element.getBoundingClientRect();
+    let score = 0;
+    if (/分卷名称|卷名称|卷名|请输入.*分卷/.test(text)) score += 24;
+    if (/搜索|search|章节|作品名称|书名/.test(text)) score -= 18;
+    if (element instanceof HTMLInputElement) score += 5;
+    if (rect.height <= 80 && rect.width >= 180) score += 3;
     return score;
   }
 
@@ -257,6 +270,29 @@
         title,
         summary,
         protagonists,
+        volumeName: null,
+        body: null,
+        combinedEditor: false,
+      };
+      return state.fields;
+    }
+    const pageLooksLikeFanqieVolumeManager = platform === "fanqie"
+      && /\/chapter-manage(?:\/|$)/.test(pathname)
+      && /章节管理/.test(pageText)
+      && /编辑分卷/.test(pageText);
+    if (pageLooksLikeFanqieVolumeManager) {
+      const volumeName = bestCandidate(
+        "input:not([type]), input[type='text'], textarea, [contenteditable='true'], [role='textbox']",
+        volumeNameScore,
+      );
+      state.fields = {
+        platform,
+        mode: "volume-manage",
+        chapterNumber: null,
+        title: null,
+        summary: null,
+        protagonists: [],
+        volumeName,
         body: null,
         combinedEditor: false,
       };
@@ -320,6 +356,7 @@
       title,
       summary: null,
       protagonists: [],
+      volumeName: null,
       body,
       combinedEditor,
     };
@@ -904,6 +941,24 @@
     };
   }
 
+  function normalizedStoryVolumes(story) {
+    if (Array.isArray(story?.volumes) && story.volumes.length) return story.volumes;
+    const chapterCount = Math.max(story?.chapters?.length || 0, 1);
+    return [{ number: 1, title: "默认", startChapter: 1, endChapter: chapterCount }];
+  }
+
+  function fillVolumeName(story, volumeIndex = 0) {
+    const fields = detectEditorFields();
+    const volume = normalizedStoryVolumes(story)[volumeIndex];
+    if (fields.mode !== "volume-manage" || !fields.volumeName || !volume) {
+      return { ok: false, volumeNameFound: Boolean(fields.volumeName), volumeFound: Boolean(volume) };
+    }
+    const limit = fields.volumeName.maxLength > 0 ? fields.volumeName.maxLength : 30;
+    const title = truncateText(volume.title, limit);
+    fillElement(fields.volumeName, title.text);
+    return { ok: true, titleTruncated: title.truncated, titleLimit: limit, volume };
+  }
+
   const panelMarkup = `
     <style>
       :host { all: initial; }
@@ -943,6 +998,8 @@
       .actions .step { padding: 0; background: #fff; color: #143f36; font-size: 18px; }
       .panel.whole-story .chapter-row, .panel.whole-story .step { display: none; }
       .panel.whole-story .actions { grid-template-columns: minmax(0, 1fr); }
+      .volume-row { display: none; }
+      .panel.volume-manage .volume-row { display: block; }
       .refresh { width: 100%; margin-top: 8px; border-color: #cad4d0; background: #fff; color: #143f36; font-size: 12px; }
       button:disabled { opacity: .45; cursor: not-allowed; }
       .meta { margin-top: 8px; display: flex; justify-content: space-between; color: #71807b; font-size: 11px; }
@@ -954,6 +1011,7 @@
         <div class="mode-row"><span>导入模式</span><strong class="mode">正在检测…</strong></div>
         <label>作品<select class="story"></select></label>
         <label class="chapter-row">章节<select class="chapter"></select></label>
+        <label class="volume-row">分卷<select class="volume"></select></label>
         <div class="meta"><span class="position"></span><span class="characters"></span></div>
         <div class="type-suggestion"><span>建议作品类型</span><strong class="suggestion"></strong><small class="type-source"></small></div>
         <div class="tag-settings">
@@ -983,11 +1041,16 @@
     return state.activeStory?.chapters[state.activeChapterIndex] || null;
   }
 
+  function currentVolume() {
+    return normalizedStoryVolumes(state.activeStory)[state.activeVolumeIndex] || null;
+  }
+
   async function saveState(extra = {}) {
     if (!globalThis.chrome?.storage?.local) return;
     await chrome.storage.local.set({
       storyId: state.activeStory?.id || "",
       chapterIndex: state.activeChapterIndex,
+      volumeIndex: state.activeVolumeIndex,
       ...extra,
     });
   }
@@ -1004,12 +1067,23 @@
       Boolean(fields.title),
       Boolean(fields.summary),
       fields.protagonists?.length || 0,
+      Boolean(fields.volumeName),
       Boolean(fields.body),
       Boolean(fields.combinedEditor),
     ].join(":");
   }
 
   function showDetectionStatus(fields) {
+    if (fields.mode === "volume-manage") {
+      const volume = currentVolume();
+      updateStatus(
+        fields.volumeName
+          ? `已识别分卷名称框，准备填入“${volume?.title || ""}”。保存操作由你确认。`
+          : "已进入番茄分卷模式。请选择目标分卷，点击页面上的“编辑分卷”或“新建分卷”，再由助手填入卷名。",
+        fields.volumeName ? "success" : "normal",
+      );
+      return;
+    }
     if (fields.mode === "work-info") {
       const platformName = fields.platform === "qimao" ? "七猫" : "番茄";
       updateStatus(
@@ -1073,11 +1147,38 @@
     });
     state.activeChapterIndex = Math.min(state.activeChapterIndex, state.activeStory.chapters.length - 1);
     ui.chapter.value = String(state.activeChapterIndex);
+    renderVolumes();
     renderChapterMeta();
     renderWorkTypeSuggestion();
   }
 
+  function renderVolumes() {
+    const volumes = normalizedStoryVolumes(state.activeStory);
+    ui.volume.replaceChildren();
+    volumes.forEach((volume, index) => {
+      const option = document.createElement("option");
+      option.value = String(index);
+      option.textContent = `第${volume.number}卷 · ${volume.title}`;
+      ui.volume.append(option);
+    });
+    state.activeVolumeIndex = Math.min(state.activeVolumeIndex, volumes.length - 1);
+    ui.volume.value = String(state.activeVolumeIndex);
+  }
+
   function renderChapterMeta() {
+    if (state.fields.mode === "volume-manage") {
+      const volume = currentVolume();
+      const publishedCount = state.activeStory?.chapters?.filter(
+        (chapter) => chapter.volume?.number === volume?.number,
+      ).length || 0;
+      ui.position.textContent = volume
+        ? `第${volume.number}卷 · 第${volume.startChapter}–${volume.endChapter}章`
+        : "未配置分卷";
+      ui.characters.textContent = `已收录 ${publishedCount} 章`;
+      ui.previous.disabled = true;
+      ui.next.disabled = true;
+      return;
+    }
     if (state.fields.mode === "work-info") {
       const characters = Number(state.activeStory?.characters) || fullStoryBody(state.activeStory).replace(/\s/g, "").length;
       ui.position.textContent = `新建作品 · ${state.activeStory?.chapters?.length || 0} 个章节`;
@@ -1097,7 +1198,8 @@
     }
     const chapter = currentChapter();
     if (!chapter) return;
-    ui.position.textContent = `${state.activeChapterIndex + 1} / ${state.activeStory.chapters.length}`;
+    const volumeText = chapter.volume ? `第${chapter.volume.number}卷 · ` : "";
+    ui.position.textContent = `${volumeText}${state.activeChapterIndex + 1} / ${state.activeStory.chapters.length}`;
     ui.characters.textContent = `${chapter.characters.toLocaleString("zh-CN")} 字`;
     ui.previous.disabled = state.activeChapterIndex === 0;
     ui.next.disabled = state.activeChapterIndex === state.activeStory.chapters.length - 1;
@@ -1123,20 +1225,25 @@
 
   function setEditorMode(mode) {
     const platformName = state.fields.platform === "qimao" ? "七猫" : "番茄";
-    const wholeStory = mode === "short-story" || mode === "work-info";
+    const wholeStory = mode === "short-story" || mode === "work-info" || mode === "volume-manage";
     ui.panel.classList.toggle("whole-story", wholeStory);
     ui.panel.classList.toggle("work-info", mode === "work-info");
     ui.panel.classList.toggle("short-story", mode === "short-story");
+    ui.panel.classList.toggle("volume-manage", mode === "volume-manage");
     ui.mode.textContent = mode === "work-info"
       ? `${platformName} · 作品信息`
       : mode === "short-story"
         ? `${platformName} · 短故事`
-        : `${platformName} · 章节`;
+        : mode === "volume-manage"
+          ? `${platformName} · 分卷`
+          : `${platformName} · 章节`;
     ui.fill.textContent = mode === "work-info"
       ? "填入作品信息"
       : mode === "short-story"
         ? "填入整篇短故事"
-        : "填入当前章节";
+        : mode === "volume-manage"
+          ? "填入分卷名称"
+          : "填入当前章节";
     renderChapterMeta();
     renderWorkTypeSuggestion();
   }
@@ -1144,6 +1251,7 @@
   function selectStory(storyId) {
     state.activeStory = state.stories.find((story) => story.id === storyId) || state.stories[0];
     state.activeChapterIndex = 0;
+    state.activeVolumeIndex = 0;
     ui.story.value = state.activeStory.id;
     renderChapters();
     saveState();
@@ -1153,6 +1261,17 @@
     state.activeChapterIndex = Math.min(Math.max(Number(index), 0), state.activeStory.chapters.length - 1);
     ui.chapter.value = String(state.activeChapterIndex);
     renderChapterMeta();
+    saveState();
+  }
+
+  function selectVolume(index) {
+    state.activeVolumeIndex = Math.min(
+      Math.max(Number(index), 0),
+      normalizedStoryVolumes(state.activeStory).length - 1,
+    );
+    ui.volume.value = String(state.activeVolumeIndex);
+    renderChapterMeta();
+    showDetectionStatus(state.fields);
     saveState();
   }
 
@@ -1187,6 +1306,10 @@
 
     state.activeStory = state.stories.find((story) => story.id === stored.storyId) || state.stories[0];
     state.activeChapterIndex = Math.min(Number(stored.chapterIndex) || 0, state.activeStory.chapters.length - 1);
+    state.activeVolumeIndex = Math.min(
+      Number(stored.volumeIndex) || 0,
+      normalizedStoryVolumes(state.activeStory).length - 1,
+    );
     ui.story.value = state.activeStory.id;
     renderChapters();
     const fields = detectEditorFields();
@@ -1209,6 +1332,7 @@
       mode: shadow.querySelector(".mode"),
       story: shadow.querySelector(".story"),
       chapter: shadow.querySelector(".chapter"),
+      volume: shadow.querySelector(".volume"),
       position: shadow.querySelector(".position"),
       characters: shadow.querySelector(".characters"),
       suggestion: shadow.querySelector(".suggestion"),
@@ -1227,12 +1351,32 @@
 
     ui.story.addEventListener("change", () => selectStory(ui.story.value));
     ui.chapter.addEventListener("change", () => selectChapter(ui.chapter.value));
+    ui.volume.addEventListener("change", () => selectVolume(ui.volume.value));
     ui.previous.addEventListener("click", () => selectChapter(state.activeChapterIndex - 1));
     ui.next.addEventListener("click", () => selectChapter(state.activeChapterIndex + 1));
     ui.refresh.addEventListener("click", loadLibrary);
     ui.fill.addEventListener("click", () => {
       const fields = detectEditorFields();
       setEditorMode(fields.mode);
+      if (fields.mode === "volume-manage") {
+        const result = fillVolumeName(state.activeStory, state.activeVolumeIndex);
+        if (result.ok) {
+          updateStatus(
+            result.titleTruncated
+              ? `卷名超过平台 ${result.titleLimit} 字限制，已截短填入；请核对后手动保存。`
+              : `第${result.volume.number}卷“${result.volume.title}”已填入；请核对章节范围后手动保存。`,
+            result.titleTruncated ? "error" : "success",
+          );
+        } else {
+          updateStatus(
+            result.volumeFound
+              ? "未识别分卷名称框。请先点击页面上的“编辑分卷”或“新建分卷”，再重试。"
+              : "当前作品没有分卷规划。",
+            "error",
+          );
+        }
+        return;
+      }
       if (fields.mode === "work-info") {
         const result = fillWorkInfo(state.activeStory);
         if (result.ok) {
@@ -1313,6 +1457,7 @@
     fillEditor,
     fillShortStory,
     fillWorkInfo,
+    fillVolumeName,
     formatBodyText,
     fullStoryBody,
     normalizeFanqieTitle,

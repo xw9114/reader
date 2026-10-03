@@ -29,7 +29,7 @@ cd /srv/projects/inkos-novels/serial
 python3 ops/inkos-with-secret.py book create --title "作品名" --genre urban --platform tomato --brief brief.md
 ```
 
-`publishingHint` 包含读者方向、1 至 2 个阅读标签、1 至 4 个内容标签，以及情节、情感、人设、世界观四组标签。现实背景允许世界观为空，不会为了填满数量强加言情、系统、复仇、重生或穿越标签。`tools/build_publish.py` 会校验这份数据；新连载缺少或超过数量限制时停止构建，避免扩展退回正文猜测。
+`publishingHint` 包含读者方向、1 至 2 个阅读标签、1 至 4 个内容标签，以及情节、情感、人设、世界观四组标签。顶层 `volumes` 保存卷号、卷名和连续的起止章节。现实背景允许世界观为空，不会为了填满数量强加言情、系统、复仇、重生或穿越标签。`tools/build_publish.py` 会校验标签和分卷范围；新连载缺少字段、超过数量限制、卷号断档或章节范围不连续时停止构建。
 
 旧作品需要重建标签时运行：
 
@@ -37,4 +37,4 @@ python3 ops/inkos-with-secret.py book create --title "作品名" --genre urban -
 python3 ops/inkos-with-secret.py publishing refresh <book-id>
 ```
 
-Reader 扩展优先显示 `book.json` 的 InkOS 标签，并明确标记来源。只有没有 `publishingHint` 的旧 Markdown 作品才使用标题和正文推断。
+Reader 扩展优先显示 `book.json` 的 InkOS 标签，并明确标记来源。只有没有 `publishingHint` 的旧 Markdown 作品才使用标题和正文推断。在番茄章节管理页，扩展进入“番茄 · 分卷”模式；选择规划中的卷并打开平台的“编辑分卷”或“新建分卷”表单后，可填入卷名，最终保存仍需人工确认。

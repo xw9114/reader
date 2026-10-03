@@ -170,6 +170,27 @@ async function openFixture(browser, filename) {
     assert.match(await fanqieWorkPanel.locator(".status").textContent(), /作品名称和简介草稿已填入/);
     await fanqieWorkPage.close();
 
+    const volumePage = await openFixture(browser, "fanqie-volume-manager.html");
+    const volumePanel = volumePage.locator("#reader-fanqie-importer");
+    assert.equal(await volumePanel.locator(".mode").textContent(), "番茄 · 分卷");
+    assert.equal(await volumePanel.locator(".fill").textContent(), "填入分卷名称");
+    assert.equal(await volumePanel.locator(".chapter-row").isVisible(), false);
+    assert.equal(await volumePanel.locator(".volume-row").isVisible(), true);
+    assert.equal(await volumePanel.locator(".volume option").count(), 4);
+    assert.equal(await volumePanel.locator(".position").textContent(), "第1卷 · 第1–25章");
+    assert.match(await volumePanel.locator(".status").textContent(), /点击页面上的“编辑分卷”/);
+    await volumePage.locator("#edit-volumes").click();
+    await volumePanel.locator(".status").filter({ hasText: "已识别分卷名称框" }).waitFor();
+    await volumePanel.locator(".fill").click();
+    assert.equal(await volumePage.locator(".volume-name-input").inputValue(), "名字被谁写走");
+    assert.equal(await volumePage.evaluate(() => window.__FANQIE_VOLUME_SAVE_CLICKS__), 0);
+    await volumePanel.locator(".volume").selectOption("1");
+    await volumePanel.locator(".fill").click();
+    assert.equal(await volumePage.locator(".volume-name-input").inputValue(), "钱去了哪里");
+    assert.match(await volumePanel.locator(".status").textContent(), /第2卷“钱去了哪里”已填入/);
+    assert.equal(await volumePage.evaluate(() => window.__FANQIE_VOLUME_SAVE_CLICKS__), 0);
+    await volumePage.close();
+
     const qimaoChapterPage = await openFixture(browser, "qimao-chapter-editor.html");
     const qimaoChapterPanel = qimaoChapterPage.locator("#reader-fanqie-importer");
     assert.equal(await qimaoChapterPanel.locator(".mode").textContent(), "七猫 · 章节");

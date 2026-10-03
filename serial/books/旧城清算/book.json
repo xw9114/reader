@@ -20,6 +20,12 @@
       "worldview": []
     }
   },
+  "volumes": [
+    {"number": 1, "title": "名字被谁写走", "startChapter": 1, "endChapter": 25},
+    {"number": 2, "title": "钱去了哪里", "startChapter": 26, "endChapter": 50},
+    {"number": 3, "title": "火没有烧完", "startChapter": 51, "endChapter": 75},
+    {"number": 4, "title": "补救由谁付账", "startChapter": 76, "endChapter": 100}
+  ],
   "createdAt": "2026-09-20T05:05:40.031Z",
   "updatedAt": "2026-09-20T05:35:52.765Z"
 }

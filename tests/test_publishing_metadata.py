@@ -47,15 +47,24 @@ class PublishingMetadataTests(unittest.TestCase):
 
     def test_parses_fenced_model_json(self):
         content = """```json
-        {"audience":"方向待定","readingTags":["都市悬疑"],
+        {"publishingHint":{"audience":"方向待定","readingTags":["都市悬疑"],
         "contentTags":["调查取证"],"tagDimensions":{"plot":["推理"],
-        "emotion":[],"persona":[],"worldview":[]}}
+        "emotion":[],"persona":[],"worldview":[]}},"volumes":[
+        {"number":1,"title":"名字被谁写走","startChapter":1,"endChapter":100}]}
         ```"""
 
-        parsed = publishing_metadata.parse_model_json(content)
+        parsed = publishing_metadata.parse_model_json(content, 100)
 
-        self.assertEqual(parsed["audience"], "方向待定")
-        self.assertEqual(parsed["tagDimensions"]["plot"], ["推理"])
+        self.assertEqual(parsed["publishingHint"]["audience"], "方向待定")
+        self.assertEqual(parsed["publishingHint"]["tagDimensions"]["plot"], ["推理"])
+        self.assertEqual(parsed["volumes"][0]["endChapter"], 100)
+
+    def test_rejects_volume_gaps(self):
+        with self.assertRaisesRegex(ValueError, "continuous"):
+            publishing_metadata.validate_volumes([
+                {"number": 1, "title": "第一卷", "startChapter": 1, "endChapter": 20},
+                {"number": 2, "title": "第二卷", "startChapter": 22, "endChapter": 40},
+            ], 40)
 
     def test_uses_foundations_and_roles_without_chapter_prose(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -83,18 +92,24 @@ class PublishingMetadataTests(unittest.TestCase):
                 json.dumps({"title": "测试书", "createdAt": "2026-10-03T00:00:00.000Z"}),
                 encoding="utf-8",
             )
-            publishing_metadata.write_publishing_hint(book_dir, {
-                "audience": "女频",
-                "readingTags": ["都市悬疑"],
-                "contentTags": ["调查取证"],
-                "tagDimensions": {
-                    "plot": ["推理"], "emotion": [], "persona": [], "worldview": [],
+            publishing_metadata.write_book_metadata(book_dir, {
+                "publishingHint": {
+                    "audience": "女频",
+                    "readingTags": ["都市悬疑"],
+                    "contentTags": ["调查取证"],
+                    "tagDimensions": {
+                        "plot": ["推理"], "emotion": [], "persona": [], "worldview": [],
+                    },
                 },
+                "volumes": [{
+                    "number": 1, "title": "名字被谁写走", "startChapter": 1, "endChapter": 100,
+                }],
             })
 
             book = json.loads((book_dir / "book.json").read_text(encoding="utf-8"))
 
         self.assertEqual(book["publishingHint"]["source"], "inkos")
+        self.assertEqual(book["volumes"][0]["title"], "名字被谁写走")
         self.assertFalse((book_dir / "book.json.tmp").exists())
 
 
