@@ -136,6 +136,10 @@ async function openFixture(browser, filename) {
       await qimaoWorkPage.locator(".protagonist-name").evaluateAll((elements) => elements.map((element) => element.value)),
       ["周晓雨", "陈浩", ""],
     );
+    assert.deepEqual(
+      await qimaoWorkPage.locator(".work-type-input").evaluateAll((elements) => elements.map((element) => element.value)),
+      ["都市", "都市生活"],
+    );
     assert.equal(await qimaoWorkPage.evaluate(() => window.__QIMAO_CONFIRM_CLICKS__), 0);
     assert.match(await qimaoWorkPanel.locator(".status").textContent(), /作品名称和简介草稿已填入/);
     await qimaoWorkPage.close();

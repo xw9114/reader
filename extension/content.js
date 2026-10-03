@@ -109,29 +109,42 @@
     return score;
   }
 
-  function protagonistScore(element) {
-    const text = fieldText(element);
-    const rect = element.getBoundingClientRect();
-    let score = 0;
-    if (/主角名|主角姓名|角色名|人物名/.test(text)) score += 24;
-    if (/作品名称|书名|简介|章节|搜索/.test(text)) score -= 18;
-    if (element instanceof HTMLInputElement) score += 5;
-    if (rect.height <= 80 && rect.width >= 160) score += 3;
-    return score;
+  function protagonistOwnText(element) {
+    return ["placeholder", "aria-label", "name", "id", "class", "data-placeholder"]
+      .map((name) => element.getAttribute(name) || "")
+      .join(" ")
+      .toLowerCase();
+  }
+
+  function isSafeProtagonistField(element, excludedTitle = null) {
+    if (element === excludedTitle || !isVisible(element) || element.disabled || element.readOnly) return false;
+    if (element.getAttribute("role") === "combobox" || element.getAttribute("aria-haspopup") === "listbox") return false;
+    if (element.closest("select, [role='combobox'], [class*='select'], [class*='dropdown'], [class*='cascader']")) return false;
+    if (/作品类型|作品标签|阅读标签|内容标签|目标读者|一级分类|二级分类/.test(protagonistOwnText(element))) return false;
+    return true;
   }
 
   function findProtagonistFields(excludedTitle = null) {
     const inputSelector = "input:not([type]), input[type='text']";
     const found = [...document.querySelectorAll(inputSelector)]
-      .filter((element) => element !== excludedTitle && isVisible(element) && protagonistScore(element) >= 20);
+      .filter((element) => isSafeProtagonistField(element, excludedTitle))
+      .filter((element) => /主角名|主角姓名|角色名|人物名/.test(protagonistOwnText(element)));
     const labels = [...document.querySelectorAll("label, span, p, div, [class*='label']")]
       .filter((element) => isVisible(element) && /^主角名(?:称)?$/.test(String(element.textContent || "").trim()))
       .sort((left, right) => left.childElementCount - right.childElementCount);
     for (const label of labels) {
+      const labelRect = label.getBoundingClientRect();
+      const labelCenter = labelRect.top + labelRect.height / 2;
       let container = label;
       for (let depth = 0; depth < 5 && container; depth += 1, container = container.parentElement) {
         const inputs = [...container.querySelectorAll(inputSelector)]
-          .filter((element) => element !== excludedTitle && isVisible(element));
+          .filter((element) => isSafeProtagonistField(element, excludedTitle))
+          .filter((element) => {
+            const rect = element.getBoundingClientRect();
+            const center = rect.top + rect.height / 2;
+            return Math.abs(center - labelCenter) <= Math.max(48, labelRect.height * 2.5)
+              && rect.left >= labelRect.left;
+          });
         inputs.forEach((element) => {
           if (!found.includes(element)) found.push(element);
         });
