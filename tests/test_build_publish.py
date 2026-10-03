@@ -4,7 +4,7 @@ import unittest
 import zipfile
 from pathlib import Path
 
-from tools.build_publish import build, parse_story
+from tools.build_publish import build, chapter_interaction, parse_story
 
 
 class BuildPublishTests(unittest.TestCase):
@@ -23,6 +23,19 @@ class BuildPublishTests(unittest.TestCase):
         self.assertEqual(len(story["chapters"]), 2)
         self.assertEqual(story["chapters"][0]["body"], "这是正文。")
         self.assertEqual(story["chapters"][1]["body"], "链接文字")
+        self.assertIn("？", story["chapters"][0]["interaction"])
+        self.assertIn("留言", story["chapters"][0]["interaction"])
+        self.assertLessEqual(len(story["chapters"][0]["interaction"]), 60)
+
+    def test_chapter_interaction_tracks_plot_and_stays_short(self):
+        suspense = chapter_interaction("第12章 消失的回执", "她从档案里找到证据，继续调查真相。")
+        romance = chapter_interaction("第3章 再见", "她与前夫重逢，旧日感情再次浮现。")
+
+        self.assertIn("关键线索", suspense)
+        self.assertIn("人物关系", romance)
+        self.assertTrue(suspense.endswith("欢迎留言聊聊。"))
+        self.assertLessEqual(len(suspense), 60)
+        self.assertLessEqual(len(romance), 60)
 
     def test_build_writes_download_formats_and_extension_bundle(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -50,6 +63,7 @@ class BuildPublishTests(unittest.TestCase):
             cover = output / payload["stories"][0]["cover"]["url"]
             self.assertEqual(payload["storyCount"], 1)
             self.assertEqual(payload["stories"][0]["chapters"][0]["body"], "正文内容。")
+            self.assertIn("interaction", payload["stories"][0]["chapters"][0])
             self.assertTrue(txt.startswith(b"\xef\xbb\xbf"))
             self.assertTrue(markdown.exists())
             self.assertTrue(cover.exists())
@@ -126,6 +140,7 @@ class BuildPublishTests(unittest.TestCase):
                          {"number": 2, "title": "钱去了哪里"})
         self.assertEqual([chapter["title"] for chapter in stories[0]["chapters"]],
                          ["第1章 签收", "第2章 回执"])
+        self.assertTrue(all("interaction" in chapter for chapter in stories[0]["chapters"]))
 
     def test_serial_build_rejects_missing_publishing_metadata(self):
         with tempfile.TemporaryDirectory() as directory:

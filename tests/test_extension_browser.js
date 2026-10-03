@@ -18,6 +18,8 @@ async function openFixture(browser, filename) {
     const chapterPage = await openFixture(browser, "fanqie-editor.html");
     const chapterPanel = chapterPage.locator("#reader-fanqie-importer");
     assert.equal(await chapterPanel.locator(".mode").textContent(), "番茄 · 章节");
+    assert.equal(await chapterPanel.locator(".interaction-tools").isVisible(), true);
+    assert.match(await chapterPanel.locator(".interaction-preview").textContent(), /最期待接下来发生什么？/);
     await chapterPanel.locator(".fill").click();
     assert.equal(await chapterPage.locator("#chapter-number").inputValue(), "1");
     assert.equal(await chapterPage.locator("#chapter-title").inputValue(), "测试");
@@ -26,6 +28,19 @@ async function openFixture(browser, filename) {
       await chapterPage.evaluate(() => window.__readerPublisherImporter.formatBodyText('"你好,小雨?"\n\n他说.')),
       "　　“你好，小雨？”\n\n　　他说。",
     );
+    await chapterPanel.locator(".interaction-fill").click();
+    assert.match(await chapterPage.locator("#author-note").inputValue(), /最期待接下来发生什么？/);
+    assert.equal(await chapterPage.evaluate(() => window.__FANQIE_PUBLISH_CLICKS__), 0);
+    assert.match(await chapterPanel.locator(".status").textContent(), /章末互动已填入/);
+    const fallbackInteraction = await chapterPage.evaluate(() => (
+      window.__readerPublisherImporter.chapterInteraction({
+        title: "第12章 消失的回执",
+        body: "她从档案里找到证据，决定继续调查真相。",
+      })
+    ));
+    assert.match(fallbackInteraction, /关键线索/);
+    assert.match(fallbackInteraction, /？/);
+    assert.ok(Array.from(fallbackInteraction).length <= 60);
     await chapterPage.close();
 
     const shortStoryPage = await openFixture(browser, "fanqie-short-story-editor.html");
@@ -33,6 +48,7 @@ async function openFixture(browser, filename) {
     assert.equal(await shortStoryPanel.locator(".mode").textContent(), "番茄 · 短故事");
     assert.equal(await shortStoryPanel.locator(".fill").textContent(), "填入整篇短故事");
     assert.equal(await shortStoryPanel.locator(".chapter-row").isVisible(), false);
+    assert.equal(await shortStoryPanel.locator(".interaction-tools").isVisible(), false);
     assert.equal(await shortStoryPanel.locator(".type-suggestion").isVisible(), true);
     await shortStoryPanel.locator(".fill").click();
     assert.equal(await shortStoryPage.locator(".short-story-title").textContent(), "测试短故事");
@@ -204,6 +220,8 @@ async function openFixture(browser, filename) {
     assert.equal(await qimaoChapterPanel.locator(".mode").textContent(), "七猫 · 章节");
     assert.equal(await qimaoChapterPanel.locator(".type-suggestion").isVisible(), false);
     assert.equal(await qimaoChapterPanel.locator(".tag-settings").isVisible(), false);
+    assert.equal(await qimaoChapterPanel.locator(".interaction-tools").isVisible(), true);
+    assert.match(await qimaoChapterPanel.locator(".interaction-preview").textContent(), /哪个细节最值得追查？/);
     await qimaoChapterPanel.locator(".fill").click();
     assert.equal(await qimaoChapterPage.locator("#chapter-title").inputValue(), "第1章 测试");
     assert.equal(await qimaoChapterPage.locator(".chapter-con .edit-mask h3").count(), 0);
@@ -212,6 +230,11 @@ async function openFixture(browser, filename) {
     assert.equal(await qimaoChapterPage.locator(".chapter-con .search-mask").textContent(), "");
     assert.equal(await qimaoChapterPage.locator(".note-editor").textContent(), "");
     assert.match(await qimaoChapterPanel.locator(".status").textContent(), /章节标题框和正文已分别填入/);
+    await qimaoChapterPanel.locator(".interaction-fill").click();
+    assert.match(await qimaoChapterPage.locator("#author-note").inputValue(), /哪个细节最值得追查？/);
+    assert.equal(await qimaoChapterPage.locator(".note-editor").textContent(), "");
+    assert.equal(await qimaoChapterPage.evaluate(() => window.__QIMAO_AUTHOR_NOTE_SAVE_CLICKS__), 0);
+    assert.match(await qimaoChapterPanel.locator(".status").textContent(), /章末互动已填入/);
     await qimaoChapterPage.close();
 
     const qimaoShortStoryPage = await openFixture(browser, "qimao-short-story-editor.html");
@@ -219,6 +242,7 @@ async function openFixture(browser, filename) {
     assert.equal(await qimaoShortStoryPanel.locator(".mode").textContent(), "七猫 · 短故事");
     assert.equal(await qimaoShortStoryPanel.locator(".fill").textContent(), "填入整篇短故事");
     assert.equal(await qimaoShortStoryPanel.locator(".chapter-row").isVisible(), false);
+    assert.equal(await qimaoShortStoryPanel.locator(".interaction-tools").isVisible(), false);
     await qimaoShortStoryPanel.locator(".fill").click();
     assert.deepEqual(
       await qimaoShortStoryPage.locator(".chapter-con .edit-mask h3").allTextContents(),

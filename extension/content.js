@@ -14,6 +14,7 @@
       summary: null,
       protagonists: [],
       volumeName: null,
+      authorNote: null,
       body: null,
       combinedEditor: false,
     },
@@ -238,6 +239,7 @@
     if (/正文|章节内容|内容|请输入正文|content|editor/.test(text)) score += 10;
     if (/简介|搜索|标题|书名|短故事名称|故事名称/.test(text)) score -= 12;
     if (/随记|笔记|资料|灵感|润色|起名|note|memo|sidebar|side-bar/.test(`${ownText} ${sideText}`)) score -= 32;
+    if (/有话说|作者说|章节寄语|章末寄语|章末互动|读者互动/.test(text)) score -= 32;
     if (element.isContentEditable) score += 6;
     if (rect.height >= 180) score += 5;
     if (rect.width >= 500) score += 3;
@@ -245,6 +247,43 @@
     if (rect.width < 420) score -= 10;
     if (rect.left >= window.innerWidth * 0.72) score -= 18;
     return score;
+  }
+
+  function authorNoteScore(element) {
+    const attributes = ["placeholder", "aria-label", "name", "id", "class", "data-placeholder"];
+    const own = attributes.map((name) => element.getAttribute(name) || "").join(" ");
+    const region = element.closest(
+      "label, [class*='author'], [class*='comment'], [class*='message'], [class*='note'], [class*='dialog'], [class*='modal'], [class*='field']",
+    );
+    const nearby = [];
+    for (let parent = element.parentElement, depth = 0; parent && depth < 5; parent = parent.parentElement, depth += 1) {
+      const content = parent.textContent?.trim() || "";
+      if (content.length <= 600) nearby.push(content);
+    }
+    const localText = `${own} ${region?.textContent?.slice(0, 240) || ""}`.toLowerCase();
+    const text = `${localText} ${nearby.join(" ")}`.toLowerCase();
+    const rect = element.getBoundingClientRect();
+    let score = 0;
+    if (/作者有话说|作者说|有话说|章节寄语|章末寄语|章末互动|读者互动|和读者聊/.test(text)) score += 24;
+    if (/寄语|互动|留言|评论/.test(text)) score += 7;
+    if (/随记|笔记|我的随记|搜索|简介|正文|章节正文|标题|书名|评论管理/.test(localText)) score -= 30;
+    if (element instanceof HTMLTextAreaElement || element.isContentEditable) score += 5;
+    if (element instanceof HTMLInputElement) score += 2;
+    if (rect.width >= 220) score += 2;
+    if (rect.height >= 40 && rect.height <= 240) score += 2;
+    return score;
+  }
+
+  function findAuthorNoteField(excluded = []) {
+    const excludedElements = new Set(excluded.filter(Boolean));
+    return [...document.querySelectorAll(
+      "textarea, input:not([type]), input[type='text'], [contenteditable='true'], [role='textbox']",
+    )]
+      .filter((element) => !excludedElements.has(element) && isVisible(element))
+      .filter((element) => !element.disabled && !element.readOnly)
+      .map((element) => ({ element, score: authorNoteScore(element) }))
+      .filter((candidate) => candidate.score > 12)
+      .sort((left, right) => right.score - left.score)[0]?.element || null;
   }
 
   function bestCandidate(selector, scorer, excluded = null) {
@@ -314,6 +353,7 @@
         summary,
         protagonists,
         volumeName: null,
+        authorNote: null,
         body: null,
         combinedEditor: false,
       };
@@ -336,6 +376,7 @@
         summary: null,
         protagonists: [],
         volumeName,
+        authorNote: null,
         body: null,
         combinedEditor: false,
       };
@@ -384,6 +425,9 @@
       );
     }
     if (!body && platform === "qimao") body = largestCentralEditor(bodySelector, title);
+    const authorNote = mode === "chapter"
+      ? findAuthorNoteField([chapterNumber, title, body])
+      : null;
     const combinedEditor = Boolean(
       mode === "short-story"
       && title
@@ -400,6 +444,7 @@
       summary: null,
       protagonists: [],
       volumeName: null,
+      authorNote,
       body,
       combinedEditor,
     };
@@ -685,6 +730,34 @@
       readingTags,
       contentTags,
     };
+  }
+
+  function chapterInteraction(chapter) {
+    const provided = String(chapter?.interaction || "").trim();
+    if (provided) return Array.from(provided).slice(0, 60).join("");
+    const parsedTitle = parseChapterTitle(chapter?.title || "").title;
+    const topic = Array.from(parsedTitle || "这一章").slice(0, 12).join("");
+    const body = String(chapter?.body || "");
+    let text;
+    if (/线索|证据|调查|追查|真相|秘密|谜|凶手|失踪|审计|档案|疑点/.test(body)) {
+      text = `本章围绕“${topic}”推进了关键线索。你觉得哪个细节最值得追查？欢迎留言聊聊。`;
+    } else if (/喜欢|爱|婚|前夫|前妻|心动|感情|告白|重逢|分手|暧昧|关系/.test(body)) {
+      text = `“${topic}”让人物关系有了变化。你更理解谁的选择？欢迎留言聊聊。`;
+    } else {
+      text = `“${topic}”把故事又往前推了一步。你最期待接下来发生什么？欢迎留言聊聊。`;
+    }
+    return Array.from(text).slice(0, 60).join("");
+  }
+
+  function fillAuthorNote(chapter) {
+    const fields = detectEditorFields();
+    if (fields.mode !== "chapter" || !fields.authorNote) {
+      return { ok: false, mode: fields.mode, authorNoteFound: Boolean(fields.authorNote) };
+    }
+    const limit = fields.authorNote.maxLength > 0 ? Math.min(fields.authorNote.maxLength, 60) : 60;
+    const note = Array.from(chapterInteraction(chapter)).slice(0, limit).join("");
+    fillElement(fields.authorNote, note);
+    return { ok: true, authorNoteFound: true, note };
   }
 
   function normalizeSettingValues(values, limit) {
@@ -1100,6 +1173,12 @@
       .cover-copy span { display: block; color: #71807b; font-size: 11px; }
       .cover-copy small { display: block; margin-top: 3px; color: #8a9692; font-size: 10px; line-height: 1.35; }
       .cover-fill { width: 100%; min-height: 34px; margin-top: 7px; border: 1px solid #143f36; border-radius: 4px; background: #fff; color: #143f36; font: inherit; font-size: 11px; font-weight: 650; cursor: pointer; }
+      .interaction-tools { display: none; margin-top: 10px; padding: 9px 10px; border: 1px solid #cad4d0; border-radius: 5px; background: #fff; }
+      .panel.chapter .interaction-tools { display: block; }
+      .interaction-tools span { display: block; color: #71807b; font-size: 11px; }
+      .interaction-preview { margin: 5px 0 0; color: #143f36; font-size: 12px; line-height: 1.55; }
+      .interaction-tools small { display: block; margin-top: 4px; color: #8a9692; font-size: 10px; line-height: 1.4; }
+      .interaction-fill { width: 100%; min-height: 34px; margin-top: 7px; border: 1px solid #143f36; border-radius: 4px; background: #fff; color: #143f36; font: inherit; font-size: 11px; font-weight: 650; cursor: pointer; }
       .actions { margin-top: 12px; display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; gap: 7px; }
       .actions button, .refresh { min-height: 40px; border: 1px solid #143f36; border-radius: 5px; background: #143f36; color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
       .actions .step { padding: 0; background: #fff; color: #143f36; font-size: 18px; }
@@ -1135,6 +1214,12 @@
         <div class="cover-tools">
           <img class="cover-preview" alt="当前作品封面">
           <div class="cover-copy"><span>对应封面</span><small>只选择图片，保存和发布仍由你确认。</small><button class="cover-fill" type="button">填入封面</button></div>
+        </div>
+        <div class="interaction-tools">
+          <span>章末互动</span>
+          <p class="interaction-preview"></p>
+          <small>先打开平台的“作者有话说/章末寄语”输入区，再单独填入。</small>
+          <button class="interaction-fill" type="button">填入章末互动</button>
         </div>
         <p class="status">正在读取作品…</p>
         <div class="actions">
@@ -1179,6 +1264,7 @@
       Boolean(fields.summary),
       fields.protagonists?.length || 0,
       Boolean(fields.volumeName),
+      Boolean(fields.authorNote),
       Boolean(fields.body),
       Boolean(fields.combinedEditor),
     ].join(":");
@@ -1278,6 +1364,7 @@
 
   function renderChapterMeta() {
     if (state.fields.mode === "volume-manage") {
+      ui.interactionPreview.textContent = "";
       const volume = currentVolume();
       const publishedCount = state.activeStory?.chapters?.filter(
         (chapter) => chapter.volume?.number === volume?.number,
@@ -1291,6 +1378,7 @@
       return;
     }
     if (state.fields.mode === "work-info") {
+      ui.interactionPreview.textContent = "";
       const characters = Number(state.activeStory?.characters) || fullStoryBody(state.activeStory).replace(/\s/g, "").length;
       ui.position.textContent = `新建作品 · ${state.activeStory?.chapters?.length || 0} 个章节`;
       ui.characters.textContent = `${characters.toLocaleString("zh-CN")} 字`;
@@ -1299,6 +1387,7 @@
       return;
     }
     if (state.fields.mode === "short-story") {
+      ui.interactionPreview.textContent = "";
       const body = fullStoryBody(state.activeStory);
       const characters = Number(state.activeStory?.characters) || body.replace(/\s/g, "").length;
       ui.position.textContent = `整篇 · ${state.activeStory?.chapters?.length || 0} 个章节`;
@@ -1309,6 +1398,7 @@
     }
     const chapter = currentChapter();
     if (!chapter) return;
+    ui.interactionPreview.textContent = chapterInteraction(chapter);
     const volumeText = chapter.volume ? `第${chapter.volume.number}卷 · ` : "";
     ui.position.textContent = `${volumeText}${state.activeChapterIndex + 1} / ${state.activeStory.chapters.length}`;
     ui.characters.textContent = `${chapter.characters.toLocaleString("zh-CN")} 字`;
@@ -1358,6 +1448,7 @@
     ui.panel.classList.toggle("work-info", mode === "work-info");
     ui.panel.classList.toggle("short-story", mode === "short-story");
     ui.panel.classList.toggle("volume-manage", mode === "volume-manage");
+    ui.panel.classList.toggle("chapter", mode === "chapter");
     ui.mode.textContent = mode === "work-info"
       ? `${platformName} · 作品信息`
       : mode === "short-story"
@@ -1473,6 +1564,8 @@
       protagonists: shadow.querySelector(".protagonists"),
       coverPreview: shadow.querySelector(".cover-preview"),
       coverFill: shadow.querySelector(".cover-fill"),
+      interactionPreview: shadow.querySelector(".interaction-preview"),
+      interactionFill: shadow.querySelector(".interaction-fill"),
       status: shadow.querySelector(".status"),
       previous: shadow.querySelector(".previous"),
       next: shadow.querySelector(".next"),
@@ -1506,6 +1599,21 @@
       } finally {
         ui.coverFill.disabled = !storyCoverUrl(state.activeStory);
       }
+    });
+    ui.interactionFill.addEventListener("click", () => {
+      const chapter = currentChapter();
+      if (!chapter) return;
+      const result = fillAuthorNote(chapter);
+      setEditorMode(state.fields.mode);
+      if (result.ok) {
+        updateStatus("章末互动已填入，请核对后手动保存或发布。", "success");
+        return;
+      }
+      const platformName = state.fields.platform === "qimao" ? "七猫" : "番茄";
+      updateStatus(
+        `未识别${platformName}的作者互动输入框。请先打开页面上的“有话说”“作者有话说”或“章末寄语”，再重试。`,
+        "error",
+      );
     });
     ui.fill.addEventListener("click", () => {
       const fields = detectEditorFields();
@@ -1608,10 +1716,12 @@
     detectEditorFields,
     fillEditor,
     fillCover,
+    fillAuthorNote,
     fillShortStory,
     fillWorkInfo,
     fillVolumeName,
     formatBodyText,
+    chapterInteraction,
     fullStoryBody,
     normalizeFanqieTitle,
     parseChapterTitle,

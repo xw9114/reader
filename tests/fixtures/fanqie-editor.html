@@ -11,6 +11,8 @@
       #chapter-number { width: 72px; text-align: center; }
       #chapter-title { width: 560px; }
       .chapter-editor { width: 680px; min-height: 360px; padding: 20px; border: 1px solid #ccc; white-space: pre-wrap; }
+      .author-note-field { width: 680px; }
+      #author-note { width: 680px; min-height: 80px; padding: 12px; }
     </style>
   </head>
   <body>
@@ -25,6 +27,11 @@
       <p>章节正文</p>
       <div class="chapter-editor" contenteditable="true" data-placeholder="请输入正文"></div>
     </div>
+    <div class="field author-note-field">
+      <label for="author-note">作者有话说</label>
+      <textarea id="author-note" maxlength="60" placeholder="写一句章末寄语，和读者聊聊"></textarea>
+      <button id="publish-button" type="button">发布</button>
+    </div>
     <script>
       window.__READER_TEST_PATHNAME__ = "/main/writer/123/publish/456";
       window.__READER_TEST_LIBRARY__ = {
@@ -34,9 +41,17 @@
           id: "story-1",
           title: "测试作品",
           date: "2026-09-24",
-          chapters: [{ id: "chapter-1", title: "第1章 测试", body: "第一段。\n\n第二段。", characters: 8 }]
+          chapters: [{
+            id: "chapter-1",
+            title: "第1章 测试",
+            body: "第一段。\n\n第二段。",
+            interaction: "“测试”把故事又往前推了一步。你最期待接下来发生什么？欢迎留言聊聊。",
+            characters: 8
+          }]
         }]
       };
+      window.__FANQIE_PUBLISH_CLICKS__ = 0;
+      document.querySelector("#publish-button").addEventListener("click", () => { window.__FANQIE_PUBLISH_CLICKS__ += 1; });
     </script>
     <script src="../../extension/content.js"></script>
   </body>

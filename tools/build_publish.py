@@ -21,6 +21,7 @@ INVALID_FILENAME_RE = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
 PUBLISHING_AUDIENCES = {"男频", "女频", "方向待定"}
 PUBLISHING_DIMENSION_LIMITS = {"plot": 4, "emotion": 2, "persona": 4, "worldview": 1}
 MAX_VOLUMES = 12
+MAX_INTERACTION_LENGTH = 60
 COVER_EXTENSIONS = {
     ".png": "image/png",
     ".jpg": "image/jpeg",
@@ -168,6 +169,25 @@ def story_downloads(stem: str) -> dict[str, str]:
     }
 
 
+def chapter_interaction(title: str, body: str) -> str:
+    """Create a short plot-linked question for a platform author-note field."""
+    topic = re.sub(
+        r"^(?:第\s*[0-9０-９一二三四五六七八九十百千万零〇两]+\s*[章回节篇]|chapter\s*[0-9０-９]+)\s*[：:、，,.。\-—_]*\s*",
+        "",
+        str(title or ""),
+        flags=re.IGNORECASE,
+    ).strip("《》“”\"'：:、，,.。!?！？—-_ ")
+    topic = topic[:12] or "这一章"
+    source = f"{title}\n{body}"[:6000]
+    if re.search(r"线索|证据|调查|名单|档案|账目|账本|台账|案件|案发|案卷|秘密|真相|嫌疑|签收|复核", source):
+        note = f"本章围绕“{topic}”推进了关键线索。你觉得哪个细节最值得追查？欢迎留言聊聊。"
+    elif re.search(r"爱情|婚|前夫|前妻|恋|喜欢|心动|重逢|感情|爱人", source):
+        note = f"“{topic}”让人物关系有了变化。你更理解谁的选择？欢迎留言聊聊。"
+    else:
+        note = f"“{topic}”把故事又往前推了一步。你最期待接下来发生什么？欢迎留言聊聊。"
+    return note[:MAX_INTERACTION_LENGTH]
+
+
 def split_cover_title(title: str, line_length: int = 7, maximum_lines: int = 4) -> list[str]:
     compact = re.sub(r"\s+", "", title).strip()
     return [compact[index:index + line_length] for index in range(0, len(compact), line_length)][:maximum_lines] or ["未命名作品"]
@@ -286,6 +306,7 @@ def parse_story(path: Path) -> dict:
                 "title": section.title,
                 "body": body,
                 "characters": len(re.sub(r"\s", "", body)),
+                "interaction": chapter_interaction(section.title, body),
             }
         )
 
@@ -350,6 +371,7 @@ def parse_serial_book(serial_dir: Path) -> tuple[dict, list[Path]] | None:
                 "title": inline_to_text(heading.group(2)),
                 "body": body,
                 "characters": len(re.sub(r"\s", "", body)),
+                "interaction": chapter_interaction(inline_to_text(heading.group(2)), body),
                 "volume": {"number": volume["number"], "title": volume["title"]},
             }
         )
