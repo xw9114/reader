@@ -58,6 +58,8 @@ async function openFixture(browser, filename) {
     assert.equal(await qimaoWorkPanel.locator(".fill").textContent(), "填入作品信息");
     assert.equal(await qimaoWorkPanel.locator(".chapter-row").isVisible(), false);
     assert.equal(await qimaoWorkPanel.locator(".type-suggestion").isVisible(), true);
+    assert.equal(await qimaoWorkPanel.locator(".tag-settings").isVisible(), true);
+    assert.equal(await qimaoWorkPanel.locator(".worldview-settings").textContent(), "不选（现代现实）");
     assert.equal(
       await qimaoWorkPanel.locator(".suggestion").textContent(),
       "方向待定｜阅读标签：都市生活｜内容标签：都市生活",
@@ -106,6 +108,26 @@ async function openFixture(browser, filename) {
       curatedType,
       "女频｜阅读标签：都市悬疑｜内容标签：调查取证、现实题材、职场博弈、家庭关系",
     );
+    const curatedSettings = await qimaoWorkPage.evaluate(() => (
+      window.__readerPublisherImporter.suggestTagDimensions({
+        title: "旧城清算",
+        publishingHint: {
+          tagDimensions: {
+            plot: ["推理", "调查取证", "职场博弈", "真相追踪"],
+            emotion: ["亲情", "情感克制"],
+            persona: ["女强", "职场精英", "理性清醒", "坚韧成长"],
+            worldview: ["不选（现代现实）"],
+          },
+        },
+        chapters: [],
+      })
+    ));
+    assert.deepEqual(curatedSettings, {
+      plot: ["推理", "调查取证", "职场博弈", "真相追踪"],
+      emotion: ["亲情", "情感克制"],
+      persona: ["女强", "职场精英", "理性清醒", "坚韧成长"],
+      worldview: ["不选（现代现实）"],
+    });
     await qimaoWorkPanel.locator(".fill").click();
     assert.equal(await qimaoWorkPage.locator("#work-title").inputValue(), "测试七猫作品");
     assert.match(await qimaoWorkPage.locator("#work-summary").inputValue(), /^这是用于七猫作品简介/);
@@ -124,6 +146,9 @@ async function openFixture(browser, filename) {
     assert.equal(await fanqieWorkPanel.locator(".fill").textContent(), "填入作品信息");
     assert.equal(await fanqieWorkPanel.locator(".chapter-row").isVisible(), false);
     assert.equal(await fanqieWorkPanel.locator(".type-suggestion").isVisible(), true);
+    assert.equal(await fanqieWorkPanel.locator(".tag-settings").isVisible(), true);
+    assert.equal(await fanqieWorkPanel.locator(".plot-settings").textContent(), "职场博弈、情感成长");
+    assert.equal(await fanqieWorkPanel.locator(".emotion-settings").textContent(), "爱情");
     assert.equal(await fanqieWorkPanel.locator(".protagonist-suggestion").isVisible(), true);
     assert.equal(await fanqieWorkPanel.locator(".protagonists").textContent(), "周晓雨、陈浩");
     await fanqieWorkPanel.locator(".fill").click();
@@ -142,6 +167,7 @@ async function openFixture(browser, filename) {
     const qimaoChapterPanel = qimaoChapterPage.locator("#reader-fanqie-importer");
     assert.equal(await qimaoChapterPanel.locator(".mode").textContent(), "七猫 · 章节");
     assert.equal(await qimaoChapterPanel.locator(".type-suggestion").isVisible(), false);
+    assert.equal(await qimaoChapterPanel.locator(".tag-settings").isVisible(), false);
     await qimaoChapterPanel.locator(".fill").click();
     assert.equal(await qimaoChapterPage.locator("#chapter-title").inputValue(), "第1章 测试");
     assert.equal(await qimaoChapterPage.locator(".chapter-con .edit-mask h3").count(), 1);

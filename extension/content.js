@@ -593,6 +593,66 @@
     };
   }
 
+  function normalizeSettingValues(values, limit) {
+    if (!Array.isArray(values)) return [];
+    return [...new Set(values.map((value) => String(value).trim()).filter(Boolean))].slice(0, limit);
+  }
+
+  function suggestTagDimensions(story, workType = suggestWorkType(story)) {
+    const configured = story?.publishingHint?.tagDimensions;
+    if (configured && typeof configured === "object") {
+      return {
+        plot: normalizeSettingValues(configured.plot, 4),
+        emotion: normalizeSettingValues(configured.emotion, 2),
+        persona: normalizeSettingValues(configured.persona, 4),
+        worldview: normalizeSettingValues(configured.worldview, 1),
+      };
+    }
+
+    const title = String(story?.title || "");
+    const body = fullStoryBody(story).slice(0, 50000);
+    const source = `${title}\n${body}`;
+    const plot = [];
+    const emotion = [];
+    const persona = [];
+
+    if (workType.primary === "悬疑") plot.push("推理");
+    if (hasTerm(source, ["调查", "追查", "证据", "审计", "档案", "台账"])) plot.push("调查取证");
+    if (hasTerm(source, ["公司", "集团", "职场", "上司", "下属", "项目", "律所"])) plot.push("职场博弈");
+    if (hasTerm(source, ["复仇", "报仇", "逆袭", "反杀"])) plot.push("复仇逆袭");
+    if (workType.primary === "现代言情") plot.push("情感成长");
+    if (workType.primary === "玄幻奇幻") plot.push("升级成长");
+    if (workType.primary === "科幻") plot.push("生存冒险");
+    if (!plot.length) plot.push("现实成长");
+
+    if (hasTerm(source, ["父亲", "母亲", "父母", "家人", "家庭", "亲人"])) emotion.push("亲情");
+    if (hasTerm(source, ["朋友", "友情", "同伴", "战友", "兄弟", "姐妹"])) emotion.push("友情");
+    if (workType.primary === "现代言情" || hasTerm(source, ["爱情", "恋爱", "心动", "婚姻", "前夫", "前妻"])) {
+      emotion.push("爱情");
+    }
+    if (!emotion.length) emotion.push("情感克制");
+
+    if (workType.audience === "女频" && hasTerm(source, ["调查", "审计", "证据", "职场", "事业", "独立", "反击"])) {
+      persona.push("女强");
+    }
+    if (hasTerm(source, ["审计", "律师", "医生", "警察", "刑警", "总监", "工程师"])) persona.push("职场精英");
+    if (hasTerm(source, ["调查", "核验", "复核", "证据", "推理", "分析"])) persona.push("理性清醒");
+    if (hasTerm(source, ["成长", "逆袭", "反击", "坚持", "承担", "保护"])) persona.push("坚韧成长");
+    if (!persona.length) persona.push("请按主角设定选择");
+
+    let worldview = "不选（现代现实）";
+    if (workType.primary === "玄幻奇幻") worldview = "玄幻世界";
+    else if (workType.primary === "古代言情") worldview = "古代世界";
+    else if (workType.primary === "科幻") worldview = workType.secondary === "末世危机" ? "末世" : "未来世界";
+
+    return {
+      plot: normalizeSettingValues(plot, 4),
+      emotion: normalizeSettingValues(emotion, 2),
+      persona: normalizeSettingValues(persona, 4),
+      worldview: [worldview],
+    };
+  }
+
   function suggestWorkType(story) {
     const title = String(story?.title || "");
     const body = fullStoryBody(story).slice(0, 50000);
@@ -855,6 +915,13 @@
       .protagonist-suggestion span { display: block; color: #71807b; font-size: 11px; }
       .protagonist-suggestion strong { display: block; margin-top: 5px; color: #143f36; font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
       .protagonist-suggestion small { display: block; margin-top: 4px; color: #8a9692; font-size: 10px; line-height: 1.4; }
+      .tag-settings { display: none; margin-top: 8px; padding: 9px 10px; border: 1px solid #cad4d0; border-radius: 5px; background: #fff; }
+      .panel.work-info .tag-settings { display: block; }
+      .tag-settings > span { display: block; color: #71807b; font-size: 11px; }
+      .settings-grid { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 5px 8px; margin-top: 6px; align-items: start; }
+      .settings-grid b { color: #71807b; font-size: 11px; font-weight: 500; line-height: 1.55; }
+      .settings-grid strong { color: #143f36; font-size: 12px; font-weight: 650; line-height: 1.55; overflow-wrap: anywhere; }
+      .tag-settings small { display: block; margin-top: 5px; color: #8a9692; font-size: 10px; line-height: 1.4; }
       .actions { margin-top: 12px; display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; gap: 7px; }
       .actions button, .refresh { min-height: 40px; border: 1px solid #143f36; border-radius: 5px; background: #143f36; color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
       .actions .step { padding: 0; background: #fff; color: #143f36; font-size: 18px; }
@@ -872,7 +939,17 @@
         <label>作品<select class="story"></select></label>
         <label class="chapter-row">章节<select class="chapter"></select></label>
         <div class="meta"><span class="position"></span><span class="characters"></span></div>
-        <div class="type-suggestion"><span>建议作品类型</span><strong class="suggestion"></strong><small>根据标题和正文粗略判断，请在七猫选择最接近的选项。</small></div>
+        <div class="type-suggestion"><span>建议作品类型</span><strong class="suggestion"></strong><small>根据标题和正文粗略判断，请在平台选择最接近的选项。</small></div>
+        <div class="tag-settings">
+          <span>番茄内容标签设定</span>
+          <div class="settings-grid">
+            <b>情节 · 4</b><strong class="plot-settings"></strong>
+            <b>情感 · 2</b><strong class="emotion-settings"></strong>
+            <b>人设 · 4</b><strong class="persona-settings"></strong>
+            <b>世界观 · 1</b><strong class="worldview-settings"></strong>
+          </div>
+          <small>按页面搜索最接近的标签；“不选”表示现实背景无需强加特殊世界观。</small>
+        </div>
         <div class="protagonist-suggestion"><span>建议主角名</span><strong class="protagonists"></strong><small>根据正文中的姓名出现频率提取，请核对后使用。</small></div>
         <p class="status">正在读取作品…</p>
         <div class="actions">
@@ -1012,7 +1089,13 @@
 
   function renderWorkTypeSuggestion() {
     if (!ui?.suggestion || !state.activeStory) return;
-    ui.suggestion.textContent = suggestWorkType(state.activeStory).text;
+    const workType = suggestWorkType(state.activeStory);
+    const settings = suggestTagDimensions(state.activeStory, workType);
+    ui.suggestion.textContent = workType.text;
+    ui.plotSettings.textContent = settings.plot.length ? settings.plot.join("、") : "不选";
+    ui.emotionSettings.textContent = settings.emotion.length ? settings.emotion.join("、") : "不选";
+    ui.personaSettings.textContent = settings.persona.length ? settings.persona.join("、") : "不选";
+    ui.worldviewSettings.textContent = settings.worldview.length ? settings.worldview.join("、") : "不选";
     const protagonists = suggestProtagonists(state.activeStory);
     ui.protagonists.textContent = protagonists.length ? protagonists.join("、") : "未识别到明确人名，请手动填写";
   }
@@ -1108,6 +1191,10 @@
       position: shadow.querySelector(".position"),
       characters: shadow.querySelector(".characters"),
       suggestion: shadow.querySelector(".suggestion"),
+      plotSettings: shadow.querySelector(".plot-settings"),
+      emotionSettings: shadow.querySelector(".emotion-settings"),
+      personaSettings: shadow.querySelector(".persona-settings"),
+      worldviewSettings: shadow.querySelector(".worldview-settings"),
       protagonists: shadow.querySelector(".protagonists"),
       status: shadow.querySelector(".status"),
       previous: shadow.querySelector(".previous"),
@@ -1211,6 +1298,7 @@
     storySynopsis,
     suggestProtagonists,
     suggestWorkType,
+    suggestTagDimensions,
   };
   globalThis.__readerPublisherImporter = globalThis.__readerFanqieImporter;
   if (document.readyState === "loading") {

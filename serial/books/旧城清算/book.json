@@ -10,7 +10,13 @@
   "publishingHint": {
     "audience": "女频",
     "readingTags": ["都市悬疑"],
-    "contentTags": ["调查取证", "现实题材", "职场博弈", "家庭关系"]
+    "contentTags": ["调查取证", "现实题材", "职场博弈", "家庭关系"],
+    "tagDimensions": {
+      "plot": ["推理", "调查取证", "职场博弈", "真相追踪"],
+      "emotion": ["亲情", "情感克制"],
+      "persona": ["女强", "职场精英", "理性清醒", "坚韧成长"],
+      "worldview": ["不选（现代现实）"]
+    }
   },
   "createdAt": "2026-09-20T05:05:40.031Z",
   "updatedAt": "2026-09-20T05:35:52.765Z"
