@@ -13,6 +13,9 @@ const elements = {
   emptyState: document.querySelector("#emptyState"),
   storyDate: document.querySelector("#storyDate"),
   storyTitle: document.querySelector("#storyTitle"),
+  storyCover: document.querySelector("#storyCover"),
+  downloadCover: document.querySelector("#downloadCover"),
+  downloadCoverText: document.querySelector("#downloadCoverText"),
   extensionDownload: document.querySelector("#extensionDownload"),
   downloadStory: document.querySelector("#downloadStory"),
   downloadMarkdown: document.querySelector("#downloadMarkdown"),
@@ -111,6 +114,13 @@ function renderEditor() {
   elements.actionBar.hidden = false;
   elements.storyDate.textContent = story.date || "未标日期";
   elements.storyTitle.textContent = story.title;
+  const coverUrl = typeof story.cover === "string" ? story.cover : story.cover?.url;
+  elements.storyCover.src = coverUrl || "";
+  elements.storyCover.alt = `${story.title}封面`;
+  elements.downloadCover.href = coverUrl || "#";
+  elements.downloadCover.download = `${story.title}-封面`;
+  elements.downloadCoverText.href = coverUrl || "#";
+  elements.downloadCoverText.download = `${story.title}-封面`;
   const downloads = story.downloads || { txt: story.download };
   elements.downloadStory.href = downloads.txt;
   elements.downloadStory.download = `${story.title}.txt`;

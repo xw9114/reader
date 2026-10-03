@@ -7,10 +7,11 @@ on:
       - "daily/**"
       - "serial/published/**"
       - "serial/books/**/book.json"
+      - "covers/**"
       - "extension/**"
       - "site/**"
       - "tests/**"
-      - "tools/build_publish.py"
+      - "tools/**"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 

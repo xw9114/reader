@@ -47,14 +47,38 @@ class BuildPublishTests(unittest.TestCase):
             markdown = output / stories[0]["downloads"]["md"]
             story_zip = output / stories[0]["downloads"]["zip"]
             extension_zip = output / payload["extensionDownload"]
+            cover = output / payload["stories"][0]["cover"]["url"]
             self.assertEqual(payload["storyCount"], 1)
             self.assertEqual(payload["stories"][0]["chapters"][0]["body"], "正文内容。")
             self.assertTrue(txt.startswith(b"\xef\xbb\xbf"))
             self.assertTrue(markdown.exists())
+            self.assertTrue(cover.exists())
+            self.assertEqual(payload["stories"][0]["cover"]["source"], "generated-default")
+            self.assertIn("测试小说", cover.read_text(encoding="utf-8"))
             with zipfile.ZipFile(story_zip) as archive:
                 self.assertTrue(any(name.endswith("01-测试小说.txt") for name in archive.namelist()))
             with zipfile.ZipFile(extension_zip) as archive:
                 self.assertIn("manifest.json", archive.namelist())
+
+    def test_build_uses_matching_custom_cover(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "daily"
+            site = root / "site"
+            covers = root / "covers"
+            output = root / "dist"
+            source.mkdir()
+            site.mkdir()
+            covers.mkdir()
+            (source / "2026-09-19-example.md").write_text("# 测试小说\n\n正文。\n", encoding="utf-8")
+            (site / "index.html").write_text("ok", encoding="utf-8")
+            image = b"\x89PNG\r\n\x1a\ncustom"
+            (covers / "2026-09-19-example.png").write_bytes(image)
+
+            stories = build(source, site, output, cover_dir=covers)
+
+            self.assertEqual(stories[0]["cover"]["source"], "custom")
+            self.assertEqual((output / stories[0]["cover"]["url"]).read_bytes(), image)
 
     def test_build_groups_serial_chapters_as_one_book(self):
         with tempfile.TemporaryDirectory() as directory:

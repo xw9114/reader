@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import html
 import json
 import re
@@ -20,6 +21,13 @@ INVALID_FILENAME_RE = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
 PUBLISHING_AUDIENCES = {"男频", "女频", "方向待定"}
 PUBLISHING_DIMENSION_LIMITS = {"plot": 4, "emotion": 2, "persona": 4, "worldview": 1}
 MAX_VOLUMES = 12
+COVER_EXTENSIONS = {
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".webp": "image/webp",
+    ".svg": "image/svg+xml",
+}
 
 
 @dataclass
@@ -157,6 +165,67 @@ def story_downloads(stem: str) -> dict[str, str]:
         "txt": f"downloads/{stem}.txt",
         "md": f"downloads/{stem}.md",
         "zip": f"downloads/{stem}.zip",
+    }
+
+
+def split_cover_title(title: str, line_length: int = 7, maximum_lines: int = 4) -> list[str]:
+    compact = re.sub(r"\s+", "", title).strip()
+    return [compact[index:index + line_length] for index in range(0, len(compact), line_length)][:maximum_lines] or ["未命名作品"]
+
+
+def fallback_cover_svg(story: dict) -> str:
+    """Create a deterministic vertical cover when no custom image exists."""
+    digest = hashlib.sha256(str(story["id"]).encode("utf-8")).digest()
+    hue = int.from_bytes(digest[:2], "big") % 360
+    accent_hue = (hue + 38 + digest[2] % 60) % 360
+    title_lines = split_cover_title(str(story.get("title") or "未命名作品"))
+    title_markup = "".join(
+        f'<text x="72" y="{330 + index * 78}" fill="#fffaf0" font-size="58" font-weight="700">{html.escape(line)}</text>'
+        for index, line in enumerate(title_lines)
+    )
+    date = html.escape(str(story.get("date") or "READER"))
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="768" height="1024" viewBox="0 0 768 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="hsl({hue} 48% 16%)"/>
+      <stop offset="1" stop-color="hsl({accent_hue} 58% 30%)"/>
+    </linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="34"/></filter>
+  </defs>
+  <rect width="768" height="1024" fill="url(#bg)"/>
+  <circle cx="650" cy="170" r="210" fill="hsl({accent_hue} 80% 66% / .24)" filter="url(#blur)"/>
+  <circle cx="130" cy="880" r="250" fill="hsl({hue} 84% 72% / .16)" filter="url(#blur)"/>
+  <path d="M0 760 C180 630 310 820 470 690 C590 592 675 625 768 560 L768 1024 L0 1024 Z" fill="#071c19" opacity=".42"/>
+  <rect x="72" y="252" width="54" height="7" rx="3.5" fill="hsl({accent_hue} 88% 68%)"/>
+  {title_markup}
+  <text x="72" y="905" fill="#dce9e5" font-size="24" letter-spacing="5">READER ORIGINAL</text>
+  <text x="72" y="950" fill="#aac3bc" font-size="20">{date}</text>
+</svg>'''
+
+
+def attach_story_cover(story: dict, cover_dir: Path, output_dir: Path) -> None:
+    destination_dir = output_dir / "covers"
+    destination_dir.mkdir(parents=True, exist_ok=True)
+    custom = next(
+        (cover_dir / f"{story['id']}{extension}" for extension in COVER_EXTENSIONS if (cover_dir / f"{story['id']}{extension}").is_file()),
+        None,
+    )
+    if custom is not None:
+        extension = custom.suffix.lower()
+        destination = destination_dir / f"{story['id']}{extension}"
+        shutil.copy2(custom, destination)
+        source = "custom"
+    else:
+        extension = ".svg"
+        destination = destination_dir / f"{story['id']}{extension}"
+        destination.write_text(fallback_cover_svg(story), encoding="utf-8")
+        source = "generated-default"
+    story["cover"] = {
+        "url": destination.relative_to(output_dir).as_posix(),
+        "mimeType": COVER_EXTENSIONS[extension],
+        "source": source,
+        "width": 768,
+        "height": 1024,
     }
 
 
@@ -364,8 +433,10 @@ def build(
     output_dir: Path,
     serial_dir: Path | None = None,
     extension_dir: Path | None = None,
+    cover_dir: Path | None = None,
 ) -> list[dict]:
     serial_dir = serial_dir or source_dir.parent / "serial"
+    cover_dir = cover_dir or source_dir.parent / "covers"
     daily_inputs = [(parse_story(path), [path]) for path in sorted(source_dir.glob("*.md"), reverse=True)]
     serial_input = parse_serial_book(serial_dir)
     story_inputs = ([serial_input] if serial_input else []) + daily_inputs
@@ -379,6 +450,7 @@ def build(
     downloads_dir = output_dir / "downloads"
     downloads_dir.mkdir(parents=True, exist_ok=True)
     for story, source_paths in story_inputs:
+        attach_story_cover(story, cover_dir, output_dir)
         write_story_downloads(story, source_paths, output_dir)
 
     extension_download = None
@@ -406,9 +478,10 @@ def main() -> None:
     parser.add_argument("--site", type=Path, default=Path("site"))
     parser.add_argument("--output", type=Path, default=Path("dist"))
     parser.add_argument("--extension", type=Path, default=Path("extension"))
+    parser.add_argument("--covers", type=Path, default=Path("covers"))
     args = parser.parse_args()
 
-    stories = build(args.source, args.site, args.output, args.serial, args.extension)
+    stories = build(args.source, args.site, args.output, args.serial, args.extension, args.covers)
     chapter_count = sum(len(story["chapters"]) for story in stories)
     print(f"Built {len(stories)} stories and {chapter_count} chapters into {args.output}")
 

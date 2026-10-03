@@ -41,6 +41,13 @@ async function openFixture(browser, filename) {
     assert.equal(await shortStoryPage.locator(".short-story-body p").first().textContent(), "　　第一段。");
     assert.match(await shortStoryPage.locator(".short-story-body").innerText(), /开篇钩子[\s\S]*第1章 相遇/);
     assert.match(await shortStoryPanel.locator(".status").textContent(), /整篇正文已填入/);
+    assert.equal(await shortStoryPanel.locator(".cover-tools").isVisible(), true);
+    await shortStoryPanel.locator(".cover-fill").click();
+    assert.deepEqual(
+      await shortStoryPage.locator("#cover-upload").evaluate((input) => ({ count: input.files.length, type: input.files[0]?.type, name: input.files[0]?.name })),
+      { count: 1, type: "image/png", name: "测试短故事-封面.png" },
+    );
+    assert.match(await shortStoryPanel.locator(".status").textContent(), /已送入上传框/);
     await shortStoryPage.close();
 
     const combinedPage = await openFixture(browser, "fanqie-short-story-combined-editor.html");

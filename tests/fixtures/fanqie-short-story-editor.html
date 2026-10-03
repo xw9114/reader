@@ -17,6 +17,7 @@
       <div class="short-story-body" contenteditable="true" role="textbox" data-placeholder="请输入正文"></div>
       <section class="publishing-fields">
         <p>封面设置</p>
+        <label>封面制作<input id="cover-upload" type="file" accept="image/png,image/jpeg"></label>
         <p>是否使用AI</p>
         <p>作品分类</p>
         <p>试读比例</p>
@@ -33,6 +34,7 @@
           title: "测试短故事",
           date: "2026-10-02",
           characters: 18,
+          cover: { url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M/wHwAF/gL+Xz6WAAAAAElFTkSuQmCC", mimeType: "image/png", source: "test" },
           fullText: "开篇钩子\n\n第一段。\n\n第1章 相遇\n\n第二段。",
           chapters: [
             { id: "chapter-1", title: "开篇钩子", body: "第一段。", characters: 4 },

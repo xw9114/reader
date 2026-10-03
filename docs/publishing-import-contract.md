@@ -12,7 +12,8 @@ python tools/build_publish.py \
   --serial serial \
   --site site \
   --output dist \
-  --extension extension
+  --extension extension \
+  --covers covers
 ```
 
 ```python
@@ -22,6 +23,7 @@ build(
     output_dir: Path,
     serial_dir: Path | None = None,
     extension_dir: Path | None = None,
+    cover_dir: Path | None = None,
 ) -> list[dict]
 ```
 
@@ -30,6 +32,8 @@ The extension requests the library through this message:
 ```json
 { "type": "FETCH_LIBRARY" }
 ```
+
+It requests a same-origin Reader cover through `{ "type": "FETCH_COVER", "coverUrl": "covers/serial-main.svg" }`. The background returns a checked `data:image/*` URL and refuses cross-origin cover proxying.
 
 ## 3. Contracts
 
@@ -53,6 +57,13 @@ The extension requests the library through this message:
         "zip": "downloads/serial-book.zip"
       },
       "characters": 12000,
+      "cover": {
+        "url": "covers/serial-main.svg",
+        "mimeType": "image/svg+xml",
+        "source": "generated-default",
+        "width": 768,
+        "height": 1024
+      },
       "volumes": [
         {"number": 1, "title": "名字被谁写走", "startChapter": 1, "endChapter": 25}
       ],
@@ -96,7 +107,7 @@ or:
 { "ok": false, "error": "HTTP 404" }
 ```
 
-The content script detects Fanqie and Qimao from the current hostname, then detects the current editor. Fanqie supports chapter, short-story, work-information, and volume-management modes. Qimao supports work-information, chapter, and whole-story short-story modes. Fanqie's `/book-info/` route is work-information mode and fills the book title, a reviewable synopsis draft, and up to two labeled protagonist-name inputs. Fanqie's `/chapter-manage/` route with chapter-management and volume controls is volume-management mode. It displays InkOS volumes, chapter ranges, and the number of locally published chapters in the selected volume. After the user opens the platform's edit/new-volume form, the extension fills only the selected volume name and leaves save confirmation to the user. In Fanqie chapter mode, a leading chapter-number prefix such as `第1章` is split between the number and title fields. Fanqie's category and publishing fields belong to the same short-story page, so their presence must never change the editor mode. Short-story mode displays the local type suggestion while keeping title/body import available. Qimao short-story mode is detected from its persistent editor instructions and imports all local chapters in one action, rendering every chapter title as an `<h3>` followed by its formatted body. In Qimao chapter mode without a separate number field, the full chapter title is preserved and is also inserted at the start of the central editor as an `<h3>` heading. Qimao chapter body detection first selects the live `.q-contenteditable.edit-mask` inside `.chapter-con`, avoiding the sibling search, line, contrast, audit, author-note, and sidebar editors. It then falls back to semantic scoring and finally the largest central editable area. Work-information mode fills the story title and a reviewable synopsis draft derived from the first non-empty chapter body. It displays the InkOS publishing classification from `book.json`, plus up to two protagonist names inferred from repeated name-like text. Only legacy stories without `publishingHint` use title/body classification, and the panel identifies which source was used. When labeled protagonist inputs are found, those names are filled for user review. Imported fiction body text uses two ideographic spaces at the start of prose paragraphs, keeps one blank line between paragraphs, promotes recognized chapter markers to heading nodes, and normalizes common ASCII dialogue punctuation to Chinese typography. Target reader, category, tags, status, cover, final creation, volume saving, and publishing remain with the user. It must never click the final save, next, create, modify, or publish action.
+The content script detects Fanqie and Qimao from the current hostname, then detects the current editor. Fanqie supports chapter, short-story, work-information, and volume-management modes. Qimao supports work-information, chapter, and whole-story short-story modes. Fanqie's `/book-info/` route is work-information mode and fills the book title, a reviewable synopsis draft, and up to two labeled protagonist-name inputs. Fanqie's `/chapter-manage/` route with chapter-management and volume controls is volume-management mode. It displays InkOS volumes, chapter ranges, and the number of locally published chapters in the selected volume. After the user opens the platform's edit/new-volume form, the extension fills only the selected volume name and leaves save confirmation to the user. In Fanqie chapter mode, a leading chapter-number prefix such as `第1章` is split between the number and title fields. Fanqie's category and publishing fields belong to the same short-story page, so their presence must never change the editor mode. Short-story mode displays the local type suggestion while keeping title/body import available. Qimao short-story mode is detected from its persistent editor instructions and imports all local chapters in one action, rendering every chapter title as an `<h3>` followed by its formatted body. In Qimao chapter mode without a separate number field, the full chapter title is preserved and is also inserted at the start of the central editor as an `<h3>` heading. Qimao chapter body detection first selects the live `.q-contenteditable.edit-mask` inside `.chapter-con`, avoiding the sibling search, line, contrast, audit, author-note, and sidebar editors. It then falls back to semantic scoring and finally the largest central editable area. Work-information mode fills the story title and a reviewable synopsis draft derived from the first non-empty chapter body. It displays the InkOS publishing classification from `book.json`, plus up to two protagonist names inferred from repeated name-like text. Only legacy stories without `publishingHint` use title/body classification, and the panel identifies which source was used. When labeled protagonist inputs are found, those names are filled for user review. Imported fiction body text uses two ideographic spaces at the start of prose paragraphs, keeps one blank line between paragraphs, promotes recognized chapter markers to heading nodes, and normalizes common ASCII dialogue punctuation to Chinese typography. Work-information and short-story modes display the story's dedicated cover and can place it into a detected image file input. SVG defaults are converted to PNG in-browser before assignment. The extension dispatches input/change events but never clicks the platform's save, next, create, modify, or publish action.
 
 ## 4. Validation & Error Matrix
 
@@ -108,6 +119,9 @@ The content script detects Fanqie and Qimao from the current hostname, then dete
 | Serial publishing metadata | Schema version 1; source `inkos`; 1–2 reading tags; 1–4 content tags; plot ≤ 4, emotion ≤ 2, persona ≤ 4, worldview ≤ 1 | Build raises `ValueError`; the extension never silently reclassifies the serial from prose |
 | Serial volume plan | 1–12 volumes; consecutive numbers; chapter ranges continuously cover chapter 1 through `targetChapters`; names contain 1–30 characters | Build raises `ValueError`; chapters are never assigned to an ambiguous or missing volume |
 | Extension source | `extension/` exists | Bundle path is `null` when omitted |
+| Story cover | Matching `covers/<story-id>.(png|jpg|jpeg|webp|svg)` | A deterministic 768×1024 SVG is generated for that story |
+| Cover fetch | Same origin as configured Reader `data.json`; image MIME; ≤ 12 MiB | Request is rejected and no file input is changed |
+| Cover upload | Image file input associated with cover controls | The image is assigned and events dispatched; platform save remains manual |
 | Remote library | HTTP success and `stories` is an array | Panel shows a read error and does not fill |
 | Editor detection | Visible title and body fields both found | Panel lists missing fields and does not partially fill |
 | Fanqie editor mode | `/publish-short/` is short-story; `/publish/` is chapter | URL takes priority over DOM heuristics, preventing the two editors from being reversed |
@@ -134,6 +148,7 @@ The content script detects Fanqie and Qimao from the current hostname, then dete
   - Assert daily TXT starts with a UTF-8 BOM.
   - Assert story ZIP contains per-chapter TXT files.
   - Assert extension ZIP contains `manifest.json`.
+  - Assert every story has a cover artifact and custom matching covers override the generated default.
   - Assert serial chapters remain grouped and ordered.
 - Browser fixture `tests/fixtures/fanqie-editor.html`
   - Assert `/publish/` is detected as chapter mode.
@@ -150,6 +165,7 @@ The content script detects Fanqie and Qimao from the current hostname, then dete
   - Assert chapter navigation is hidden and the action reads `填入整篇短故事`.
   - Assert the story title and all merged chapter content are filled.
   - Assert a combined rich-text editor receives one title heading followed by body paragraphs.
+  - Assert the current story cover is placed into the cover file input without clicking any save or publish control.
 - Browser fixture `tests/fixtures/fanqie-work-editor.html`
   - Assert `/book-info/` is detected as Fanqie work-information mode rather than chapter mode.
   - Assert the book title, synopsis, and labeled protagonist inputs are filled.

@@ -122,6 +122,23 @@
     return score;
   }
 
+  function coverInputScore(element) {
+    const text = fieldText(element);
+    let score = 0;
+    if (!(element instanceof HTMLInputElement) || element.type !== "file" || element.disabled) return -100;
+    if (/image/.test(element.accept || "")) score += 12;
+    if (/封面|cover|上传图片|选择图片|图片上传/.test(text)) score += 20;
+    if (/正文插图|头像|证件|附件/.test(text)) score -= 20;
+    return score;
+  }
+
+  function findCoverInput() {
+    return [...document.querySelectorAll("input[type='file']")]
+      .map((element) => ({ element, score: coverInputScore(element) }))
+      .filter((candidate) => candidate.score > 0)
+      .sort((left, right) => right.score - left.score)[0]?.element || null;
+  }
+
   function protagonistOwnText(element) {
     return ["placeholder", "aria-label", "name", "id", "class", "data-placeholder"]
       .map((name) => element.getAttribute(name) || "")
@@ -959,6 +976,64 @@
     return { ok: true, titleTruncated: title.truncated, titleLimit: limit, volume };
   }
 
+  function storyCoverUrl(story) {
+    if (typeof story?.cover === "string") return story.cover;
+    return typeof story?.cover?.url === "string" ? story.cover.url : "";
+  }
+
+  async function fetchCoverDataUrl(story) {
+    const coverUrl = storyCoverUrl(story);
+    if (!coverUrl) throw new Error("当前作品没有封面");
+    if (coverUrl.startsWith("data:image/")) return coverUrl;
+    const response = await chrome.runtime.sendMessage({ type: "FETCH_COVER", coverUrl });
+    if (!response?.ok || !response.dataUrl) throw new Error(response?.error || "封面读取失败");
+    return response.dataUrl;
+  }
+
+  async function svgBlobToPng(blob) {
+    const objectUrl = URL.createObjectURL(blob);
+    try {
+      const image = new Image();
+      image.decoding = "async";
+      image.src = objectUrl;
+      await image.decode();
+      const canvas = document.createElement("canvas");
+      canvas.width = 768;
+      canvas.height = 1024;
+      const context = canvas.getContext("2d");
+      context.fillStyle = "#ffffff";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      return await new Promise((resolve, reject) => {
+        canvas.toBlob((result) => result ? resolve(result) : reject(new Error("SVG 封面转 PNG 失败")), "image/png", 0.94);
+      });
+    } finally {
+      URL.revokeObjectURL(objectUrl);
+    }
+  }
+
+  async function coverFile(story) {
+    const dataUrl = await fetchCoverDataUrl(story);
+    let blob = await (await fetch(dataUrl)).blob();
+    if (blob.type === "image/svg+xml") blob = await svgBlobToPng(blob);
+    if (!blob.type.startsWith("image/")) throw new Error("封面数据不是图片");
+    const extension = blob.type === "image/jpeg" ? "jpg" : blob.type === "image/webp" ? "webp" : "png";
+    const safeTitle = String(story?.title || "reader-cover").replace(/[<>:"/\\|?*\x00-\x1f]/g, "_").slice(0, 60);
+    return new File([blob], `${safeTitle}-封面.${extension}`, { type: blob.type, lastModified: Date.now() });
+  }
+
+  async function fillCover(story) {
+    const input = findCoverInput();
+    if (!input) return { ok: false, inputFound: false, coverFound: Boolean(storyCoverUrl(story)) };
+    const file = await coverFile(story);
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    input.files = transfer.files;
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+    return { ok: true, inputFound: true, coverFound: true, file };
+  }
+
   const panelMarkup = `
     <style>
       :host { all: initial; }
@@ -993,6 +1068,12 @@
       .settings-grid b { color: #71807b; font-size: 11px; font-weight: 500; line-height: 1.55; }
       .settings-grid strong { color: #143f36; font-size: 12px; font-weight: 650; line-height: 1.55; overflow-wrap: anywhere; }
       .tag-settings small { display: block; margin-top: 5px; color: #8a9692; font-size: 10px; line-height: 1.4; }
+      .cover-tools { display: none; margin-top: 10px; padding: 9px; grid-template-columns: 54px minmax(0, 1fr); gap: 10px; align-items: center; border: 1px solid #cad4d0; border-radius: 5px; background: #fff; }
+      .panel.work-info .cover-tools, .panel.short-story .cover-tools { display: grid; }
+      .cover-preview { width: 54px; height: 72px; display: block; object-fit: cover; border-radius: 3px; background: #dce5e1; }
+      .cover-copy span { display: block; color: #71807b; font-size: 11px; }
+      .cover-copy small { display: block; margin-top: 3px; color: #8a9692; font-size: 10px; line-height: 1.35; }
+      .cover-fill { width: 100%; min-height: 34px; margin-top: 7px; border: 1px solid #143f36; border-radius: 4px; background: #fff; color: #143f36; font: inherit; font-size: 11px; font-weight: 650; cursor: pointer; }
       .actions { margin-top: 12px; display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; gap: 7px; }
       .actions button, .refresh { min-height: 40px; border: 1px solid #143f36; border-radius: 5px; background: #143f36; color: #fff; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
       .actions .step { padding: 0; background: #fff; color: #143f36; font-size: 18px; }
@@ -1025,6 +1106,10 @@
           <small>按页面搜索最接近的标签；“不选”表示现实背景无需强加特殊世界观。</small>
         </div>
         <div class="protagonist-suggestion"><span>建议主角名</span><strong class="protagonists"></strong><small>根据正文中的姓名出现频率提取，请核对后使用。</small></div>
+        <div class="cover-tools">
+          <img class="cover-preview" alt="当前作品封面">
+          <div class="cover-copy"><span>对应封面</span><small>只选择图片，保存和发布仍由你确认。</small><button class="cover-fill" type="button">填入封面</button></div>
+        </div>
         <p class="status">正在读取作品…</p>
         <div class="actions">
           <button class="step previous" type="button" aria-label="上一章">←</button>
@@ -1223,6 +1308,23 @@
     ui.protagonists.textContent = protagonists.length ? protagonists.join("、") : "未识别到明确人名，请手动填写";
   }
 
+  let coverPreviewRequest = 0;
+  async function renderCoverPreview() {
+    const request = ++coverPreviewRequest;
+    ui.coverPreview.removeAttribute("src");
+    ui.coverFill.disabled = !storyCoverUrl(state.activeStory);
+    if (!storyCoverUrl(state.activeStory)) {
+      ui.coverPreview.alt = "当前作品没有封面";
+      return;
+    }
+    try {
+      const dataUrl = await fetchCoverDataUrl(state.activeStory);
+      if (request === coverPreviewRequest) ui.coverPreview.src = dataUrl;
+    } catch {
+      if (request === coverPreviewRequest) ui.coverPreview.alt = "封面读取失败";
+    }
+  }
+
   function setEditorMode(mode) {
     const platformName = state.fields.platform === "qimao" ? "七猫" : "番茄";
     const wholeStory = mode === "short-story" || mode === "work-info" || mode === "volume-manage";
@@ -1246,6 +1348,7 @@
           : "填入当前章节";
     renderChapterMeta();
     renderWorkTypeSuggestion();
+    renderCoverPreview();
   }
 
   function selectStory(storyId) {
@@ -1342,6 +1445,8 @@
       personaSettings: shadow.querySelector(".persona-settings"),
       worldviewSettings: shadow.querySelector(".worldview-settings"),
       protagonists: shadow.querySelector(".protagonists"),
+      coverPreview: shadow.querySelector(".cover-preview"),
+      coverFill: shadow.querySelector(".cover-fill"),
       status: shadow.querySelector(".status"),
       previous: shadow.querySelector(".previous"),
       next: shadow.querySelector(".next"),
@@ -1355,6 +1460,27 @@
     ui.previous.addEventListener("click", () => selectChapter(state.activeChapterIndex - 1));
     ui.next.addEventListener("click", () => selectChapter(state.activeChapterIndex + 1));
     ui.refresh.addEventListener("click", loadLibrary);
+    ui.coverFill.addEventListener("click", async () => {
+      ui.coverFill.disabled = true;
+      updateStatus("正在读取并准备当前作品封面…");
+      try {
+        const result = await fillCover(state.activeStory);
+        if (!result.ok) {
+          updateStatus(
+            result.coverFound
+              ? "未识别封面上传框。请先点击页面上的“封面制作”“选择封面”或加号，再重试。"
+              : "当前作品没有可用封面。",
+            "error",
+          );
+        } else {
+          updateStatus(`封面“${result.file.name}”已送入上传框，请预览核对后手动保存。`, "success");
+        }
+      } catch (error) {
+        updateStatus(`封面填入失败：${error.message}`, "error");
+      } finally {
+        ui.coverFill.disabled = !storyCoverUrl(state.activeStory);
+      }
+    });
     ui.fill.addEventListener("click", () => {
       const fields = detectEditorFields();
       setEditorMode(fields.mode);
@@ -1455,6 +1581,7 @@
     bodyToHtml,
     detectEditorFields,
     fillEditor,
+    fillCover,
     fillShortStory,
     fillWorkInfo,
     fillVolumeName,

@@ -11,7 +11,22 @@
 
 旧短篇的首个一级标题作为作品名，二级标题作为章节名。长篇章节的一级标题作为章节名，作品名来自 `serial/books/*/book.json`。
 
-发布页同时提供整篇 TXT、原始 Markdown、逐章 ZIP 和电脑端导入扩展。
+发布页同时提供整篇 TXT、原始 Markdown、逐章 ZIP、每篇作品对应的竖版封面和电脑端导入扩展。扩展在番茄、七猫的作品信息或短故事页面中显示封面预览；打开平台封面上传控件后，点击“填入封面”即可选择当前作品的图片，最终保存仍由作者确认。
+
+构建器会为没有自定义图片的作品生成独立默认封面。要替换封面，可以把 `PNG/JPEG/WebP/SVG` 放进 `covers/`，文件名使用作品 `id`（例如 `serial-main.png`），然后重新构建。
+
+也可以使用 OpenAI 兼容的图片接口批量生成封面：
+
+```powershell
+python tools/build_publish.py
+$env:READER_IMAGE_BASE_URL = "https://你的图片接口/v1"
+$env:READER_IMAGE_MODEL = "你的图片模型"
+$env:READER_IMAGE_API_KEY = "你的密钥"
+python tools/generate_covers.py
+python tools/build_publish.py
+```
+
+可通过 `--story-id serial-main` 只生成指定作品；已有图片默认跳过，需重做时加 `--force`。当前服务器已有的文本模型网关不保证开放图片端点，因此图片模型和密钥独立配置。
 
 ## 本地预览
 
