@@ -249,7 +249,30 @@
     return score;
   }
 
-  function authorNoteScore(element) {
+  const AUTHOR_NOTE_TEXT_RE = /作者有话说|作者说|有话说|章节寄语|章末寄语|章末互动|读者互动/;
+
+  function authorNoteAnchors() {
+    return [...document.querySelectorAll("h1, h2, h3, h4, label, legend, strong, span, p, div")]
+      .filter(isVisible)
+      .filter((element) => {
+        const text = element.textContent?.replace(/\s+/g, "").trim() || "";
+        return text.length > 0 && text.length <= 120 && AUTHOR_NOTE_TEXT_RE.test(text);
+      });
+  }
+
+  function isNearAuthorNoteAnchor(element, anchors) {
+    const rect = element.getBoundingClientRect();
+    return anchors.some((anchor) => {
+      if (anchor === element || anchor.contains(element)) return true;
+      const anchorRect = anchor.getBoundingClientRect();
+      const verticalDistance = rect.top - anchorRect.bottom;
+      const horizontallyRelated = rect.right >= anchorRect.left - 80
+        && rect.left <= anchorRect.right + Math.max(900, rect.width);
+      return verticalDistance >= -24 && verticalDistance <= 560 && horizontallyRelated;
+    });
+  }
+
+  function authorNoteScore(element, anchors) {
     const attributes = ["placeholder", "aria-label", "name", "id", "class", "data-placeholder"];
     const own = attributes.map((name) => element.getAttribute(name) || "").join(" ");
     const region = element.closest(
@@ -264,10 +287,11 @@
     const text = `${localText} ${nearby.join(" ")}`.toLowerCase();
     const rect = element.getBoundingClientRect();
     let score = 0;
-    if (/作者有话说|作者说|有话说|章节寄语|章末寄语|章末互动|读者互动|和读者聊/.test(text)) score += 24;
+    if (/作者有话说|作者说|有话说|章节寄语|章末寄语|章末互动|读者互动|和读者聊|和读者说|说点什么|求点赞|求关注|求礼物/.test(text)) score += 24;
     if (/寄语|互动|留言|评论/.test(text)) score += 7;
+    if (isNearAuthorNoteAnchor(element, anchors)) score += 30;
     if (/随记|笔记|我的随记|搜索|简介|正文|章节正文|标题|书名|评论管理/.test(localText)) score -= 30;
-    if (element instanceof HTMLTextAreaElement || element.isContentEditable) score += 5;
+    if (element instanceof HTMLTextAreaElement || element.isContentEditable || element.hasAttribute("contenteditable")) score += 5;
     if (element instanceof HTMLInputElement) score += 2;
     if (rect.width >= 220) score += 2;
     if (rect.height >= 40 && rect.height <= 240) score += 2;
@@ -275,13 +299,16 @@
   }
 
   function findAuthorNoteField(excluded = []) {
-    const excludedElements = new Set(excluded.filter(Boolean));
+    const excludedElements = excluded.filter(Boolean);
+    const anchors = authorNoteAnchors();
     return [...document.querySelectorAll(
-      "textarea, input:not([type]), input[type='text'], [contenteditable='true'], [role='textbox']",
+      "textarea, input:not([type]), input[type='text'], [contenteditable]:not([contenteditable='false']), [role='textbox'], [aria-multiline='true'], [data-placeholder]",
     )]
-      .filter((element) => !excludedElements.has(element) && isVisible(element))
+      .filter((element) => !excludedElements.some(
+        (excluded) => excluded === element || excluded.contains(element) || element.contains(excluded),
+      ) && isVisible(element))
       .filter((element) => !element.disabled && !element.readOnly)
-      .map((element) => ({ element, score: authorNoteScore(element) }))
+      .map((element) => ({ element, score: authorNoteScore(element, anchors) }))
       .filter((candidate) => candidate.score > 12)
       .sort((left, right) => right.score - left.score)[0]?.element || null;
   }

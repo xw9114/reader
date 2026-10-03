@@ -11,8 +11,8 @@
       #chapter-number { width: 72px; text-align: center; }
       #chapter-title { width: 560px; }
       .chapter-editor { width: 680px; min-height: 360px; padding: 20px; border: 1px solid #ccc; white-space: pre-wrap; }
-      .author-note-field { width: 680px; }
-      #author-note { width: 680px; min-height: 80px; padding: 12px; }
+      .plain-box { width: 680px; }
+      #platform-message { width: 680px; min-height: 80px; padding: 12px; border: 1px solid #ddd; }
     </style>
   </head>
   <body>
@@ -27,11 +27,12 @@
       <p>章节正文</p>
       <div class="chapter-editor" contenteditable="true" data-placeholder="请输入正文"></div>
     </div>
-    <div class="field author-note-field">
-      <label for="author-note">作者有话说</label>
-      <textarea id="author-note" maxlength="60" placeholder="写一句章末寄语，和读者聊聊"></textarea>
+    <section class="plain-box">
+      <header><strong>作者有话说</strong></header>
+      <div class="input-shell"><div id="platform-message" contenteditable="" aria-multiline="true" data-limit="300"></div></div>
+      <span>0/300</span>
       <button id="publish-button" type="button">发布</button>
-    </div>
+    </section>
     <script>
       window.__READER_TEST_PATHNAME__ = "/main/writer/123/publish/456";
       window.__READER_TEST_LIBRARY__ = {

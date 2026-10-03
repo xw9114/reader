@@ -29,7 +29,7 @@ async function openFixture(browser, filename) {
       "　　“你好，小雨？”\n\n　　他说。",
     );
     await chapterPanel.locator(".interaction-fill").click();
-    assert.match(await chapterPage.locator("#author-note").inputValue(), /最期待接下来发生什么？/);
+    assert.match(await chapterPage.locator("#platform-message").textContent(), /最期待接下来发生什么？/);
     assert.equal(await chapterPage.evaluate(() => window.__FANQIE_PUBLISH_CLICKS__), 0);
     assert.match(await chapterPanel.locator(".status").textContent(), /章末互动已填入/);
     const fallbackInteraction = await chapterPage.evaluate(() => (
@@ -231,7 +231,7 @@ async function openFixture(browser, filename) {
     assert.equal(await qimaoChapterPage.locator(".note-editor").textContent(), "");
     assert.match(await qimaoChapterPanel.locator(".status").textContent(), /章节标题框和正文已分别填入/);
     await qimaoChapterPanel.locator(".interaction-fill").click();
-    assert.match(await qimaoChapterPage.locator("#author-note").inputValue(), /哪个细节最值得追查？/);
+    assert.match(await qimaoChapterPage.locator("#platform-message").textContent(), /哪个细节最值得追查？/);
     assert.equal(await qimaoChapterPage.locator(".note-editor").textContent(), "");
     assert.equal(await qimaoChapterPage.evaluate(() => window.__QIMAO_AUTHOR_NOTE_SAVE_CLICKS__), 0);
     assert.match(await qimaoChapterPanel.locator(".status").textContent(), /章末互动已填入/);
