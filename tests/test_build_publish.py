@@ -70,7 +70,11 @@ class BuildPublishTests(unittest.TestCase):
             published.mkdir(parents=True)
             book_dir = serial / "books" / "旧城清算"
             book_dir.mkdir(parents=True)
-            (book_dir / "book.json").write_text('{"title":"旧城清算"}', encoding="utf-8")
+            (book_dir / "book.json").write_text(
+                '{"title":"旧城清算","publishingHint":{"audience":"女频",'
+                '"readingTags":["都市悬疑"],"contentTags":["调查取证"]}}',
+                encoding="utf-8",
+            )
             (published / "2026-09-20-chapter-0001.md").write_text(
                 "# 第1章 签收\n\n第一章正文。\n", encoding="utf-8"
             )
@@ -85,6 +89,7 @@ class BuildPublishTests(unittest.TestCase):
         self.assertEqual(payload["latestStoryId"], "serial-main")
         self.assertEqual(stories[0]["title"], "旧城清算")
         self.assertEqual(stories[0]["date"], "2026-09-21")
+        self.assertEqual(stories[0]["publishingHint"]["readingTags"], ["都市悬疑"])
         self.assertEqual([chapter["title"] for chapter in stories[0]["chapters"]],
                          ["第1章 签收", "第2章 回执"])
 

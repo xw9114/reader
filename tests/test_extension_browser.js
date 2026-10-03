@@ -60,7 +60,7 @@ async function openFixture(browser, filename) {
     assert.equal(await qimaoWorkPanel.locator(".type-suggestion").isVisible(), true);
     assert.equal(
       await qimaoWorkPanel.locator(".suggestion").textContent(),
-      "方向待定｜都市 > 都市生活｜标签：都市生活",
+      "方向待定｜阅读标签：都市生活｜内容标签：都市生活",
     );
     assert.equal(await qimaoWorkPanel.locator(".protagonist-suggestion").isVisible(), true);
     assert.equal(await qimaoWorkPanel.locator(".protagonists").textContent(), "周晓雨、陈浩");
@@ -75,7 +75,36 @@ async function openFixture(browser, filename) {
     ));
     assert.equal(
       suggestedType,
-      "女频｜现代言情 > 职场婚恋｜标签：婚恋纠葛、职场、复仇逆袭、久别重逢",
+      "女频｜阅读标签：职场婚恋｜内容标签：职场博弈、婚恋纠葛、久别重逢",
+    );
+    const suspenseType = await qimaoWorkPage.evaluate(() => (
+      window.__readerPublisherImporter.suggestWorkType({
+        title: "旧城清算",
+        chapters: [{
+          title: "第1章 签收记录",
+          body: "许知微曾在房企做内部审计。她从旧城改造补偿台账发现伪造签收记录，开始调查住户名单、档案和火灾证据，并通过律师申请复核。母亲和父亲留下的家庭秘密也牵涉其中。",
+        }],
+      }).text
+    ));
+    assert.equal(
+      suspenseType,
+      "方向待定｜阅读标签：都市悬疑｜内容标签：现实题材、调查取证、家庭关系、职场博弈",
+    );
+    assert.doesNotMatch(suspenseType, /系统流|婚恋纠葛|复仇逆袭/);
+    const curatedType = await qimaoWorkPage.evaluate(() => (
+      window.__readerPublisherImporter.suggestWorkType({
+        title: "旧城清算",
+        publishingHint: {
+          audience: "女频",
+          readingTags: ["都市悬疑"],
+          contentTags: ["调查取证", "现实题材", "职场博弈", "家庭关系"],
+        },
+        chapters: [],
+      }).text
+    ));
+    assert.equal(
+      curatedType,
+      "女频｜阅读标签：都市悬疑｜内容标签：调查取证、现实题材、职场博弈、家庭关系",
     );
     await qimaoWorkPanel.locator(".fill").click();
     assert.equal(await qimaoWorkPage.locator("#work-title").inputValue(), "测试七猫作品");

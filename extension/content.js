@@ -557,71 +557,180 @@
     return truncateText(normalized, limit).text;
   }
 
-  function hasAny(value, expressions) {
-    return expressions.some((expression) => expression.test(value));
+  function countOccurrences(value, term) {
+    if (!term) return 0;
+    return String(value || "").split(term).length - 1;
   }
 
-  function signalScore(title, body, expression) {
-    return (expression.test(title) ? 3 : 0) + (expression.test(body) ? 1 : 0);
+  function termScore(title, body, terms) {
+    return terms.reduce((score, rule) => {
+      const [term, weight = 1] = Array.isArray(rule) ? rule : [rule, 1];
+      const titleHits = Math.min(countOccurrences(title, term), 2);
+      const bodyHits = Math.min(countOccurrences(body, term), 6);
+      return score + titleHits * weight * 4 + bodyHits * weight;
+    }, 0);
+  }
+
+  function hasTerm(value, terms) {
+    return terms.some((term) => String(value || "").includes(term));
+  }
+
+  function normalizedPublishingHint(story) {
+    const hint = story?.publishingHint;
+    if (!hint || typeof hint !== "object") return null;
+    const audience = String(hint.audience || "").trim();
+    const readingTags = Array.isArray(hint.readingTags)
+      ? hint.readingTags.map((tag) => String(tag).trim()).filter(Boolean)
+      : [];
+    const contentTags = Array.isArray(hint.contentTags)
+      ? hint.contentTags.map((tag) => String(tag).trim()).filter(Boolean)
+      : [];
+    if (!audience && !readingTags.length && !contentTags.length) return null;
+    return {
+      audience: audience || "方向待定",
+      readingTags,
+      contentTags,
+    };
   }
 
   function suggestWorkType(story) {
     const title = String(story?.title || "");
-    const body = fullStoryBody(story).slice(0, 12000);
+    const body = fullStoryBody(story).slice(0, 50000);
     const source = `${title}\n${body}`;
-    const femaleSignals = /前夫|渣男|丈夫|老公|婆婆|闺蜜|怀孕|王妃|嫡女|千金|夫人|追妻/;
-    const maleSignals = /前妻|老婆|赘婿|战神|奶爸|校花|女总裁|岳父|岳母|兄弟|她才知道我是/;
-    const femaleScore = signalScore(title, body, femaleSignals);
-    const maleScore = signalScore(title, body, maleSignals);
-    const audience = femaleScore > maleScore ? "女频" : maleScore > femaleScore ? "男频" : "方向待定";
+    const curated = normalizedPublishingHint(story);
+    if (curated) {
+      const readingText = curated.readingTags.length ? curated.readingTags.join("、") : "待选择";
+      const contentText = curated.contentTags.length ? curated.contentTags.join("、") : "待选择";
+      return {
+        audience: curated.audience,
+        primary: curated.readingTags[0] || "待选择",
+        secondary: curated.readingTags[1] || "",
+        tags: curated.contentTags,
+        readingTags: curated.readingTags,
+        contentTags: curated.contentTags,
+        text: `${curated.audience}｜阅读标签：${readingText}｜内容标签：${contentText}`,
+      };
+    }
+
+    const femalePronouns = countOccurrences(body, "她");
+    const malePronouns = countOccurrences(body, "他");
+    const femaleDirectionScore = termScore(title, body, [
+      ["女主", 3], ["前夫", 2], ["丈夫", 2], ["婆婆", 2], ["闺蜜", 2],
+      ["王妃", 3], ["嫡女", 3], ["千金", 2], ["追妻", 2],
+    ]);
+    const maleDirectionScore = termScore(title, body, [
+      ["男主", 3], ["前妻", 2], ["赘婿", 3], ["战神", 3], ["奶爸", 2],
+      ["校花", 2], ["女总裁", 2], ["岳父", 2], ["岳母", 2],
+    ]);
+    let audience = "方向待定";
+    if (femalePronouns >= 12 && femalePronouns > malePronouns * 1.35) audience = "女频";
+    else if (malePronouns >= 12 && malePronouns > femalePronouns * 1.35) audience = "男频";
+    else if (femaleDirectionScore >= maleDirectionScore + 4) audience = "女频";
+    else if (maleDirectionScore >= femaleDirectionScore + 4) audience = "男频";
+
+    const categoryScores = {
+      suspense: termScore(title, body, [
+        ["悬疑", 5], ["谜案", 5], ["命案", 5], ["凶手", 4], ["尸体", 4],
+        ["破案", 4], ["刑警", 4], ["侦探", 4], ["线索", 3], ["证据", 3],
+        ["调查", 3], ["追查", 3], ["真相", 3], ["伪造", 3], ["核验", 2],
+        ["审计", 3], ["档案", 2], ["台账", 3], ["签收", 2], ["回执", 2],
+        ["诉讼", 2], ["案件", 3], ["火灾", 2],
+      ]),
+      romance: termScore(title, body, [
+        ["言情", 5], ["爱情", 4], ["恋爱", 4], ["心动", 3], ["表白", 3],
+        ["甜宠", 5], ["追妻", 4], ["复婚", 4], ["破镜重圆", 5], ["久别重逢", 4],
+        ["前夫", 2], ["前妻", 2], ["渣男", 2], ["婚恋", 4], ["暧昧", 3],
+      ]),
+      fantasy: termScore(title, body, [
+        ["玄幻", 5], ["修仙", 5], ["仙尊", 4], ["灵根", 4], ["宗门", 4],
+        ["渡劫", 4], ["飞升", 4], ["武魂", 4], ["斗气", 4], ["魔法", 3],
+      ]),
+      ancient: termScore(title, body, [
+        ["古言", 5], ["皇帝", 3], ["王爷", 3], ["王妃", 4], ["侯府", 4],
+        ["嫡女", 4], ["庶女", 4], ["后宫", 4], ["朝堂", 3], ["宅斗", 5],
+      ]),
+      scifi: termScore(title, body, [
+        ["科幻", 5], ["末世", 5], ["丧尸", 5], ["星际", 5], ["机甲", 5],
+        ["宇宙", 3], ["外星", 4], ["赛博", 4],
+      ]),
+      workplace: termScore(title, body, [
+        ["职场", 5], ["公司", 2], ["集团", 2], ["上司", 3], ["下属", 3],
+        ["项目", 2], ["总监", 2], ["审计", 3], ["律所", 3], ["董事会", 3],
+      ]),
+    };
+    const [leadingGenre, leadingGenreScore] = Object.entries(categoryScores)
+      .filter(([name]) => name !== "workplace")
+      .sort((left, right) => right[1] - left[1])[0];
+    const category = leadingGenreScore >= 8
+      ? leadingGenre
+      : categoryScores.workplace >= 8
+        ? "workplace"
+        : "urban";
+    const categoryScore = category === "urban" ? 0 : categoryScores[category];
 
     let primary = "都市";
     let secondary = "都市生活";
-    if (hasAny(source, [/修仙|仙尊|灵根|宗门|渡劫|飞升|灵气/, /玄幻|武魂|斗气|魔法|异世界/])) {
-      primary = "玄幻奇幻";
-      secondary = hasAny(source, [/修仙|仙尊|宗门|渡劫|飞升/]) ? "东方玄幻" : "异世大陆";
-    } else if (hasAny(source, [/皇帝|王爷|王妃|侯府|嫡女|庶女|后宫|朝堂|古代/])) {
-      primary = "古代言情";
-      secondary = hasAny(source, [/后宫|嫡女|庶女|侯府|宅斗/]) ? "宫斗宅斗" : "古代情缘";
-    } else if (hasAny(source, [/末世|丧尸|星际|机甲|宇宙|外星|赛博/])) {
-      primary = "科幻";
-      secondary = hasAny(source, [/末世|丧尸/]) ? "末世危机" : "未来世界";
-    } else if (hasAny(source, [/凶手|命案|尸体|破案|刑警|侦探|悬疑|谜案/])) {
+    if (categoryScore >= 8 && category === "suspense") {
       primary = "悬疑";
-      secondary = "推理探案";
-    } else if (audience === "女频" || hasAny(source, [/爱情|恋爱|婚姻|离婚|前夫|丈夫|老公|男友|女友/])) {
+      secondary = hasTerm(source, ["都市", "公司", "职场", "旧城", "社区", "审计", "律所"])
+        ? "都市悬疑"
+        : "推理探案";
+    } else if (categoryScore >= 8 && category === "romance") {
       primary = "现代言情";
-      secondary = hasAny(source, [/公司|集团|总裁|董事长|上司|下属|职场|项目|助理/])
+      secondary = categoryScores.workplace >= 5
         ? "职场婚恋"
-        : hasAny(source, [/豪门|总裁|千金|继承人/])
+        : hasTerm(source, ["豪门", "总裁", "董事长", "千金", "继承人"])
           ? "豪门总裁"
           : "都市情感";
+    } else if (categoryScore >= 8 && category === "fantasy") {
+      primary = "玄幻奇幻";
+      secondary = hasTerm(source, ["修仙", "仙尊", "宗门", "渡劫", "飞升"])
+        ? "东方玄幻"
+        : "异世大陆";
+    } else if (categoryScore >= 8 && category === "ancient") {
+      primary = "古代言情";
+      secondary = hasTerm(source, ["后宫", "嫡女", "庶女", "侯府", "宅斗"])
+        ? "宫斗宅斗"
+        : "古代情缘";
+    } else if (categoryScore >= 8 && category === "scifi") {
+      primary = "科幻";
+      secondary = hasTerm(source, ["末世", "丧尸"]) ? "末世危机" : "未来世界";
+    } else if (categoryScore >= 8 && category === "workplace") {
+      primary = "都市";
+      secondary = "职场生活";
     }
 
-    const tagRules = [
-      ["婚恋纠葛", /离婚|前夫|前妻|婚姻|复婚|假离婚/],
-      ["职场", /公司|集团|上司|下属|职场|项目|助理|总监/],
-      ["复仇逆袭", /复仇|反杀|清算|逆袭|打脸|渣男|陷阱/],
-      ["豪门", /豪门|总裁|董事长|千金|继承人/],
-      ["久别重逢", /久别重逢|多年后|三年后|五年后|再次见到|重逢/],
-      ["破镜重圆", /破镜重圆|复婚|重新开始|追回|追妻/],
-      ["重生", /重生|前世|上一世/],
-      ["穿越", /穿越|穿书|异世/],
-      ["系统", /系统|签到|任务奖励/],
-      ["悬疑", /凶手|命案|尸体|破案|刑警|侦探|谜案/],
+    const contentRules = [
+      ["调查取证", ["调查", "追查", "线索", "证据", "核验", "审计", "档案", "台账", "伪造", "回执"]],
+      ["现实题材", ["旧城", "拆迁", "安置", "住户", "补偿", "社区", "民生", "行政程序"]],
+      ["职场博弈", ["职场", "公司", "集团", "房企", "上司", "下属", "项目", "审计", "律所", "董事会"]],
+      ["家庭关系", ["父亲", "母亲", "父母", "家庭", "家人", "兄弟", "姐妹"]],
+      ["婚恋纠葛", ["离婚", "前夫", "前妻", "婚姻", "复婚", "假离婚"]],
+      ["豪门", ["豪门", "总裁", "董事长", "千金", "继承人"]],
+      ["久别重逢", ["久别重逢", "多年后", "三年后", "五年后", "再次见到", "重逢"]],
+      ["破镜重圆", ["破镜重圆", "复婚", "重新开始", "追回", "追妻"]],
+      ["复仇逆袭", ["复仇", "反杀", "逆袭", "打脸", "报仇", "雪恨"]],
+      ["重生", ["重生", "前世", "上一世"]],
+      ["穿越", ["穿越", "穿书", "异世"]],
+      ["系统流", ["绑定系统", "获得系统", "系统提示", "系统任务", "任务奖励", "签到系统", "宿主"]],
     ];
-    const tags = tagRules
-      .filter(([, expression]) => expression.test(source))
+    const contentTags = contentRules
+      .map(([tag, terms]) => [tag, termScore(title, body, terms)])
+      .filter(([, score]) => score >= 2)
+      .sort((left, right) => right[1] - left[1])
       .map(([tag]) => tag)
       .slice(0, 4);
-    if (!tags.length) tags.push(primary === "都市" ? "都市生活" : secondary);
+    if (!contentTags.length) contentTags.push(secondary);
+    const readingTags = [secondary];
 
     return {
       audience,
       primary,
       secondary,
-      tags,
-      text: `${audience}｜${primary} > ${secondary}｜标签：${tags.join("、")}`,
+      tags: contentTags,
+      readingTags,
+      contentTags,
+      text: `${audience}｜阅读标签：${readingTags.join("、")}｜内容标签：${contentTags.join("、")}`,
     };
   }
 

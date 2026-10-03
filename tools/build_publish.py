@@ -209,6 +209,9 @@ def parse_serial_book(serial_dir: Path) -> tuple[dict, list[Path]] | None:
         "chapters": chapters,
         "fullText": full_text,
     }
+    publishing_hint = book.get("publishingHint")
+    if isinstance(publishing_hint, dict):
+        story["publishingHint"] = publishing_hint
     return story, [path for _, _, path in numbered]
 
 
