@@ -1,0 +1,305 @@
+{
+  "chapter": 14,
+  "plannerInputs": [
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/author_intent.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/current_focus.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/outline/story_frame.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/outline/volume_map.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/chapter_summaries.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/book_rules.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/current_state.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/pending_hooks.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/memory.db"
+  ],
+  "composerInputs": [
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/runtime/chapter-0014.intent.md"
+  ],
+  "selectedSources": [
+    "runtime/chapter_memo",
+    "story/current_focus.md",
+    "story/author_intent.md",
+    "story/audit_drift.md",
+    "story/current_state.md",
+    "story/outline/story_frame.md#核心冲突-对手定性与前后台故事",
+    "story/outline/story_frame.md#世界观底色",
+    "story/outline/volume_map.md#各卷主题与情绪曲线",
+    "story/outline/volume_map.md#卷间钩子与回收承诺",
+    "story/outline/volume_map.md#节奏原则",
+    "story/chapter_summaries.md#recent_titles",
+    "story/chapter_summaries.md#recent_mood_type_trail",
+    "story/chapters#recent_endings",
+    "runtime/hook_debt#H002",
+    "runtime/hook_debt#H004",
+    "runtime/hook_debt#H006",
+    "runtime/hook_debt#H010",
+    "runtime/hook_debt#H012",
+    "story/current_state.md#当前目标",
+    "story/current_state.md#当前敌我",
+    "story/current_state.md#当前冲突",
+    "story/current_state.md#主角状态",
+    "story/chapter_summaries.md#11",
+    "story/chapter_summaries.md#12",
+    "story/chapter_summaries.md#13",
+    "story/pending_hooks.md#H012",
+    "story/pending_hooks.md#mystery-017-017-查明法律复核-意见-的正文",
+    "story/pending_hooks.md#H006",
+    "story/pending_hooks.md#H002",
+    "story/pending_hooks.md#H001",
+    "story/pending_hooks.md#H003",
+    "story/pending_hooks.md#H004",
+    "story/pending_hooks.md#H010"
+  ],
+  "promptPacks": [],
+  "contextTiers": {
+    "protectedSources": [
+      "runtime/chapter_memo",
+      "story/current_focus.md",
+      "story/author_intent.md",
+      "story/audit_drift.md",
+      "story/current_state.md",
+      "story/outline/story_frame.md#核心冲突-对手定性与前后台故事",
+      "story/outline/story_frame.md#世界观底色",
+      "story/outline/volume_map.md#各卷主题与情绪曲线",
+      "story/outline/volume_map.md#卷间钩子与回收承诺",
+      "story/outline/volume_map.md#节奏原则",
+      "runtime/hook_debt#H002",
+      "runtime/hook_debt#H004",
+      "runtime/hook_debt#H006",
+      "runtime/hook_debt#H010",
+      "runtime/hook_debt#H012",
+      "story/current_state.md#当前目标",
+      "story/current_state.md#当前敌我",
+      "story/current_state.md#当前冲突",
+      "story/current_state.md#主角状态",
+      "story/pending_hooks.md#H012",
+      "story/pending_hooks.md#mystery-017-017-查明法律复核-意见-的正文",
+      "story/pending_hooks.md#H006",
+      "story/pending_hooks.md#H002",
+      "story/pending_hooks.md#H001",
+      "story/pending_hooks.md#H003",
+      "story/pending_hooks.md#H004",
+      "story/pending_hooks.md#H010"
+    ],
+    "compressibleSources": [
+      "story/chapter_summaries.md#recent_titles",
+      "story/chapter_summaries.md#recent_mood_type_trail",
+      "story/chapters#recent_endings",
+      "story/chapter_summaries.md#11",
+      "story/chapter_summaries.md#12",
+      "story/chapter_summaries.md#13"
+    ]
+  },
+  "tokenBudget": {
+    "protectedTokens": 9659,
+    "compressibleTokens": 1008,
+    "totalSelectedTokens": 10667
+  },
+  "retrieval": {
+    "engine": "sqlite-fts5-bm25",
+    "query": "锁定专项法律服务中标律所，并把母女的核验期限压实到六月十九日\n全书分为四卷。第一卷的主题是“名字被谁写走”，情绪从离婚后的疲惫和私人羞耻，逐渐收紧为窗口前无处可退的愤怒；它的爽感来自许知微用专业习惯从一堆“手续齐全”里抠出第一处裂缝，但裂缝后面露出的恰好是父亲。第二卷的主题是“钱去了哪里”，情绪更快、更硬，住户联盟、律所、银行和项目公司开始真正互相施压，许知微赢得程序位置，也被迫看清前夫江惟林所在律所并非旁观者。第三卷的主题是“火没有烧完”，旧火灾证据让故事进入最冷的一段，家庭秘密把许知微从受害者的位置推向复杂的继承者位置。第四卷的主题是“补救由谁付账”，高潮不只在公开责任，更在住户彼此撕扯之后仍要形成现实方案；结尾的暖意来自重新建立的秩序，而非所有伤口自动愈合。\n锁定专项法律服务中标律所，并把母女的核验期限压实到六月十九日\n全书分为四卷。第一卷的主题是“名字被谁写走”，情绪从离婚后的疲惫和私人羞耻，逐渐收紧为窗口前无处可退的愤怒；它的爽感来自许知微用专业习惯从一堆“手续齐全”里抠出第一处裂缝，但裂缝后面露出的恰好是父亲。第二卷的主题是“钱去了哪里”，情绪更快、更硬，住户联盟、律所、银行和项目公司开始真正互相施压，许知微赢得程序位置，也被迫看清前夫江惟林所在律所并非旁观者。第三卷的主题是“火没有烧完”，旧火灾证据让故事进入最冷的一段，家庭秘密把许知微从受害者的位置推向复杂的继承者位置。第四卷的主题是“补救由谁付账”，高潮不只在公开责任，更在住户彼此撕扯之后仍要形成现实方案；结尾的暖意来自重新建立的秩序，而非所有伤口自动愈合。\nH002\nH004\nH006\nH007\nH010\nH012\nmystery-017-017",
+    "candidates": [
+      {
+        "id": "hook:H007",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H007",
+        "score": 16.657274992089082
+      },
+      {
+        "id": "hook:H012",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H012",
+        "score": 13.499417990458427
+      },
+      {
+        "id": "summary:1",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#1",
+        "score": 13.353742863247717
+      },
+      {
+        "id": "hook:mystery-017-017-查明法律复核-意见-的正文",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#mystery-017-017-查明法律复核-意见-的正文",
+        "score": 12.800707308479998
+      },
+      {
+        "id": "summary:6",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#6",
+        "score": 9.637624949614926
+      },
+      {
+        "id": "summary:13",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#13",
+        "score": 8.89467810045163
+      },
+      {
+        "id": "summary:4",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#4",
+        "score": 8.779083590095782
+      },
+      {
+        "id": "summary:8",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#8",
+        "score": 8.728266899247002
+      },
+      {
+        "id": "summary:3",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#3",
+        "score": 8.661480939782336
+      },
+      {
+        "id": "hook:H006",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H006",
+        "score": 7.820437908337328
+      },
+      {
+        "id": "fact:2",
+        "kind": "fact",
+        "source": "story/current_state.md#当前冲突",
+        "score": 7.790048575798303
+      },
+      {
+        "id": "fact:0",
+        "kind": "fact",
+        "source": "story/current_state.md#主角状态",
+        "score": 7.213422650129533
+      },
+      {
+        "id": "fact:5",
+        "kind": "fact",
+        "source": "story/current_state.md#当前限制",
+        "score": 6.869474766662456
+      },
+      {
+        "id": "summary:9",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#9",
+        "score": 6.174988870313518
+      },
+      {
+        "id": "summary:12",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#12",
+        "score": 5.928588915036416
+      },
+      {
+        "id": "hook:mystery-017-017-2021-取得并核验第-行补录申请单-审批与经手留",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#mystery-017-017-2021-取得并核验第-行补录申请单-审批与经手留",
+        "score": 4.844189520098168
+      },
+      {
+        "id": "hook:mystery-揭示周岚铁盒-中始终不肯交-出的旧纸内容",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#mystery-揭示周岚铁盒-中始终不肯交-出的旧纸内容",
+        "score": 4.328724057864854
+      },
+      {
+        "id": "fact:4",
+        "kind": "fact",
+        "source": "story/current_state.md#当前目标",
+        "score": 4.311288019425265
+      },
+      {
+        "id": "summary:11",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#11",
+        "score": 4.17717612836381
+      },
+      {
+        "id": "hook:H013",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H013",
+        "score": 4.163544745360967
+      },
+      {
+        "id": "summary:10",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#10",
+        "score": 3.9880970445849164
+      },
+      {
+        "id": "summary:2",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#2",
+        "score": 3.7888396119482364
+      },
+      {
+        "id": "summary:7",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#7",
+        "score": 3.7799979962590418
+      },
+      {
+        "id": "hook:H001",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H001",
+        "score": 3.6158574985282654
+      },
+      {
+        "id": "hook:H008",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H008",
+        "score": 2.456560566423365
+      },
+      {
+        "id": "fact:3",
+        "kind": "fact",
+        "source": "story/current_state.md#当前敌我",
+        "score": 2.1571219551946985
+      },
+      {
+        "id": "hook:H002",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H002",
+        "score": 1.9324550661420845
+      },
+      {
+        "id": "hook:mystery-2021-查明-结算复核组-将周岚列入异",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#mystery-2021-查明-结算复核组-将周岚列入异",
+        "score": 1.8771025687843907
+      },
+      {
+        "id": "fact:1",
+        "kind": "fact",
+        "source": "story/current_state.md#当前位置",
+        "score": 1.8384087535760236
+      },
+      {
+        "id": "hook:H004",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H004",
+        "score": 1.6800751034890193
+      },
+      {
+        "id": "summary:5",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#5",
+        "score": 1.0478924314024347
+      },
+      {
+        "id": "hook:H005",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H005",
+        "score": 0.5435075221744674
+      }
+    ],
+    "semanticSelectedIds": [
+      "hook:H012",
+      "hook:mystery-017-017-查明法律复核-意见-的正文",
+      "hook:H002",
+      "hook:H006",
+      "summary:13",
+      "fact:4",
+      "fact:3"
+    ]
+  },
+  "notes": []
+}

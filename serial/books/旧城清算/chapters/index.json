@@ -452,5 +452,40 @@
       "completionTokens": 15513,
       "totalTokens": 150550
     }
+  },
+  {
+    "number": 14,
+    "title": "公告里的名字",
+    "status": "ready-for-review",
+    "wordCount": 3166,
+    "createdAt": "2026-10-03T11:08:16.922Z",
+    "updatedAt": "2026-10-03T11:14:52.503Z",
+    "auditIssues": [
+      "[warning] 最近章节类型序列为：第9章“档案程序推进与入户催签对峙”→第10章“书面答复兑现与档案流向锁定”→第11章“档案有限查阅与家庭边界重订”→第12章“档案受理与线索分流”→第13章“目录查询与采购线索推进”→第14章“公开中标公告检索、申请递交与授权入口建立”。本章已用启衡中标公告、周岚有限展示原始凭据、孙罗两户独立授权入口完成三项可见推进，且较前章增加了公共检索和住户边界协作；但外部行动的核心释放仍持续依赖“查目录—保存材料—递交申请—等待下一步”，程序取证形态已连续六章占主导，读者对下一份书面材料的期待缺口仍在累积。",
+      "[warning] memo 在 advance/resolve 里声明要处理 H006，但确定性关键词检查没有找到对应落点",
+      "[warning] memo 在 advance/resolve 里声明要处理 H007，但确定性关键词检查没有找到对应落点",
+      "[warning] 当前有 15 个活跃伏笔，已经高于建议上限 12 个。",
+      "[warning] 这些伏笔已经进入回收/推进压力，但本章没有真正处理：H001（中程，已逾期）、H008（中程，已逾期）、mystery-2021-查明-结算复核组-将周岚列入异（近期，可回收），另有 1 条。",
+      "[warning] 连续出现5个不足35字的短段，容易形成短句堆砌。"
+    ],
+    "lengthWarnings": [],
+    "lengthTelemetry": {
+      "target": 2500,
+      "softMin": 2160,
+      "softMax": 2840,
+      "hardMin": 1819,
+      "hardMax": 3181,
+      "countingMode": "zh_chars",
+      "writerCount": 3166,
+      "postReviseCount": 0,
+      "finalCount": 3166,
+      "repairApplied": false,
+      "lengthWarning": false
+    },
+    "tokenUsage": {
+      "promptTokens": 84154,
+      "completionTokens": 9814,
+      "totalTokens": 93968
+    }
   }
 ]
