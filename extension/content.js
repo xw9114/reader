@@ -712,8 +712,9 @@
   }
 
   function storySynopsis(story, limit = 500) {
-    const firstBody = story?.chapters?.find((chapter) => chapter.body?.trim())?.body;
-    const source = firstBody || fullStoryBody(story);
+    const hookChapter = story?.chapters?.find((chapter) => /开篇|钩子|简介|导读|synopsis|summary/i.test(chapter.title));
+    const firstBody = hookChapter?.body || story?.chapters?.find((chapter) => chapter.body?.trim())?.body;
+    const source = story?.synopsis || story?.summary || firstBody || fullStoryBody(story);
     const normalized = String(source || "")
       .replace(/\r\n?/g, "\n")
       .split(/\n+/)
@@ -1072,6 +1073,15 @@
       const current = candidates.get(name) || { count: 0, index: match.index };
       current.count += 1;
       candidates.set(name, current);
+    }
+    const hookChapter = story?.chapters?.find((chapter) => /开篇|钩子|简介|导读|synopsis|summary/i.test(chapter.title));
+    const hookText = String(hookChapter?.body || "");
+    if (hookText) {
+      for (const [name, current] of candidates.entries()) {
+        if (hookText.includes(name)) {
+          current.count += 50;
+        }
+      }
     }
     return [...candidates.entries()]
       .sort((left, right) => right[1].count - left[1].count || left[1].index - right[1].index)
