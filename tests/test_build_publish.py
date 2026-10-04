@@ -1,4 +1,5 @@
 import json
+import struct
 import tempfile
 import unittest
 import zipfile
@@ -86,12 +87,13 @@ class BuildPublishTests(unittest.TestCase):
             covers.mkdir()
             (source / "2026-09-19-example.md").write_text("# 测试小说\n\n正文。\n", encoding="utf-8")
             (site / "index.html").write_text("ok", encoding="utf-8")
-            image = b"\x89PNG\r\n\x1a\ncustom"
+            image = b"\x89PNG\r\n\x1a\n" + struct.pack(">I", 13) + b"IHDR" + struct.pack(">II", 1024, 1536)
             (covers / "2026-09-19-example.png").write_bytes(image)
 
             stories = build(source, site, output, cover_dir=covers)
 
             self.assertEqual(stories[0]["cover"]["source"], "custom")
+            self.assertEqual((stories[0]["cover"]["width"], stories[0]["cover"]["height"]), (1024, 1536))
             self.assertEqual((output / stories[0]["cover"]["url"]).read_bytes(), image)
 
     def test_build_groups_serial_chapters_as_one_book(self):

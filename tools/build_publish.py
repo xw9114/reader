@@ -223,6 +223,18 @@ def fallback_cover_svg(story: dict) -> str:
 </svg>'''
 
 
+def cover_dimensions(path: Path) -> tuple[int, int]:
+    """Read dimensions from supported cover files, falling back to the legacy size."""
+    if path.suffix.lower() == ".png":
+        header = path.read_bytes()[:24]
+        if header[:8] == b"\x89PNG\r\n\x1a\n" and header[12:16] == b"IHDR":
+            width = int.from_bytes(header[16:20], "big")
+            height = int.from_bytes(header[20:24], "big")
+            if width > 0 and height > 0:
+                return width, height
+    return 768, 1024
+
+
 def attach_story_cover(story: dict, cover_dir: Path, output_dir: Path) -> None:
     destination_dir = output_dir / "covers"
     destination_dir.mkdir(parents=True, exist_ok=True)
@@ -240,12 +252,13 @@ def attach_story_cover(story: dict, cover_dir: Path, output_dir: Path) -> None:
         destination = destination_dir / f"{story['id']}{extension}"
         destination.write_text(fallback_cover_svg(story), encoding="utf-8")
         source = "generated-default"
+    width, height = cover_dimensions(destination)
     story["cover"] = {
         "url": destination.relative_to(output_dir).as_posix(),
         "mimeType": COVER_EXTENSIONS[extension],
         "source": source,
-        "width": 768,
-        "height": 1024,
+        "width": width,
+        "height": height,
     }
 
 
