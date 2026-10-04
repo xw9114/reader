@@ -1,4 +1,5 @@
 import json
+import re
 import struct
 import tempfile
 import unittest
@@ -24,19 +25,33 @@ class BuildPublishTests(unittest.TestCase):
         self.assertEqual(len(story["chapters"]), 2)
         self.assertEqual(story["chapters"][0]["body"], "这是正文。")
         self.assertEqual(story["chapters"][1]["body"], "链接文字")
-        self.assertIn("？", story["chapters"][0]["interaction"])
-        self.assertIn("留言", story["chapters"][0]["interaction"])
-        self.assertLessEqual(len(story["chapters"][0]["interaction"]), 60)
+        self.assertTrue(story["chapters"][0]["interaction"])
+        self.assertLessEqual(len(story["chapters"][0]["interaction"]), 42)
 
     def test_chapter_interaction_tracks_plot_and_stays_short(self):
         suspense = chapter_interaction("第12章 消失的回执", "她从档案里找到证据，继续调查真相。")
         romance = chapter_interaction("第3章 再见", "她与前夫重逢，旧日感情再次浮现。")
 
-        self.assertIn("关键线索", suspense)
-        self.assertIn("人物关系", romance)
-        self.assertTrue(suspense.endswith("欢迎留言聊聊。"))
-        self.assertLessEqual(len(suspense), 60)
-        self.assertLessEqual(len(romance), 60)
+        self.assertNotRegex(suspense, r"本章围绕|欢迎留言聊聊")
+        self.assertNotRegex(romance, r"本章围绕|欢迎留言聊聊")
+        self.assertLessEqual(len(suspense), 42)
+        self.assertLessEqual(len(romance), 42)
+        self.assertEqual(suspense, chapter_interaction(
+            "第12章 消失的回执", "她从档案里找到证据，继续调查真相。"
+        ))
+
+    def test_chapter_interactions_include_natural_non_plot_notes(self):
+        notes = {
+            chapter_interaction(f"第{index}章 普通一天", f"人物继续生活，编号{index}。")
+            for index in range(1, 33)
+        }
+
+        self.assertGreaterEqual(len(notes), 8)
+        self.assertTrue(any(
+            re.search(r"不聊剧情|看小说|读到这里|这一更|默默追", note)
+            for note in notes
+        ))
+        self.assertTrue(any("？" not in note for note in notes))
 
     def test_build_writes_download_formats_and_extension_bundle(self):
         with tempfile.TemporaryDirectory() as directory:

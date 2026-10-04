@@ -19,7 +19,7 @@ async function openFixture(browser, filename) {
     const chapterPanel = chapterPage.locator("#reader-fanqie-importer");
     assert.equal(await chapterPanel.locator(".mode").textContent(), "番茄 · 章节");
     assert.equal(await chapterPanel.locator(".interaction-tools").isVisible(), true);
-    assert.match(await chapterPanel.locator(".interaction-preview").textContent(), /最期待接下来发生什么？/);
+    assert.match(await chapterPanel.locator(".interaction-preview").textContent(), /更新就看/);
     await chapterPanel.locator(".fill").click();
     assert.equal(await chapterPage.locator("#chapter-number").inputValue(), "1");
     assert.equal(await chapterPage.locator("#chapter-title").inputValue(), "测试");
@@ -29,7 +29,7 @@ async function openFixture(browser, filename) {
       "　　“你好，小雨？”\n\n　　他说。",
     );
     await chapterPanel.locator(".interaction-fill").click();
-    assert.match(await chapterPage.locator("#platform-message").textContent(), /最期待接下来发生什么？/);
+    assert.match(await chapterPage.locator("#platform-message").textContent(), /更新就看/);
     assert.equal(await chapterPage.evaluate(() => window.__FANQIE_PUBLISH_CLICKS__), 0);
     assert.match(await chapterPanel.locator(".status").textContent(), /章末互动已填入/);
     const fallbackInteraction = await chapterPage.evaluate(() => (
@@ -38,9 +38,8 @@ async function openFixture(browser, filename) {
         body: "她从档案里找到证据，决定继续调查真相。",
       })
     ));
-    assert.match(fallbackInteraction, /关键线索/);
-    assert.match(fallbackInteraction, /？/);
-    assert.ok(Array.from(fallbackInteraction).length <= 60);
+    assert.doesNotMatch(fallbackInteraction, /本章围绕|欢迎留言聊聊/);
+    assert.ok(Array.from(fallbackInteraction).length <= 42);
     await chapterPage.close();
 
     const shortStoryPage = await openFixture(browser, "fanqie-short-story-editor.html");
@@ -221,7 +220,7 @@ async function openFixture(browser, filename) {
     assert.equal(await qimaoChapterPanel.locator(".type-suggestion").isVisible(), false);
     assert.equal(await qimaoChapterPanel.locator(".tag-settings").isVisible(), false);
     assert.equal(await qimaoChapterPanel.locator(".interaction-tools").isVisible(), true);
-    assert.match(await qimaoChapterPanel.locator(".interaction-preview").textContent(), /哪个细节最值得追查？/);
+    assert.match(await qimaoChapterPanel.locator(".interaction-preview").textContent(), /先查人/);
     await qimaoChapterPanel.locator(".fill").click();
     assert.equal(await qimaoChapterPage.locator("#chapter-title").inputValue(), "第1章 测试");
     assert.equal(await qimaoChapterPage.locator(".chapter-con .edit-mask h3").count(), 0);
@@ -231,7 +230,7 @@ async function openFixture(browser, filename) {
     assert.equal(await qimaoChapterPage.locator(".note-editor").textContent(), "");
     assert.match(await qimaoChapterPanel.locator(".status").textContent(), /章节标题框和正文已分别填入/);
     await qimaoChapterPanel.locator(".interaction-fill").click();
-    assert.match(await qimaoChapterPage.locator("#platform-message").textContent(), /哪个细节最值得追查？/);
+    assert.match(await qimaoChapterPage.locator("#platform-message").textContent(), /先查人/);
     assert.equal(await qimaoChapterPage.locator(".note-editor").textContent(), "");
     assert.equal(await qimaoChapterPage.evaluate(() => window.__QIMAO_AUTHOR_NOTE_SAVE_CLICKS__), 0);
     assert.match(await qimaoChapterPanel.locator(".status").textContent(), /章末互动已填入/);
