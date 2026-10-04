@@ -18,7 +18,11 @@ GIT_KEY = "/root/.ssh/id_xw9114_reader_deploy"
 
 def check() -> None:
     today = os.environ.get("SERIAL_NOVEL_DATE") or datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
-    files = list((PROJECT / "published").glob(f"{today}-chapter-*.md"))
+    book_id = os.environ.get("SERIAL_BOOK_ID", "旧城清算")
+    book_dir = PROJECT / "books" / book_id
+    if not (book_dir / "book.json").is_file():
+        raise RuntimeError(f"selected serial book does not exist: {book_id}")
+    files = list((book_dir / "published").glob(f"{today}-chapter-*.md"))
     if len(files) != 1:
         raise RuntimeError(f"expected one serial chapter for {today}, found {len(files)}")
     publication = files[0]
@@ -26,13 +30,12 @@ def check() -> None:
     if not match:
         raise RuntimeError("invalid chapter filename")
     number = int(match.group(1))
-    record = json.loads((PROJECT / "runs" / f"{today}.json").read_text(encoding="utf-8"))
+    record = json.loads((book_dir / "runs" / f"{today}.json").read_text(encoding="utf-8"))
     if record.get("status") != "published" or record.get("chapter") != number:
         raise RuntimeError("publication record does not match the chapter")
-    books = [p for p in (PROJECT / "books").iterdir() if (p / "book.json").exists()]
-    if len(books) != 1 or record.get("bookId") != books[0].name:
+    if record.get("bookId") != book_id:
         raise RuntimeError("publication record does not match the serial book")
-    sources = [p for p in (books[0] / "chapters").glob("*.md")
+    sources = [p for p in (book_dir / "chapters").glob("*.md")
                if re.fullmatch(rf"0*{number}(?:[-_].*)?\.md", p.name)]
     if len(sources) != 1:
         raise RuntimeError("InkOS chapter source is missing or ambiguous")
@@ -44,7 +47,7 @@ def check() -> None:
     count = len(re.findall(r"[\u3400-\u9fff]", body))
     if count < 2000 or count != record.get("characters"):
         raise RuntimeError(f"chapter is incomplete: {count} Chinese characters")
-    index = json.loads((books[0] / "chapters" / "index.json").read_text(encoding="utf-8"))
+    index = json.loads((book_dir / "chapters" / "index.json").read_text(encoding="utf-8"))
     entry = next((row for row in index if row.get("number") == number), None)
     if entry is None or entry.get("status") not in {"ready-for-review", "approved"}:
         raise RuntimeError("InkOS chapter index is unhealthy")

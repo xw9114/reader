@@ -111,7 +111,7 @@ class BuildPublishTests(unittest.TestCase):
             book_dir = serial / "books" / "旧城清算"
             book_dir.mkdir(parents=True)
             (book_dir / "book.json").write_text(
-                '{"title":"旧城清算","targetChapters":2,"publishingHint":{"schemaVersion":1,"source":"inkos",'
+                '{"title":"旧城清算","readerId":"serial-main","targetChapters":2,"publishingHint":{"schemaVersion":1,"source":"inkos",'
                 '"audience":"女频","readingTags":["都市悬疑"],'
                 '"contentTags":["调查取证"],"tagDimensions":{"plot":["推理"],'
                 '"emotion":[],"persona":["理性清醒"],"worldview":[]}},'
@@ -143,6 +143,66 @@ class BuildPublishTests(unittest.TestCase):
         self.assertEqual([chapter["title"] for chapter in stories[0]["chapters"]],
                          ["第1章 签收", "第2章 回执"])
         self.assertTrue(all("interaction" in chapter for chapter in stories[0]["chapters"]))
+
+    def test_build_keeps_multiple_serial_books_separate(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "daily"
+            site = root / "site"
+            serial = root / "serial"
+            output = root / "dist"
+            source.mkdir()
+            site.mkdir()
+            (site / "index.html").write_text("ok", encoding="utf-8")
+
+            for index, (folder, reader_id, title, publish_date) in enumerate((
+                ("book-a", "serial-book-a", "长篇甲", "2026-09-20"),
+                ("book-b", "serial-book-b", "长篇乙", "2026-09-21"),
+            ), start=1):
+                book_dir = serial / "books" / folder
+                published = book_dir / "published"
+                published.mkdir(parents=True)
+                metadata = {
+                    "title": title,
+                    "readerId": reader_id,
+                    "targetChapters": 1,
+                    "publishingHint": {
+                        "schemaVersion": 1,
+                        "source": "external-ai",
+                        "audience": "女频",
+                        "readingTags": ["都市悬疑"],
+                        "contentTags": ["调查取证"],
+                        "tagDimensions": {
+                            "plot": ["推理"], "emotion": [],
+                            "persona": ["理性清醒"], "worldview": [],
+                        },
+                    },
+                    "volumes": [{
+                        "number": 1, "title": f"第{index}卷",
+                        "startChapter": 1, "endChapter": 1,
+                    }],
+                }
+                (book_dir / "book.json").write_text(
+                    json.dumps(metadata, ensure_ascii=False), encoding="utf-8"
+                )
+                (published / f"{publish_date}-chapter-0001.md").write_text(
+                    f"# 第1章 {title}\n\n{title}正文。\n", encoding="utf-8"
+                )
+
+            stories = build(source, site, output)
+            payload = json.loads((output / "data.json").read_text(encoding="utf-8"))
+            exported = (output / stories[0]["downloads"]["md"]).read_text(encoding="utf-8-sig")
+
+        self.assertEqual([story["id"] for story in stories], ["serial-book-b", "serial-book-a"])
+        self.assertEqual(payload["latestStoryId"], "serial-book-b")
+        self.assertEqual(
+            {story["source"] for story in stories},
+            {"serial/books/book-a/published/", "serial/books/book-b/published/"},
+        )
+        self.assertNotEqual(stories[0]["downloads"], stories[1]["downloads"])
+        self.assertTrue(all(story["publishingHint"]["source"] == "external-ai" for story in stories))
+        self.assertIn("# 长篇乙", exported)
+        self.assertIn("## 第1章 长篇乙", exported)
 
     def test_serial_build_rejects_missing_publishing_metadata(self):
         with tempfile.TemporaryDirectory() as directory:

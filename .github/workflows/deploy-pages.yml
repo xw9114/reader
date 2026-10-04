@@ -6,6 +6,7 @@ on:
     paths:
       - "daily/**"
       - "serial/published/**"
+      - "serial/books/**/published/**"
       - "serial/books/**/book.json"
       - "covers/**"
       - "extension/**"

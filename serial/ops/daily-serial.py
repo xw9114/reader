@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Publish at most one validated chapter of the same InkOS book per date."""
+"""Publish at most one validated chapter of the selected InkOS book per date."""
 
 import fcntl
 import hashlib
@@ -18,8 +18,10 @@ from zoneinfo import ZoneInfo
 PROJECT = Path(__file__).resolve().parents[1]
 REPOSITORY = PROJECT.parent
 BOOKS = PROJECT / "books"
-PUBLISHED = PROJECT / "published"
-RUNS = PROJECT / "runs"
+ACTIVE_BOOK_ID = os.environ.get("SERIAL_BOOK_ID", "旧城清算")
+ACTIVE_BOOK = BOOKS / ACTIVE_BOOK_ID
+PUBLISHED = ACTIVE_BOOK / "published"
+RUNS = ACTIVE_BOOK / "runs"
 LOGS = Path("/var/log/openclaw-jobs")
 START_DATE = date(2026, 9, 20)
 MIN_CJK = 2000
@@ -94,11 +96,10 @@ def sync_git(message: str) -> str:
 
 
 def book() -> tuple[str, Path, dict]:
-    found = [(p.name, p, json.loads((p / "book.json").read_text(encoding="utf-8")))
-             for p in BOOKS.iterdir() if p.is_dir() and (p / "book.json").exists()]
-    if len(found) != 1:
-        fail(f"expected one serial book, found {len(found)}")
-    return found[0]
+    metadata_path = ACTIVE_BOOK / "book.json"
+    if not metadata_path.is_file():
+        fail(f"selected serial book does not exist: {ACTIVE_BOOK_ID}")
+    return ACTIVE_BOOK_ID, ACTIVE_BOOK, json.loads(metadata_path.read_text(encoding="utf-8"))
 
 
 def chapter_file(book_dir: Path, number: int) -> Path | None:
@@ -225,7 +226,8 @@ def main() -> None:
     os.chdir(REPOSITORY)
     PUBLISHED.mkdir(exist_ok=True)
     RUNS.mkdir(exist_ok=True)
-    with open("/run/lock/openclaw-daily-serial.lock", "w", encoding="utf-8") as lock:
+    lock_id = hashlib.sha256(ACTIVE_BOOK_ID.encode("utf-8")).hexdigest()[:12]
+    with open(f"/run/lock/openclaw-daily-serial-{lock_id}.lock", "w", encoding="utf-8") as lock:
         try:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:

@@ -1,6 +1,6 @@
 # 《旧城清算》每日连载
 
-本项目在同一部长篇中每天续写一章。目标为 100 章，每章约 2500 个汉字。正文分别发布到 `published/YYYY-MM-DD-chapter-NNNN.md`，`books/旧城清算/` 保存 InkOS 的全书设定、人物卡、章节和连续性状态。
+本项目支持多部长篇并存。每本书的配置、已发布正文和运行记录分别保存在 `books/<作品目录>/book.json`、`books/<作品目录>/published/` 与 `books/<作品目录>/runs/`。《旧城清算》目标为 100 章，每章约 2500 个汉字。
 
 定时任务在北京时间 17:00、19:00、21:00 尝试运行 `ops/daily-serial.py`。脚本持有独立锁，从 2026-09-20 起选择最早缺失的日期；一个日期只对应一章。章节少于 2000 个汉字或 InkOS 状态异常时不会发布。成功后只提交 `serial/` 路径，并核对 GitHub `main` 与本地提交。
 
@@ -12,6 +12,13 @@
 cd /srv/projects/inkos-novels/serial
 python3 ops/daily-serial.py
 python3 ops/healthcheck.py
+```
+
+脚本默认处理《旧城清算》。需要为其他书运行时设置作品目录名：
+
+```bash
+SERIAL_BOOK_ID='另一部作品' python3 ops/daily-serial.py
+SERIAL_BOOK_ID='另一部作品' python3 ops/healthcheck.py
 ```
 
 写作日志位于 `/var/log/openclaw-jobs/serial-chapter-*.log`。切换前的短篇脚本、`daily/` 成品和定时任务配置备份保留在原项目中。

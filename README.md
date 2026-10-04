@@ -1,15 +1,41 @@
 # Reader
 
-`serial/published/` 中的长篇章节会合并为同一部作品，`daily/` 中的旧短篇也会保留在手机发布页。
+`serial/books/<作品目录>/published/` 中的章节会按作品分别合并成长篇，`daily/` 中的短篇和单文件小说也会保留在发布页。
 
 ## 使用方式
 
-1. 长篇每天新增一个 `serial/published/YYYY-MM-DD-chapter-NNNN.md` 文件；旧短篇仍在 `daily/`。
-2. GitHub Actions 将连载章节归到同一部作品，并部署 GitHub Pages。
+1. 每部长篇使用独立的 `serial/books/<作品目录>/book.json` 与 `published/`；短篇仍在 `daily/`。
+2. GitHub Actions 将每本书的章节分别归档，并部署 GitHub Pages。
 3. 手机打开 `https://xw9114.github.io/reader/`，选择作品和章节。
 4. 点击“复制标题”或“复制正文”，粘贴到作者平台；也可以安装电脑端导入工具自动填入番茄或七猫后台。
 
-旧短篇的首个一级标题作为作品名，二级标题作为章节名。长篇章节的一级标题作为章节名，作品名来自 `serial/books/*/book.json`。
+短篇的首个一级标题作为作品名，二级标题作为章节名。长篇章节的一级标题作为章节名，作品名、Reader ID、标签和分卷来自同目录的 `book.json`。
+
+## 多长篇书库
+
+每部长篇使用一个独立目录：
+
+```text
+serial/books/<作品目录>/
+├─ book.json
+├─ published/
+│  ├─ 2026-10-04-chapter-0001.md
+│  └─ 2026-10-05-chapter-0002.md
+└─ runs/                 # 自动连载记录，可选
+```
+
+`book.json` 至少需要作品名、稳定的 `readerId`、发布标签和覆盖完整目标章节数的分卷计划。章节编号必须从 1 连续递增，不同作品可以各自拥有第 1 章。示例见 [`docs/serial-book-template.json`](docs/serial-book-template.json)。添加第二部长篇时复制模板到新的作品目录，再把章节放入该目录的 `published/`。
+
+《旧城清算》保留 `readerId: "serial-main"`，因此已有封面 `covers/serial-main.png`、下载链接和扩展选择记录继续有效。未填写 `readerId` 时，构建器使用 `serial-<作品目录名>`；正式发布后不要再修改这个 ID。
+
+导入其他 AI 生成的长篇时：
+
+1. 新建 `serial/books/<新作品名>/published/`。
+2. 将模板复制为同目录的 `book.json`，填写作品名、唯一 `readerId`、实际标签、目标章节数和分卷范围；`publishingHint.source` 使用 `external-ai`。
+3. 每章保存为 `published/YYYY-MM-DD-chapter-NNNN.md`，正文第一行使用 `# 第N章 标题`，编号从 `0001` 连续递增。
+4. 运行 `python tools/build_publish.py`；Reader 会把它作为一部独立长篇加入作品选择框。
+
+不同长篇的章节编号、分卷和更新日期互不影响。封面仍放在 `covers/<readerId>.png`。
 
 发布页同时提供整篇 TXT、原始 Markdown、逐章 ZIP、每篇作品对应的竖版封面和电脑端导入扩展。扩展在番茄、七猫的作品信息或短故事页面中显示封面预览；打开平台封面上传控件后，点击“填入封面”即可选择当前作品的图片，最终保存仍由作者确认。
 

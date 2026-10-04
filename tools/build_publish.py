@@ -19,6 +19,7 @@ DATE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})")
 SERIAL_FILE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})-chapter-(\d{4})\.md$")
 INVALID_FILENAME_RE = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
 PUBLISHING_AUDIENCES = {"男频", "女频", "方向待定"}
+PUBLISHING_SOURCES = {"inkos", "external-ai", "manual"}
 PUBLISHING_DIMENSION_LIMITS = {"plot": 4, "emotion": 2, "persona": 4, "worldview": 1}
 MAX_VOLUMES = 12
 MAX_INTERACTION_LENGTH = 60
@@ -53,13 +54,14 @@ def publishing_string_list(value: object, field: str, minimum: int, maximum: int
 
 
 def validate_publishing_hint(value: object) -> dict:
-    """Validate the InkOS-to-Reader publishing metadata contract."""
+    """Validate structured publishing metadata from InkOS, another AI, or manual input."""
     if not isinstance(value, dict):
         raise ValueError("Serial book publishingHint must be an object")
     if value.get("schemaVersion") != 1:
         raise ValueError("Serial book publishingHint.schemaVersion must be 1")
-    if value.get("source") != "inkos":
-        raise ValueError("Serial book publishingHint.source must be inkos")
+    source = value.get("source")
+    if source not in PUBLISHING_SOURCES:
+        raise ValueError("Serial book publishingHint.source is invalid")
     audience = value.get("audience")
     if isinstance(audience, str):
         audience = audience.strip()
@@ -70,7 +72,7 @@ def validate_publishing_hint(value: object) -> dict:
         raise ValueError("Serial book publishingHint.tagDimensions must be an object")
     return {
         "schemaVersion": 1,
-        "source": "inkos",
+        "source": source,
         "audience": audience,
         "readingTags": publishing_string_list(
             value.get("readingTags"), "publishingHint.readingTags", 1, 2
@@ -340,11 +342,14 @@ def parse_story(path: Path) -> dict:
     }
 
 
-def parse_serial_book(serial_dir: Path) -> tuple[dict, list[Path]] | None:
-    published = serial_dir / "published"
-    if not published.is_dir():
-        return None
+def serial_reader_id(book_dir: Path, book: dict) -> str:
+    reader_id = str(book.get("readerId") or f"serial-{book_dir.name}").strip()
+    if not reader_id or reader_id in {".", ".."} or INVALID_FILENAME_RE.search(reader_id):
+        raise ValueError(f"Invalid Reader serial id in {book_dir / 'book.json'}")
+    return reader_id
 
+
+def parse_serial_book(book_path: Path, published: Path, serial_dir: Path) -> tuple[dict, list[Path]] | None:
     numbered: list[tuple[int, str, Path]] = []
     for path in published.glob("*.md"):
         match = SERIAL_FILE_RE.fullmatch(path.name)
@@ -356,12 +361,11 @@ def parse_serial_book(serial_dir: Path) -> tuple[dict, list[Path]] | None:
 
     numbered.sort()
     if [number for number, _, _ in numbered] != list(range(1, len(numbered) + 1)):
-        raise ValueError("Serial chapters must be numbered consecutively from 1")
+        raise ValueError(f"Serial chapters must be numbered consecutively from 1: {published}")
 
-    books = list((serial_dir / "books").glob("*/book.json"))
-    if len(books) != 1:
-        raise ValueError("Expected exactly one serial book configuration")
-    book = json.loads(books[0].read_text(encoding="utf-8"))
+    book = json.loads(book_path.read_text(encoding="utf-8"))
+    book_dir = book_path.parent
+    reader_id = serial_reader_id(book_dir, book)
     title = str(book["title"])
     publishing_hint = validate_publishing_hint(book.get("publishingHint"))
     volumes = validate_volumes(book.get("volumes"), book.get("targetChapters"))
@@ -392,12 +396,14 @@ def parse_serial_book(serial_dir: Path) -> tuple[dict, list[Path]] | None:
     full_text = "\n\n".join(
         f"{chapter['title']}\n\n{chapter['body']}" for chapter in chapters
     )
-    downloads = story_downloads("serial-book")
+    download_stem = "serial-book" if reader_id == "serial-main" else reader_id
+    downloads = story_downloads(download_stem)
     story = {
-        "id": "serial-main",
+        "id": reader_id,
         "title": title,
         "date": numbered[-1][1],
-        "source": "serial/published/",
+        "source": published.relative_to(serial_dir.parent).as_posix().rstrip("/") + "/",
+        "kind": "serial",
         "download": downloads["txt"],
         "downloads": downloads,
         "characters": len(re.sub(r"\s", "", full_text)),
@@ -407,6 +413,39 @@ def parse_serial_book(serial_dir: Path) -> tuple[dict, list[Path]] | None:
     }
     story["publishingHint"] = publishing_hint
     return story, [path for _, _, path in numbered]
+
+
+def parse_serial_books(serial_dir: Path) -> list[tuple[dict, list[Path]]]:
+    book_paths = sorted((serial_dir / "books").glob("*/book.json"))
+    if not book_paths:
+        return []
+
+    legacy_published = serial_dir / "published"
+    legacy_chapters = list(legacy_published.glob("*.md")) if legacy_published.is_dir() else []
+    local_chapters = {
+        book_path: list((book_path.parent / "published").glob("*.md"))
+        for book_path in book_paths
+        if (book_path.parent / "published").is_dir()
+    }
+    if legacy_chapters and any(local_chapters.values()):
+        raise ValueError("Move legacy serial/published chapters into their book directory")
+    if legacy_chapters and len(book_paths) != 1:
+        raise ValueError("Legacy serial/published is ambiguous with multiple serial books")
+
+    results: list[tuple[dict, list[Path]]] = []
+    seen_ids: set[str] = set()
+    for book_path in book_paths:
+        published = legacy_published if legacy_chapters else book_path.parent / "published"
+        parsed = parse_serial_book(book_path, published, serial_dir)
+        if parsed is None:
+            continue
+        story, paths = parsed
+        if story["id"] in seen_ids:
+            raise ValueError(f"Duplicate Reader serial id: {story['id']}")
+        seen_ids.add(story["id"])
+        results.append((story, paths))
+    results.sort(key=lambda item: (item[0]["date"], item[0]["id"]), reverse=True)
+    return results
 
 
 def story_markdown(story: dict) -> str:
@@ -426,7 +465,7 @@ def write_story_downloads(story: dict, source_paths: list[Path], output_dir: Pat
         f"{story['title']}\n\n{story['fullText']}\n",
         encoding="utf-8-sig",
     )
-    if len(source_paths) == 1 and story["id"] != "serial-main":
+    if len(source_paths) == 1 and story.get("kind") != "serial":
         shutil.copy2(source_paths[0], md_path)
     else:
         md_path.write_text(story_markdown(story), encoding="utf-8-sig")
@@ -473,10 +512,14 @@ def build(
     serial_dir = serial_dir or source_dir.parent / "serial"
     cover_dir = cover_dir or source_dir.parent / "covers"
     daily_inputs = [(parse_story(path), [path]) for path in sorted(source_dir.glob("*.md"), reverse=True)]
-    serial_input = parse_serial_book(serial_dir)
-    story_inputs = ([serial_input] if serial_input else []) + daily_inputs
+    serial_inputs = parse_serial_books(serial_dir)
+    story_inputs = serial_inputs + daily_inputs
     if not story_inputs:
         raise SystemExit(f"No Markdown stories found in {source_dir} or {serial_dir}")
+    story_ids = [story["id"] for story, _ in story_inputs]
+    if len(story_ids) != len(set(story_ids)):
+        duplicate = next(story_id for story_id in story_ids if story_ids.count(story_id) > 1)
+        raise ValueError(f"Duplicate Reader story id: {duplicate}")
 
     if output_dir.exists():
         shutil.rmtree(output_dir)

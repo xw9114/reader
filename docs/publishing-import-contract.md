@@ -2,7 +2,7 @@
 
 ## 1. Scope / Trigger
 
-This contract applies when `daily/`, `serial/published/`, the publishing page, or the browser extension changes. The build output is consumed by both the static site and `extension/background.js`.
+This contract applies when `daily/`, `serial/books/*/published/`, the publishing page, or the browser extension changes. The build output is consumed by both the static site and `extension/background.js`.
 
 ## 2. Signatures
 
@@ -51,7 +51,8 @@ The offline cover generator calls the authenticated OpenAI-compatible endpoint `
       "id": "serial-main",
       "title": "旧城清算",
       "date": "2026-09-23",
-      "source": "serial/published/",
+      "source": "serial/books/旧城清算/published/",
+      "kind": "serial",
       "download": "downloads/serial-book.txt",
       "downloads": {
         "txt": "downloads/serial-book.txt",
@@ -117,9 +118,9 @@ The content script detects Fanqie and Qimao from the current hostname, then dete
 | Boundary | Validation | Failure behavior |
 | --- | --- | --- |
 | Daily source | UTF-8 Markdown; first H1 is the story title | Filename becomes the fallback title |
-| Serial source | Consecutive `YYYY-MM-DD-chapter-NNNN.md` files | Build raises `ValueError` |
-| Serial configuration | Exactly one `serial/books/*/book.json` | Build raises `ValueError` |
-| Serial publishing metadata | Schema version 1; source `inkos`; 1–2 reading tags; 1–4 content tags; plot ≤ 4, emotion ≤ 2, persona ≤ 4, worldview ≤ 1 | Build raises `ValueError`; the extension never silently reclassifies the serial from prose |
+| Serial source | Per-book `published/` containing consecutive `YYYY-MM-DD-chapter-NNNN.md` files | Build raises `ValueError` and identifies the affected directory |
+| Serial configuration | Zero or more `serial/books/*/book.json`; each populated book has its own `published/`; `readerId` values are unique | Build raises `ValueError`; legacy root `serial/published/` remains valid only while exactly one book exists |
+| Serial publishing metadata | Schema version 1; source `inkos`, `external-ai`, or `manual`; 1–2 reading tags; 1–4 content tags; plot ≤ 4, emotion ≤ 2, persona ≤ 4, worldview ≤ 1 | Build raises `ValueError`; the extension never silently reclassifies the serial from prose |
 | Serial volume plan | 1–12 volumes; consecutive numbers; chapter ranges continuously cover chapter 1 through `targetChapters`; names contain 1–30 characters | Build raises `ValueError`; chapters are never assigned to an ambiguous or missing volume |
 | Extension source | `extension/` exists | Bundle path is `null` when omitted |
 | Story cover | Matching `covers/<story-id>.(png|jpg|jpeg|webp|svg)` | A deterministic 768×1024 SVG is generated for that story |
