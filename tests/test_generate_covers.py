@@ -51,6 +51,7 @@ class GenerateCoversTests(unittest.TestCase):
         payload = json.loads(request.data.decode("utf-8"))
         self.assertEqual(request.full_url, "https://api.xw9114.online/v1/images/generations")
         self.assertEqual(request.headers["Authorization"], "Bearer test-token")
+        self.assertIn("Mozilla/5.0", request.headers["User-agent"])
         self.assertEqual(payload["model"], "gpt-image-2")
         self.assertEqual(payload["size"], "1024x1536")
         self.assertEqual(payload["output_format"], "png")

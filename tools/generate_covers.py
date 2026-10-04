@@ -82,7 +82,15 @@ def request_cover(
     request = urllib.request.Request(
         endpoint,
         data=body,
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/140.0.0.0 Safari/537.36 ReaderCoverGenerator/1.0"
+            ),
+        },
         method="POST",
     )
     try:
