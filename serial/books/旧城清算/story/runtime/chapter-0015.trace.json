@@ -1,0 +1,295 @@
+{
+  "chapter": 15,
+  "plannerInputs": [
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/author_intent.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/current_focus.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/outline/story_frame.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/outline/volume_map.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/chapter_summaries.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/book_rules.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/current_state.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/pending_hooks.md",
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/memory.db"
+  ],
+  "composerInputs": [
+    "/srv/projects/inkos-novels/serial/books/旧城清算/story/runtime/chapter-0015.intent.md"
+  ],
+  "selectedSources": [
+    "runtime/chapter_memo",
+    "story/current_focus.md",
+    "story/author_intent.md",
+    "story/current_state.md",
+    "story/outline/story_frame.md#核心冲突-对手定性与前后台故事",
+    "story/outline/story_frame.md#世界观底色",
+    "story/outline/story_frame.md#终局方向与全书-objective",
+    "story/outline/volume_map.md#节奏原则",
+    "story/chapter_summaries.md#recent_titles",
+    "story/chapter_summaries.md#recent_mood_type_trail",
+    "story/chapters#recent_endings",
+    "runtime/hook_debt#H002",
+    "runtime/hook_debt#H006",
+    "runtime/hook_debt#H008",
+    "story/current_state.md#当前冲突",
+    "story/current_state.md#当前目标",
+    "story/current_state.md#主角状态",
+    "story/current_state.md#当前限制",
+    "story/chapter_summaries.md#12",
+    "story/chapter_summaries.md#13",
+    "story/chapter_summaries.md#14",
+    "story/pending_hooks.md#H002",
+    "story/pending_hooks.md#H006",
+    "story/pending_hooks.md#H008",
+    "story/pending_hooks.md#H001",
+    "story/pending_hooks.md#H007",
+    "story/pending_hooks.md#H004",
+    "story/pending_hooks.md#mystery-2021-查明-结算复核组-将周岚列入异",
+    "story/pending_hooks.md#H003"
+  ],
+  "promptPacks": [],
+  "contextTiers": {
+    "protectedSources": [
+      "runtime/chapter_memo",
+      "story/current_focus.md",
+      "story/author_intent.md",
+      "story/current_state.md",
+      "story/outline/story_frame.md#核心冲突-对手定性与前后台故事",
+      "story/outline/story_frame.md#世界观底色",
+      "story/outline/story_frame.md#终局方向与全书-objective",
+      "story/outline/volume_map.md#节奏原则",
+      "runtime/hook_debt#H002",
+      "runtime/hook_debt#H006",
+      "runtime/hook_debt#H008",
+      "story/current_state.md#当前冲突",
+      "story/current_state.md#当前目标",
+      "story/current_state.md#主角状态",
+      "story/current_state.md#当前限制",
+      "story/pending_hooks.md#H002",
+      "story/pending_hooks.md#H006",
+      "story/pending_hooks.md#H008",
+      "story/pending_hooks.md#H001",
+      "story/pending_hooks.md#H007",
+      "story/pending_hooks.md#H004",
+      "story/pending_hooks.md#mystery-2021-查明-结算复核组-将周岚列入异",
+      "story/pending_hooks.md#H003"
+    ],
+    "compressibleSources": [
+      "story/chapter_summaries.md#recent_titles",
+      "story/chapter_summaries.md#recent_mood_type_trail",
+      "story/chapters#recent_endings",
+      "story/chapter_summaries.md#12",
+      "story/chapter_summaries.md#13",
+      "story/chapter_summaries.md#14"
+    ]
+  },
+  "tokenBudget": {
+    "protectedTokens": 7799,
+    "compressibleTokens": 1077,
+    "totalSelectedTokens": 8876
+  },
+  "retrieval": {
+    "engine": "sqlite-fts5-bm25",
+    "query": "以书面核验清单确认周岚资格复核的争点与补件边界\n全书分为四卷。第一卷的主题是“名字被谁写走”，情绪从离婚后的疲惫和私人羞耻，逐渐收紧为窗口前无处可退的愤怒；它的爽感来自许知微用专业习惯从一堆“手续齐全”里抠出第一处裂缝，但裂缝后面露出的恰好是父亲。第二卷的主题是“钱去了哪里”，情绪更快、更硬，住户联盟、律所、银行和项目公司开始真正互相施压，许知微赢得程序位置，也被迫看清前夫江惟林所在律所并非旁观者。第三卷的主题是“火没有烧完”，旧火灾证据让故事进入最冷的一段，家庭秘密把许知微从受害者的位置推向复杂的继承者位置。第四卷的主题是“补救由谁付账”，高潮不只在公开责任，更在住户彼此撕扯之后仍要形成现实方案；结尾的暖意来自重新建立的秩序，而非所有伤口自动愈合。\n以书面核验清单确认周岚资格复核的争点与补件边界\n全书分为四卷。第一卷的主题是“名字被谁写走”，情绪从离婚后的疲惫和私人羞耻，逐渐收紧为窗口前无处可退的愤怒；它的爽感来自许知微用专业习惯从一堆“手续齐全”里抠出第一处裂缝，但裂缝后面露出的恰好是父亲。第二卷的主题是“钱去了哪里”，情绪更快、更硬，住户联盟、律所、银行和项目公司开始真正互相施压，许知微赢得程序位置，也被迫看清前夫江惟林所在律所并非旁观者。第三卷的主题是“火没有烧完”，旧火灾证据让故事进入最冷的一段，家庭秘密把许知微从受害者的位置推向复杂的继承者位置。第四卷的主题是“补救由谁付账”，高潮不只在公开责任，更在住户彼此撕扯之后仍要形成现实方案；结尾的暖意来自重新建立的秩序，而非所有伤口自动愈合。\nH002\nH006\nH008\nmystery-2021",
+    "candidates": [
+      {
+        "id": "summary:1",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#1",
+        "score": 14.597835469172102
+      },
+      {
+        "id": "summary:8",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#8",
+        "score": 12.535382859170873
+      },
+      {
+        "id": "summary:13",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#13",
+        "score": 11.879413899156699
+      },
+      {
+        "id": "summary:6",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#6",
+        "score": 11.877475694545758
+      },
+      {
+        "id": "fact:0",
+        "kind": "fact",
+        "source": "story/current_state.md#主角状态",
+        "score": 11.28135823512481
+      },
+      {
+        "id": "summary:14",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#14",
+        "score": 11.020860472294117
+      },
+      {
+        "id": "summary:11",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#11",
+        "score": 9.926778713550254
+      },
+      {
+        "id": "summary:3",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#3",
+        "score": 9.338655109528409
+      },
+      {
+        "id": "summary:4",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#4",
+        "score": 8.795726527602694
+      },
+      {
+        "id": "hook:mystery-017-017-查明法律复核-意见-的正文",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#mystery-017-017-查明法律复核-意见-的正文",
+        "score": 8.775948111304018
+      },
+      {
+        "id": "summary:9",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#9",
+        "score": 8.513070467024976
+      },
+      {
+        "id": "summary:10",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#10",
+        "score": 8.436363039405283
+      },
+      {
+        "id": "fact:4",
+        "kind": "fact",
+        "source": "story/current_state.md#当前目标",
+        "score": 7.766654130356052
+      },
+      {
+        "id": "hook:H002",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H002",
+        "score": 6.28242694249843
+      },
+      {
+        "id": "hook:H013",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H013",
+        "score": 5.9049083034433245
+      },
+      {
+        "id": "fact:1",
+        "kind": "fact",
+        "source": "story/current_state.md#当前位置",
+        "score": 5.111456690963059
+      },
+      {
+        "id": "hook:H012",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H012",
+        "score": 5.016896328906616
+      },
+      {
+        "id": "hook:H006",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H006",
+        "score": 4.9388941928286325
+      },
+      {
+        "id": "summary:12",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#12",
+        "score": 4.018006305483463
+      },
+      {
+        "id": "hook:H007",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H007",
+        "score": 3.9771141718734766
+      },
+      {
+        "id": "hook:mystery-017-017-2021-取得并核验第-行补录申请单-审批与经手留",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#mystery-017-017-2021-取得并核验第-行补录申请单-审批与经手留",
+        "score": 3.924451376166674
+      },
+      {
+        "id": "hook:H010",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H010",
+        "score": 3.840396239526405
+      },
+      {
+        "id": "hook:mystery-2021-查明-结算复核组-将周岚列入异",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#mystery-2021-查明-结算复核组-将周岚列入异",
+        "score": 3.5957723378812214
+      },
+      {
+        "id": "summary:5",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#5",
+        "score": 3.4972497731533227
+      },
+      {
+        "id": "summary:2",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#2",
+        "score": 3.4273190610245576
+      },
+      {
+        "id": "hook:mystery-揭示周岚铁盒-中始终不肯交-出的旧纸内容",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#mystery-揭示周岚铁盒-中始终不肯交-出的旧纸内容",
+        "score": 2.8093034725716155
+      },
+      {
+        "id": "hook:H008",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H008",
+        "score": 2.156321570008025
+      },
+      {
+        "id": "fact:2",
+        "kind": "fact",
+        "source": "story/current_state.md#当前冲突",
+        "score": 2.0857043958128463
+      },
+      {
+        "id": "hook:H003",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H003",
+        "score": 2.069812275725902
+      },
+      {
+        "id": "hook:H005",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H005",
+        "score": 1.70525912153982
+      },
+      {
+        "id": "summary:7",
+        "kind": "chapter-summary",
+        "source": "story/chapter_summaries.md#7",
+        "score": 1.6665612873200455
+      },
+      {
+        "id": "hook:H004",
+        "kind": "hook",
+        "source": "story/pending_hooks.md#H004",
+        "score": 1.4614396175171003
+      }
+    ],
+    "semanticSelectedIds": [
+      "summary:14",
+      "hook:H002",
+      "hook:H006",
+      "summary:10",
+      "hook:H008"
+    ]
+  },
+  "notes": []
+}

@@ -487,5 +487,41 @@
       "completionTokens": 9814,
       "totalTokens": 93968
     }
+  },
+  {
+    "number": 15,
+    "title": "窗口里的那一栏",
+    "status": "ready-for-review",
+    "wordCount": 2850,
+    "createdAt": "2026-10-05T13:19:18.169Z",
+    "updatedAt": "2026-10-05T13:23:36.067Z",
+    "auditIssues": [
+      "[warning] 最近章节类型序列为：第10章“书面答复兑现与档案流向锁定”→第11章“档案有限查阅与家庭边界重订”→第12章“档案受理与线索分流”→第13章“目录查询与采购线索推进”→第14章“程序取证与家庭边界”→第15章“窗口核验与补件清单”。连续六章均以窗口、目录、回执、清单等程序取证为主要释放方式。第15章虽兑现了H002的有效到场入口和补件边界，也推进了H008，但仍属于同一类“小幅书面推进”，缺少能显著改变人物处境、证据位置或对手压力的波形转换。",
+      "[info] 章尾同时保留“次日受控展示B-4-17确认页”与“清单结算状态和第017行待核验用语不一致”两项信息，但最终收束重点落在次日展示，状态矛盾仅由许知微记入备忘录，作为后续主钩的可见度略弱。",
+      "[warning] memo 在 advance/resolve 里声明要处理 H006，但确定性关键词检查没有找到对应落点",
+      "[warning] memo 在 advance/resolve 里声明要处理 H002，但确定性关键词检查没有找到对应落点",
+      "[warning] 这些伏笔已经进入回收/推进压力，但本章没有真正处理：H001（中程，已逾期）、H007（中程，已逾期）、H004（中程，已逾期），另有 3 条。",
+      "[warning] 92个段落里有59个不足35字，段落被切得过碎。",
+      "[warning] 连续出现4个不足35字的短段，容易形成短句堆砌。"
+    ],
+    "lengthWarnings": [],
+    "lengthTelemetry": {
+      "target": 2500,
+      "softMin": 2160,
+      "softMax": 2840,
+      "hardMin": 1819,
+      "hardMax": 3181,
+      "countingMode": "zh_chars",
+      "writerCount": 3311,
+      "postReviseCount": 2850,
+      "finalCount": 2850,
+      "repairApplied": true,
+      "lengthWarning": false
+    },
+    "tokenUsage": {
+      "promptTokens": 130953,
+      "completionTokens": 13688,
+      "totalTokens": 144641
+    }
   }
 ]
