@@ -11,6 +11,8 @@
 | **`task-392`** | **每日爽文/后宫短篇** | 每天 **09:00** (`0 9 * * *`) | **每日 3 篇独立作品** | `daily/` | **每篇必配专属 2:3 无水印高清封面** (`covers/<id>.jpg`) |
 | **`task-394`** | **长篇《天命大反派》** | 每天 **10:00** (`0 10 * * *`) | **每日连更 3 个新章节** | `serial/books/tianming-fanpai/` | 自动检查并补齐长篇封面 (`covers/serial-tianming-fanpai.*`) |
 | **`task-serial-lianai`** | **长篇脑洞《恋爱打卡》** | 每天 **11:00** (`0 11 * * *`) | **每日连更 3 章（目标 80 章 / 20 万字）** | `serial/books/lianai-daka/` | 自动检查并补齐长篇专属封面 (`covers/serial-lianai-daka.*`) |
+| **`task-serial-wusheng`** | **传统玄幻《大荒武圣》** | 每天 **12:00** (`0 12 * * *`) | **每日连更 1 章（目标 200 章 / 50 万字）** | `serial/books/dahuang-wusheng/` | 自动检查并补齐长篇专属封面 (`covers/serial-dahuang-wusheng.*`) |
+
 
 
 ---

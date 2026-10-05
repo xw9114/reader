@@ -1,0 +1,56 @@
+{
+  "id": "dahuang-wusheng",
+  "readerId": "serial-dahuang-wusheng",
+  "title": "大荒武圣：从矿奴打穿十方天地",
+  "platform": "tomato",
+  "genre": "fantasy",
+  "status": "active",
+  "targetChapters": 200,
+  "chapterWordCount": 2500,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "男频",
+    "readingTags": ["传统玄幻", "东方玄幻"],
+    "contentTags": ["苦修逆袭", "热血搏杀", "杀伐果断", "无系统"],
+    "tagDimensions": {
+      "plot": ["草根崛起", "生死历练", "宗门征伐", "异界血战"],
+      "emotion": ["热血沸腾", "快意恩仇"],
+      "persona": ["坚毅如磐", "狠辣果决", "重情重义", "野性本能"],
+      "worldview": ["蛮荒古界"]
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "第一卷：破枷锁，血染黑石断天涯",
+      "startChapter": 1,
+      "endChapter": 40
+    },
+    {
+      "number": 2,
+      "title": "第二卷：莽荒行，一人一刀猎万兽",
+      "startChapter": 41,
+      "endChapter": 80
+    },
+    {
+      "number": 3,
+      "title": "第三卷：登天梯，宗门血誓三年约",
+      "startChapter": 81,
+      "endChapter": 120
+    },
+    {
+      "number": 4,
+      "title": "第四卷：黑煞域，十方围剿铸霸躯",
+      "startChapter": 121,
+      "endChapter": 160
+    },
+    {
+      "number": 5,
+      "title": "第五卷：万界征，凡血横击碎神霄",
+      "startChapter": 161,
+      "endChapter": 200
+    }
+  ]
+}
