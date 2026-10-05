@@ -22,7 +22,7 @@ PUBLISHING_AUDIENCES = {"男频", "女频", "方向待定"}
 PUBLISHING_SOURCES = {"inkos", "external-ai", "manual"}
 PUBLISHING_DIMENSION_LIMITS = {"plot": 4, "emotion": 2, "persona": 4, "worldview": 1}
 MAX_VOLUMES = 12
-MAX_INTERACTION_LENGTH = 60
+MAX_INTERACTION_LENGTH = 42
 COVER_EXTENSIONS = {
     ".png": "image/png",
     ".jpg": "image/jpeg",
@@ -172,21 +172,78 @@ def story_downloads(stem: str) -> dict[str, str]:
 
 
 def chapter_interaction(title: str, body: str) -> str:
-    """Create a short plot-linked question for a platform author-note field."""
+    """Create a short, varied author note for a platform interaction field."""
     topic = re.sub(
         r"^(?:第\s*[0-9０-９一二三四五六七八九十百千万零〇两]+\s*[章回节篇]|chapter\s*[0-9０-９]+)\s*[：:、，,.。\-—_]*\s*",
         "",
         str(title or ""),
         flags=re.IGNORECASE,
     ).strip("《》“”\"'：:、，,.。!?！？—-_ ")
-    topic = topic[:12] or "这一章"
+    topic = topic[:10] or "这一章"
     source = f"{title}\n{body}"[:6000]
+    digest = hashlib.sha256(source.encode("utf-8")).digest()
+    casual_notes = (
+        "今天不聊剧情，你们是更新就看，还是喜欢攒几章？",
+        "路过问一句，大家看小说时会开背景音乐吗？",
+        "小调查：你们更喜欢短章快节奏，还是长章慢慢铺？",
+        "谢谢你读到这里，有错字的话顺手提醒我一声就好。",
+        "这一更送到。看累了就歇一会儿，明天再来。",
+        "有没有一直默默追到这里、还没冒过泡的朋友？",
+        "你们看文会先翻评论区，还是读完再回来聊？",
+        "今天换个话题：最近有没有读到特别喜欢的一句话？",
+        "看到这里先喝口水，别一口气把自己看累了。",
+        "新来的朋友不用急着冒泡，慢慢看就好。",
+        "你们一般用手机看，还是更喜欢平板和电脑？",
+        "留个无关剧情的问题：你们看文最怕遇到什么？",
+    )
     if re.search(r"线索|证据|调查|名单|档案|账目|账本|台账|案件|案发|案卷|秘密|真相|嫌疑|签收|复核", source):
-        note = f"本章围绕“{topic}”推进了关键线索。你觉得哪个细节最值得追查？欢迎留言聊聊。"
-    elif re.search(r"爱情|婚|前夫|前妻|恋|喜欢|心动|重逢|感情|爱人", source):
-        note = f"“{topic}”让人物关系有了变化。你更理解谁的选择？欢迎留言聊聊。"
+        themed_notes = (
+            "线索摆到这里了，你们会先查人，还是先查东西？",
+            "先不揭答案。你们现在最不放心的是谁？",
+            "如果只能追一条线，你们会从哪里下手？",
+            "这一处我不解释，留给大家自己判断。",
+            "这份证据，你们现在信几分？",
+            "现在回头看，前面哪句话最可疑？",
+            "我先闭嘴，免得一开口就剧透。",
+            "到这里，还敢完全相信任何人吗？",
+        )
+    elif re.search(r"爱情|婚|前夫|前妻|恋|喜欢|心动|重逢|感情|爱人|告白|暧昧|分手", source):
+        themed_notes = (
+            "如果是你，这句解释还愿意听吗？",
+            "嘴上说放下，心里真能这么快翻篇吗？",
+            "这两个人的账，看来还得慢慢算。",
+            "这一段你们站谁？我先不替任何人说话。",
+            "这次到底是心软，还是不甘心？",
+            "该说的话没说，往往比说错更难收场。",
+            "先别急着磕，看看他们下一次见面再说。",
+            "喜欢和合适，真的是一回事吗？",
+        )
+    elif re.search(r"争吵|对峙|冲突|质问|打脸|报复|反击|背叛|陷害|威胁|翻脸", source):
+        themed_notes = (
+            "换成你在场，会忍住，还是当场把话说开？",
+            "这口气该先忍，还是现在就还回去？",
+            "有些话说出口就回不去了，你们会说吗？",
+            "这场面写完，我只想说：谁都别装糊涂。",
+            "要是你被这样逼到墙角，会怎么选？",
+            "这一步退了，后面可就不一定收得回来。",
+            "讲道理没用的时候，你们会直接翻脸吗？",
+            "这口气我先替他们记在账上。",
+        )
     else:
-        note = f"“{topic}”把故事又往前推了一步。你最期待接下来发生什么？欢迎留言聊聊。"
+        themed_notes = (
+            "写到这里，你们现在最想听谁说句真话？",
+            "这一章里，有没有哪一句让你停了一下？",
+            "我先把人送到这里，下一步让他们自己选。",
+            "看到这里，你对谁的看法变了？",
+            "这一章不替谁下结论，交给你们判断。",
+            f"“{topic}”这个章名，读完后你们觉得贴不贴？",
+            "先在这里停一下，剩下的让他们自己面对。",
+            "我有自己的答案，但更想先听听你们的。",
+            "这一段读下来，你们是松了口气，还是更紧张了？",
+            "有时候没说出口的那句话，反而最难过去。",
+        )
+    pool = casual_notes if digest[0] % 4 == 0 else themed_notes
+    note = pool[digest[1] % len(pool)]
     return note[:MAX_INTERACTION_LENGTH]
 
 

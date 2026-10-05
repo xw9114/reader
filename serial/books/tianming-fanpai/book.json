@@ -1,0 +1,50 @@
+{
+  "id": "tianming-fanpai",
+  "readerId": "serial-tianming-fanpai",
+  "title": "天命大反派：我的后宫全员重生了",
+  "platform": "tomato",
+  "genre": "fantasy",
+  "status": "active",
+  "targetChapters": 100,
+  "chapterWordCount": 2500,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "男频",
+    "readingTags": ["东方玄幻", "系统脑洞"],
+    "contentTags": ["玄幻爽文", "穿越", "反派逆袭", "多女主"],
+    "tagDimensions": {
+      "plot": ["反派逆袭", "机缘掠夺", "扮猪吃虎", "轻松搞笑"],
+      "emotion": ["甜宠", "后宫修罗场"],
+      "persona": ["杀伐果断", "腹黑狂傲", "智商在线", "反差萌"],
+      "worldview": ["修真文明"]
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "第一卷：宗门风云，师尊圣女跪迎老祖归来",
+      "startChapter": 1,
+      "endChapter": 25
+    },
+    {
+      "number": 2,
+      "title": "第二卷：荒古遗迹，魔域女帝倒贴求契约",
+      "startChapter": 26,
+      "endChapter": 50
+    },
+    {
+      "number": 3,
+      "title": "第三卷：上界天骄，天命之子道心彻底崩溃",
+      "startChapter": 51,
+      "endChapter": 75
+    },
+    {
+      "number": 4,
+      "title": "第四卷：独断万古，踏碎九霄携美登帝巅",
+      "startChapter": 76,
+      "endChapter": 100
+    }
+  ]
+}

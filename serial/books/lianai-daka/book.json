@@ -1,0 +1,50 @@
+{
+  "id": "lianai-daka",
+  "readerId": "serial-lianai-daka",
+  "title": "刚绑恋爱打卡系统，高冷学姐怎么全知情？",
+  "platform": "qimao",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 80,
+  "chapterWordCount": 2500,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "男频",
+    "readingTags": ["都市脑洞", "系统异能"],
+    "contentTags": ["恋爱日常", "校花", "轻松搞笑", "反差萌"],
+    "tagDimensions": {
+      "plot": ["系统打卡", "反套路", "甜宠日常", "商战逆袭"],
+      "emotion": ["单女主", "偏爱护短"],
+      "persona": ["咸鱼男主", "高岭之花", "恋爱脑反差", "双标宠夫"],
+      "worldview": ["现代都市"]
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "第一卷：打卡开局，高冷学姐怎么主动敲门",
+      "startChapter": 1,
+      "endChapter": 20
+    },
+    {
+      "number": 2,
+      "title": "第二卷：同居日常，冰山女神成了专属甜妹",
+      "startChapter": 21,
+      "endChapter": 40
+    },
+    {
+      "number": 3,
+      "title": "第三卷：神级回馈，悄悄惊艳并给老婆撑腰",
+      "startChapter": 41,
+      "endChapter": 60
+    },
+    {
+      "number": 4,
+      "title": "第四卷：携手顶峰，余生所有心跳都归你所有",
+      "startChapter": 61,
+      "endChapter": 80
+    }
+  ]
+}
