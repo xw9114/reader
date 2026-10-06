@@ -1075,7 +1075,7 @@
       candidates.set(name, current);
     }
     const hookChapter = story?.chapters?.find((chapter) => /开篇|钩子|简介|导读|synopsis|summary/i.test(chapter.title));
-    const hookText = String(hookChapter?.body || "");
+    const hookText = String(hookChapter?.body || story?.synopsis || story?.summary || "");
     if (hookText) {
       for (const [name, current] of candidates.entries()) {
         if (hookText.includes(name)) {
@@ -1616,7 +1616,11 @@
       return;
     }
 
-    state.stories = response.payload.stories;
+    state.stories = Array.isArray(response.payload?.stories) ? response.payload.stories : [];
+    if (state.stories.length === 0) {
+      updateStatus("书库为空，请先在 Reader 中添加作品", "error");
+      return;
+    }
     ui.story.replaceChildren();
     state.stories.forEach((story) => {
       const option = document.createElement("option");
@@ -1626,7 +1630,7 @@
     });
 
     state.activeStory = state.stories.find((story) => story.id === stored.storyId) || state.stories[0];
-    state.activeChapterIndex = Math.min(Number(stored.chapterIndex) || 0, state.activeStory.chapters.length - 1);
+    state.activeChapterIndex = Math.min(Number(stored.chapterIndex) || 0, (state.activeStory.chapters || []).length - 1);
     state.activeVolumeIndex = Math.min(
       Number(stored.volumeIndex) || 0,
       normalizedStoryVolumes(state.activeStory).length - 1,

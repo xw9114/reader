@@ -9,19 +9,26 @@ import html
 import json
 import re
 import shutil
+import sys
+import tempfile
 import zipfile
 from dataclasses import dataclass
 from pathlib import Path
+
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+if str(REPOSITORY_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPOSITORY_ROOT))
+
+from reader_schema import (
+    validate_publishing_hint as _validate_publishing_hint,
+    validate_volumes as _validate_volumes,
+)
 
 
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
 DATE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})")
 SERIAL_FILE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})-chapter-(\d{4})\.md$")
 INVALID_FILENAME_RE = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
-PUBLISHING_AUDIENCES = {"男频", "女频", "方向待定"}
-PUBLISHING_SOURCES = {"inkos", "external-ai", "manual"}
-PUBLISHING_DIMENSION_LIMITS = {"plot": 4, "emotion": 2, "persona": 4, "worldview": 1}
-MAX_VOLUMES = 12
 MAX_INTERACTION_LENGTH = 42
 COVER_EXTENSIONS = {
     ".png": "image/png",
@@ -38,87 +45,13 @@ class Section:
     body: str
 
 
-def publishing_string_list(value: object, field: str, minimum: int, maximum: int) -> list[str]:
-    if not isinstance(value, list):
-        raise ValueError(f"{field} must be an array")
-    result: list[str] = []
-    for item in value:
-        if not isinstance(item, str) or not item.strip():
-            raise ValueError(f"{field} contains an empty or non-string value")
-        normalized = item.strip()
-        if normalized not in result:
-            result.append(normalized)
-    if not minimum <= len(result) <= maximum:
-        raise ValueError(f"{field} must contain {minimum}-{maximum} unique values")
-    return result
-
-
 def validate_publishing_hint(value: object) -> dict:
-    """Validate structured publishing metadata from InkOS, another AI, or manual input."""
-    if not isinstance(value, dict):
-        raise ValueError("Serial book publishingHint must be an object")
-    if value.get("schemaVersion") != 1:
-        raise ValueError("Serial book publishingHint.schemaVersion must be 1")
-    source = value.get("source")
-    if source not in PUBLISHING_SOURCES:
-        raise ValueError("Serial book publishingHint.source is invalid")
-    audience = value.get("audience")
-    if isinstance(audience, str):
-        audience = audience.strip()
-    if audience not in PUBLISHING_AUDIENCES:
-        raise ValueError("Serial book publishingHint.audience is invalid")
-    dimensions = value.get("tagDimensions")
-    if not isinstance(dimensions, dict):
-        raise ValueError("Serial book publishingHint.tagDimensions must be an object")
-    return {
-        "schemaVersion": 1,
-        "source": source,
-        "audience": audience,
-        "readingTags": publishing_string_list(
-            value.get("readingTags"), "publishingHint.readingTags", 1, 2
-        ),
-        "contentTags": publishing_string_list(
-            value.get("contentTags"), "publishingHint.contentTags", 1, 4
-        ),
-        "tagDimensions": {
-            key: publishing_string_list(
-                dimensions.get(key), f"publishingHint.tagDimensions.{key}", 0, limit
-            )
-            for key, limit in PUBLISHING_DIMENSION_LIMITS.items()
-        },
-    }
+    """Validate the single shared publishing metadata contract."""
+    return _validate_publishing_hint(value, require_schema_version=True)
 
 
 def validate_volumes(value: object, target_chapters: object = None) -> list[dict]:
-    if not isinstance(value, list) or not 1 <= len(value) <= MAX_VOLUMES:
-        raise ValueError(f"Serial book volumes must contain 1-{MAX_VOLUMES} items")
-    volumes: list[dict] = []
-    expected_start = 1
-    for index, item in enumerate(value, start=1):
-        if not isinstance(item, dict):
-            raise ValueError(f"Serial book volumes[{index - 1}] must be an object")
-        number = item.get("number")
-        title = item.get("title")
-        start = item.get("startChapter")
-        end = item.get("endChapter")
-        if number != index:
-            raise ValueError("Serial book volume numbers must be consecutive from 1")
-        if not isinstance(title, str) or not 1 <= len(title.strip()) <= 30:
-            raise ValueError(f"Serial book volumes[{index - 1}].title is invalid")
-        if not isinstance(start, int) or isinstance(start, bool) or start != expected_start:
-            raise ValueError("Serial book volume chapter ranges must be continuous from chapter 1")
-        if not isinstance(end, int) or isinstance(end, bool) or end < start:
-            raise ValueError(f"Serial book volumes[{index - 1}].endChapter is invalid")
-        volumes.append({
-            "number": number,
-            "title": title.strip(),
-            "startChapter": start,
-            "endChapter": end,
-        })
-        expected_start = end + 1
-    if isinstance(target_chapters, int) and target_chapters > 0 and volumes[-1]["endChapter"] != target_chapters:
-        raise ValueError("Serial book volume plan must end at targetChapters")
-    return volumes
+    return _validate_volumes(value, target_chapters)
 
 
 def inline_to_text(value: str) -> str:
@@ -285,7 +218,8 @@ def fallback_cover_svg(story: dict) -> str:
 def cover_dimensions(path: Path) -> tuple[int, int]:
     """Read dimensions from supported cover files, falling back to the legacy size."""
     if path.suffix.lower() == ".png":
-        header = path.read_bytes()[:24]
+        with path.open("rb") as f:
+            header = f.read(24)
         if header[:8] == b"\x89PNG\r\n\x1a\n" and header[12:16] == b"IHDR":
             width = int.from_bytes(header[16:20], "big")
             height = int.from_bytes(header[20:24], "big")
@@ -386,17 +320,25 @@ def parse_story(path: Path) -> dict:
         f"{chapter['title']}\n\n{chapter['body']}".strip() for chapter in chapters
     )
     downloads = story_downloads(path.stem)
-    return {
+    hook_chapter = next(
+        (c for c in chapters if re.search(r"开篇|钩子|简介|导读|synopsis|summary", c["title"], re.IGNORECASE)),
+        None,
+    )
+    result = {
         "id": path.stem,
         "title": title,
         "date": date,
         "source": f"daily/{path.name}",
         "download": downloads["txt"],
         "downloads": downloads,
-        "characters": len(re.sub(r"\s", "", full_text)),
+        "characters": sum(c["characters"] for c in chapters),
         "chapters": chapters,
         "fullText": full_text,
     }
+    if hook_chapter:
+        result["synopsis"] = hook_chapter["body"]
+    return result
+
 
 
 def serial_reader_id(book_dir: Path, book: dict) -> str:
@@ -420,7 +362,10 @@ def parse_serial_book(book_path: Path, published: Path, serial_dir: Path) -> tup
     if [number for number, _, _ in numbered] != list(range(1, len(numbered) + 1)):
         raise ValueError(f"Serial chapters must be numbered consecutively from 1: {published}")
 
-    book = json.loads(book_path.read_text(encoding="utf-8"))
+    try:
+        book = json.loads(book_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError) as e:
+        raise ValueError(f"Invalid JSON in {book_path}: {e}") from e
     book_dir = book_path.parent
     reader_id = serial_reader_id(book_dir, book)
     title = str(book["title"])
@@ -463,13 +408,17 @@ def parse_serial_book(book_path: Path, published: Path, serial_dir: Path) -> tup
         "kind": "serial",
         "download": downloads["txt"],
         "downloads": downloads,
-        "characters": len(re.sub(r"\s", "", full_text)),
+        "characters": sum(c["characters"] for c in chapters),
         "chapters": chapters,
         "fullText": full_text,
         "volumes": volumes,
     }
     story["publishingHint"] = publishing_hint
+    synopsis = book.get("synopsis") or book.get("summary") or book.get("description")
+    if synopsis:
+        story["synopsis"] = str(synopsis).strip()
     return story, [path for _, _, path in numbered]
+
 
 
 def parse_serial_books(serial_dir: Path) -> list[tuple[dict, list[Path]]]:
@@ -545,6 +494,8 @@ def write_story_downloads(story: dict, source_paths: list[Path], output_dir: Pat
                 ("\ufeff" + content).encode("utf-8"),
             )
 
+_BUNDLE_EXCLUDE = {".git", ".env", "node_modules", ".DS_Store", "__pycache__", ".tmp"}
+
 
 def write_extension_bundle(extension_dir: Path, output_dir: Path) -> str | None:
     if not extension_dir.exists():
@@ -553,6 +504,8 @@ def write_extension_bundle(extension_dir: Path, output_dir: Path) -> str | None:
     archive_path = output_dir / "downloads" / "fanqie-publisher-extension.zip"
     with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
         for path in sorted(extension_dir.rglob("*")):
+            if any(part.startswith(".") or part in _BUNDLE_EXCLUDE for part in path.relative_to(extension_dir).parts):
+                continue
             if path.is_file():
                 archive.write(path, path.relative_to(extension_dir).as_posix())
     return "downloads/fanqie-publisher-extension.zip"
@@ -577,33 +530,55 @@ def build(
     if len(story_ids) != len(set(story_ids)):
         duplicate = next(story_id for story_id in story_ids if story_ids.count(story_id) > 1)
         raise ValueError(f"Duplicate Reader story id: {duplicate}")
+    story_inputs.sort(key=lambda item: (item[0].get("date", ""), item[0]["id"]), reverse=True)
 
-    if output_dir.exists():
-        shutil.rmtree(output_dir)
-    shutil.copytree(site_dir, output_dir)
+    if output_dir.resolve() in (Path.home(), Path("/"), Path("C:\\")):
+        raise SystemExit(f"Refusing to replace unsafe output directory: {output_dir}")
 
-    downloads_dir = output_dir / "downloads"
-    downloads_dir.mkdir(parents=True, exist_ok=True)
-    for story, source_paths in story_inputs:
-        attach_story_cover(story, cover_dir, output_dir)
-        write_story_downloads(story, source_paths, output_dir)
+    output_dir.parent.mkdir(parents=True, exist_ok=True)
+    staging_dir: Path | None = Path(tempfile.mkdtemp(prefix=f".{output_dir.name}.staging-", dir=output_dir.parent))
+    backup_dir: Path | None = None
+    try:
+        assert staging_dir is not None
+        shutil.copytree(site_dir, staging_dir, dirs_exist_ok=True)
 
-    extension_download = None
-    if extension_dir is not None:
-        extension_download = write_extension_bundle(extension_dir, output_dir)
+        downloads_dir = staging_dir / "downloads"
+        downloads_dir.mkdir(parents=True, exist_ok=True)
+        for story, source_paths in story_inputs:
+            attach_story_cover(story, cover_dir, staging_dir)
+            write_story_downloads(story, source_paths, staging_dir)
 
-    stories = [story for story, _ in story_inputs]
-    payload = {
-        "latestStoryId": stories[0]["id"],
-        "storyCount": len(stories),
-        "extensionDownload": extension_download,
-        "stories": stories,
-    }
-    (output_dir / "data.json").write_text(
-        json.dumps(payload, ensure_ascii=False, separators=(",", ":")),
-        encoding="utf-8",
-    )
-    return stories
+        extension_download = None
+        if extension_dir is not None:
+            extension_download = write_extension_bundle(extension_dir, staging_dir)
+
+        stories = [story for story, _ in story_inputs]
+        payload = {
+            "latestStoryId": stories[0]["id"],
+            "storyCount": len(stories),
+            "extensionDownload": extension_download,
+            "stories": stories,
+        }
+        (staging_dir / "data.json").write_text(
+            json.dumps(payload, ensure_ascii=False, separators=(",", ":")),
+            encoding="utf-8",
+        )
+
+        if output_dir.exists():
+            backup_dir = Path(tempfile.mkdtemp(prefix=f".{output_dir.name}.backup-", dir=output_dir.parent))
+            backup_dir.rmdir()
+            output_dir.replace(backup_dir)
+        staging_dir.replace(output_dir)
+        staging_dir = None
+        if backup_dir is not None:
+            shutil.rmtree(backup_dir)
+        return stories
+    except Exception:
+        if staging_dir is not None and staging_dir.exists():
+            shutil.rmtree(staging_dir, ignore_errors=True)
+        if backup_dir is not None and backup_dir.exists() and not output_dir.exists():
+            backup_dir.replace(output_dir)
+        raise
 
 
 def main() -> None:
