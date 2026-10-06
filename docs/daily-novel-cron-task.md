@@ -12,6 +12,8 @@
 | **`task-394`** | **长篇《天命大反派》** | 每天 **10:00** (`0 10 * * *`) | **每日连更 3 个新章节** | `serial/books/tianming-fanpai/` | 自动检查并补齐长篇封面 (`covers/serial-tianming-fanpai.*`) |
 | **`task-serial-lianai`** | **长篇脑洞《恋爱打卡》** | 每天 **11:00** (`0 11 * * *`) | **每日连更 3 章（目标 80 章 / 20 万字）** | `serial/books/lianai-daka/` | 自动检查并补齐长篇专属封面 (`covers/serial-lianai-daka.*`) |
 | **`task-serial-wusheng`** | **传统玄幻《大荒武圣》** | 每天 **12:00** (`0 12 * * *`) | **每日连更 1 章（目标 200 章 / 50 万字）** | `serial/books/dahuang-wusheng/` | 自动检查并补齐长篇专属封面 (`covers/serial-dahuang-wusheng.*`) |
+| **`task-serial-suanli`** | **硬核脑洞《大梁精算师》** | 每天 **13:00** (`0 13 * * *`) | **每日连更 2 章（目标 100 章 / 25 万字）** | `serial/books/suanli-guzhou/` | 自动检查并补齐长篇专属封面 (`covers/serial-suanli-guzhou.*`) |
+
 
 
 

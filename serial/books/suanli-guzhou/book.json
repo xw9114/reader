@@ -1,0 +1,50 @@
+{
+  "id": "suanli-guzhou",
+  "readerId": "serial-suanli-guzhou",
+  "title": "大梁精算师：我的Token只剩一百亿",
+  "platform": "tomato",
+  "genre": "history",
+  "status": "active",
+  "targetChapters": 100,
+  "chapterWordCount": 2500,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "男频",
+    "readingTags": ["历史脑洞", "架空历史"],
+    "contentTags": ["硬核科幻", "智斗权谋", "幕后流", "降维打击"],
+    "tagDimensions": {
+      "plot": ["算力精算", "降维打击", "微观经济战", "极简神谕"],
+      "emotion": ["逼格拉满", "冷酷从容"],
+      "persona": ["极致理性", "算力守财奴", "高智商", "系统架构师"],
+      "worldview": ["架空历史"]
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "第一卷：孤舟泊浅滩，三千Token斩贪官",
+      "startChapter": 1,
+      "endChapter": 25
+    },
+    {
+      "number": 2,
+      "title": "第二卷：算无遗策，户部假账与江南粮荒",
+      "startChapter": 26,
+      "endChapter": 50
+    },
+    {
+      "number": 3,
+      "title": "第三卷：极简神谕，三十骑反围十万蛮胡",
+      "startChapter": 51,
+      "endChapter": 75
+    },
+    {
+      "number": 4,
+      "title": "第四卷：文明逆熵，点燃凡间万象引擎",
+      "startChapter": 76,
+      "endChapter": 100
+    }
+  ]
+}
