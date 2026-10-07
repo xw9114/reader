@@ -328,6 +328,7 @@ def parse_story(path: Path) -> dict:
         "id": path.stem,
         "title": title,
         "date": date,
+        "kind": "daily",
         "source": f"daily/{path.name}",
         "download": downloads["txt"],
         "downloads": downloads,

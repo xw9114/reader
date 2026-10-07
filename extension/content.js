@@ -1252,6 +1252,9 @@
       .panel.collapsed .body { display: none; }
       label { display: block; margin-top: 10px; color: #60706b; font-size: 11px; font-weight: 600; }
       label:first-child { margin-top: 0; }
+      .story-kind-tag { display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 700; vertical-align: middle; }
+      .story-kind-tag.serial { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+      .story-kind-tag.daily { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
       .mode-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; color: #60706b; font-size: 11px; }
       .mode-row strong { color: #143f36; font-size: 12px; }
       .mode-row + label { margin-top: 0; }
@@ -1302,7 +1305,7 @@
       <header class="header"><strong>Reader 导入助手</strong><button class="collapse" type="button" aria-label="收起面板">−</button></header>
       <div class="body">
         <div class="mode-row"><span>导入模式</span><strong class="mode">正在检测…</strong></div>
-        <label>作品<select class="story"></select></label>
+        <label>作品<span class="story-kind-tag"></span><select class="story"></select></label>
         <label class="chapter-row">章节<select class="chapter"></select></label>
         <label class="volume-row">分卷<select class="volume"></select></label>
         <div class="meta"><span class="position"></span><span class="characters"></span></div>
@@ -1575,11 +1578,19 @@
     renderCoverPreview();
   }
 
+  function updateStoryKindTag() {
+    if (!ui?.storyKindTag || !state.activeStory) return;
+    const isSerial = state.activeStory.kind === "serial";
+    ui.storyKindTag.className = `story-kind-tag ${isSerial ? "serial" : "daily"}`;
+    ui.storyKindTag.textContent = isSerial ? "📚 长篇连载" : "📖 独立短篇";
+  }
+
   function selectStory(storyId) {
     state.activeStory = state.stories.find((story) => story.id === storyId) || state.stories[0];
     state.activeChapterIndex = 0;
     state.activeVolumeIndex = 0;
     ui.story.value = state.activeStory.id;
+    updateStoryKindTag();
     renderChapters();
     saveState();
   }
@@ -1628,12 +1639,29 @@
       return;
     }
     ui.story.replaceChildren();
+    const serialGroup = document.createElement("optgroup");
+    serialGroup.label = "📚 长篇连载小说（每日连更）";
+    const dailyGroup = document.createElement("optgroup");
+    dailyGroup.label = "📖 独立短篇故事（单篇精选）";
+
     state.stories.forEach((story) => {
       const option = document.createElement("option");
       option.value = story.id;
-      option.textContent = `${story.date ? `${story.date} · ` : ""}${story.title}`;
-      ui.story.append(option);
+      const isSerial = story.kind === "serial";
+      const chapterCount = (story.chapters || []).length;
+      const countDesc = isSerial ? `（连载至第${chapterCount}章）` : `（全${chapterCount}章）`;
+      const prefix = isSerial ? "【长篇】" : "【短篇】";
+      option.textContent = `${prefix} ${story.date ? `${story.date} · ` : ""}${story.title} ${countDesc}`;
+
+      if (isSerial) {
+        serialGroup.append(option);
+      } else {
+        dailyGroup.append(option);
+      }
     });
+
+    if (serialGroup.children.length > 0) ui.story.append(serialGroup);
+    if (dailyGroup.children.length > 0) ui.story.append(dailyGroup);
 
     state.activeStory = state.stories.find((story) => story.id === stored.storyId) || state.stories[0];
     state.activeChapterIndex = Math.min(Number(stored.chapterIndex) || 0, (state.activeStory.chapters || []).length - 1);
@@ -1642,6 +1670,7 @@
       normalizedStoryVolumes(state.activeStory).length - 1,
     );
     ui.story.value = state.activeStory.id;
+    updateStoryKindTag();
     renderChapters();
     const fields = detectEditorFields();
     setEditorMode(fields.mode);
@@ -1662,6 +1691,7 @@
       collapse: shadow.querySelector(".collapse"),
       mode: shadow.querySelector(".mode"),
       story: shadow.querySelector(".story"),
+      storyKindTag: shadow.querySelector(".story-kind-tag"),
       chapter: shadow.querySelector(".chapter"),
       volume: shadow.querySelector(".volume"),
       position: shadow.querySelector(".position"),
