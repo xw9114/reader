@@ -357,10 +357,16 @@
       && /作品名称/.test(pageText)
       && /作品简介/.test(pageText);
     const pageLooksLikeFanqieWorkInfo = platform === "fanqie"
-      && /\/book-info(?:\/|$)/.test(pathname)
-      && /(?:修改)?作品信息/.test(pageText)
-      && /书本名称|作品名称/.test(pageText)
-      && /作品简介/.test(pageText);
+      && (
+        (/\/book-info(?:\/|$)/.test(pathname)
+          && /(?:修改)?作品信息/.test(pageText)
+          && /书本名称|作品名称/.test(pageText)
+          && /作品简介/.test(pageText))
+        || (/\/create(?:\/|$)/.test(pathname)
+          && /创建作品/.test(pageText)
+          && /书本名称|作品名称/.test(pageText)
+          && /作品简介/.test(pageText))
+      );
     const pageLooksLikeWorkInfo = pageLooksLikeQimaoWorkInfo || pageLooksLikeFanqieWorkInfo;
     if (pageLooksLikeWorkInfo) {
       const title = bestCandidate(

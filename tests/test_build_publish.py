@@ -219,6 +219,62 @@ class BuildPublishTests(unittest.TestCase):
         self.assertIn("# 长篇乙", exported)
         self.assertIn("## 第1章 长篇乙", exported)
 
+    def test_build_orders_daily_and_serial_stories_by_latest_date(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "daily"
+            site = root / "site"
+            serial = root / "serial"
+            output = root / "dist"
+            source.mkdir()
+            site.mkdir()
+            (site / "index.html").write_text("ok", encoding="utf-8")
+            (source / "2026-09-22-daily.md").write_text(
+                "# 更新更晚的短篇\n\n正文。\n", encoding="utf-8"
+            )
+            book_dir = serial / "books" / "book"
+            published = book_dir / "published"
+            published.mkdir(parents=True)
+            (book_dir / "book.json").write_text(json.dumps({
+                "title": "长篇",
+                "readerId": "serial-book",
+                "targetChapters": 1,
+                "publishingHint": {
+                    "schemaVersion": 1,
+                    "source": "manual",
+                    "audience": "方向待定",
+                    "readingTags": ["都市生活"],
+                    "contentTags": ["现实题材"],
+                    "tagDimensions": {"plot": [], "emotion": [], "persona": [], "worldview": []},
+                },
+                "volumes": [{"number": 1, "title": "第一卷", "startChapter": 1, "endChapter": 1}],
+            }, ensure_ascii=False), encoding="utf-8")
+            (published / "2026-09-21-chapter-0001.md").write_text(
+                "# 第1章 长篇\n\n正文。\n", encoding="utf-8"
+            )
+
+            build(source, site, output, serial_dir=serial)
+            payload = json.loads((output / "data.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(payload["latestStoryId"], "2026-09-22-daily")
+        self.assertEqual(payload["stories"][0]["id"], "2026-09-22-daily")
+
+    def test_build_failure_preserves_previous_dist(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "daily"
+            site = root / "site"
+            output = root / "dist"
+            source.mkdir()
+            site.mkdir()
+            output.mkdir()
+            (output / "previous.txt").write_text("keep", encoding="utf-8")
+            (site / "index.html").write_text("ok", encoding="utf-8")
+            with self.assertRaises(SystemExit):
+                build(source, site, output)
+
+            self.assertEqual((output / "previous.txt").read_text(encoding="utf-8"), "keep")
+
     def test_serial_build_rejects_missing_publishing_metadata(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

@@ -13,10 +13,10 @@ from pathlib import Path
 from publishing_metadata import generate_and_write
 
 
-STATE_DB = "/root/.openclaw/state/openclaw.sqlite"
-SECRET_NAME = "XW9114_API_KEY"
-EXPECTED_HOST = "api.xw9114.online"
-BASE_URL = "https://api.xw9114.online/v1"
+STATE_DB = os.environ.get("OPENCLAW_STATE_DB", "/root/.openclaw/state/openclaw.sqlite")
+SECRET_NAME = os.environ.get("INKOS_SECRET_NAME", "XW9114_API_KEY")
+EXPECTED_HOST = os.environ.get("INKOS_EXPECTED_HOST", "api.xw9114.online")
+BASE_URL = os.environ.get("INKOS_BASE_URL", "https://api.xw9114.online/v1")
 
 
 def project_root(start: Path) -> Path:

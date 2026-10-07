@@ -1,0 +1,13 @@
+{
+  "name": "reader-browser-tests",
+  "private": true,
+  "scripts": {
+    "test:browser": "node tests/test_extension_browser.js",
+    "test:queue": "node tests/test_publish_queue.js",
+    "publish:queue": "node automation/publish_queue.js",
+    "publish:pending": "node automation/run_pending_publish.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.62.1"
+  }
+}

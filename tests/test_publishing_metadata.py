@@ -112,6 +112,18 @@ class PublishingMetadataTests(unittest.TestCase):
         self.assertEqual(book["volumes"][0]["title"], "名字被谁写走")
         self.assertFalse((book_dir / "book.json.tmp").exists())
 
+    def test_preserves_external_metadata_source(self):
+        hint = publishing_metadata.validate_publishing_hint({
+            "schemaVersion": 1,
+            "source": "external-ai",
+            "audience": "女频",
+            "readingTags": ["都市生活"],
+            "contentTags": ["现实题材"],
+            "tagDimensions": {"plot": [], "emotion": [], "persona": [], "worldview": []},
+        })
+
+        self.assertEqual(hint["source"], "external-ai")
+
 
 if __name__ == "__main__":
     unittest.main()

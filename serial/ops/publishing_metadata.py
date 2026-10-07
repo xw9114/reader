@@ -6,17 +6,21 @@ from __future__ import annotations
 import json
 import os
 import re
+import sys
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-
-SCHEMA_VERSION = 1
-AUDIENCES = {"男频", "女频", "方向待定"}
-DIMENSION_LIMITS = {"plot": 4, "emotion": 2, "persona": 4, "worldview": 1}
-MAX_VOLUMES = 12
+REPOSITORY = Path(__file__).resolve().parents[2]
+if str(REPOSITORY) not in sys.path:
+    sys.path.insert(0, str(REPOSITORY))
+from reader_schema import (  # noqa: E402
+    SCHEMA_VERSION,
+    validate_publishing_hint as _validate_publishing_hint,
+    validate_volumes as _validate_volumes,
+)
 FOUNDATION_FILES = (
     "story/brief.md",
     "story/author_intent.md",
@@ -27,85 +31,17 @@ FOUNDATION_FILES = (
 MAX_CONTEXT_CHARS = 60_000
 
 
-def _string_list(value: Any, field: str, *, minimum: int, maximum: int) -> list[str]:
-    if not isinstance(value, list):
-        raise ValueError(f"{field} must be an array")
-    result: list[str] = []
-    for item in value:
-        if not isinstance(item, str) or not item.strip():
-            raise ValueError(f"{field} contains an empty or non-string value")
-        text = item.strip()
-        if text not in result:
-            result.append(text)
-    if not minimum <= len(result) <= maximum:
-        raise ValueError(f"{field} must contain {minimum}-{maximum} unique values")
-    return result
-
-
 def validate_publishing_hint(value: Any) -> dict[str, Any]:
-    """Return normalized publishing metadata or raise a field-specific error."""
-    if not isinstance(value, dict):
-        raise ValueError("publishingHint must be an object")
-    audience = value.get("audience")
-    if isinstance(audience, str):
-        audience = audience.strip()
-    if audience not in AUDIENCES:
-        raise ValueError("publishingHint.audience must be 男频, 女频, or 方向待定")
-    reading_tags = _string_list(value.get("readingTags"), "publishingHint.readingTags", minimum=1, maximum=2)
-    content_tags = _string_list(value.get("contentTags"), "publishingHint.contentTags", minimum=1, maximum=4)
-    raw_dimensions = value.get("tagDimensions")
-    if not isinstance(raw_dimensions, dict):
-        raise ValueError("publishingHint.tagDimensions must be an object")
-    dimensions = {
-        key: _string_list(
-            raw_dimensions.get(key),
-            f"publishingHint.tagDimensions.{key}",
-            minimum=0,
-            maximum=limit,
-        )
-        for key, limit in DIMENSION_LIMITS.items()
-    }
-    return {
-        "schemaVersion": SCHEMA_VERSION,
-        "source": "inkos",
-        "audience": audience,
-        "readingTags": reading_tags,
-        "contentTags": content_tags,
-        "tagDimensions": dimensions,
-    }
+    """Return normalized metadata while preserving an explicit source."""
+    return _validate_publishing_hint(
+        value,
+        default_source="inkos",
+        require_schema_version=False,
+    )
 
 
 def validate_volumes(value: Any, target_chapters: int | None = None) -> list[dict[str, Any]]:
-    """Validate a continuous InkOS volume plan covering the whole book."""
-    if not isinstance(value, list) or not 1 <= len(value) <= MAX_VOLUMES:
-        raise ValueError(f"volumes must contain 1-{MAX_VOLUMES} items")
-    volumes: list[dict[str, Any]] = []
-    expected_start = 1
-    for index, item in enumerate(value, start=1):
-        if not isinstance(item, dict):
-            raise ValueError(f"volumes[{index - 1}] must be an object")
-        title = item.get("title")
-        number = item.get("number")
-        start = item.get("startChapter")
-        end = item.get("endChapter")
-        if number != index:
-            raise ValueError("volume numbers must be consecutive from 1")
-        if not isinstance(title, str) or not 1 <= len(title.strip()) <= 30:
-            raise ValueError(f"volumes[{index - 1}].title must contain 1-30 characters")
-        if not isinstance(start, int) or isinstance(start, bool) or start != expected_start:
-            raise ValueError("volume chapter ranges must be continuous from chapter 1")
-        if not isinstance(end, int) or isinstance(end, bool) or end < start:
-            raise ValueError(f"volumes[{index - 1}].endChapter is invalid")
-        volumes.append({
-            "number": number,
-            "title": title.strip(),
-            "startChapter": start,
-            "endChapter": end,
-        })
-        expected_start = end + 1
-    if isinstance(target_chapters, int) and target_chapters > 0 and volumes[-1]["endChapter"] != target_chapters:
-        raise ValueError("volume plan must end at targetChapters")
-    return volumes
+    return _validate_volumes(value, target_chapters)
 
 
 def validate_generated_metadata(value: Any, target_chapters: int | None = None) -> dict[str, Any]:

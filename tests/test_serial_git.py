@@ -12,7 +12,6 @@ def git(cwd: Path, *args: str) -> str:
 
 
 class SerialGitTests(unittest.TestCase):
-    @unittest.skipIf(os.name == "nt", "The serial runner uses Linux file locks")
     def test_remote_reader_update_merges_with_new_chapter(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

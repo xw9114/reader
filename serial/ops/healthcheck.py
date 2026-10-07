@@ -13,7 +13,7 @@ from zoneinfo import ZoneInfo
 
 PROJECT = Path(__file__).resolve().parents[1]
 REPOSITORY = PROJECT.parent
-GIT_KEY = "/root/.ssh/id_xw9114_reader_deploy"
+GIT_KEY = os.environ.get("READER_GIT_KEY", "/root/.ssh/id_xw9114_reader_deploy")
 
 
 def check() -> None:
@@ -52,20 +52,26 @@ def check() -> None:
     if entry is None or entry.get("status") not in {"ready-for-review", "approved"}:
         raise RuntimeError("InkOS chapter index is unhealthy")
 
-    relative = publication.relative_to(REPOSITORY).as_posix()
-    subprocess.run(["git", "cat-file", "-e", f"HEAD:{relative}"], cwd=REPOSITORY,
-                   check=True, stdout=subprocess.DEVNULL)
-    local = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPOSITORY, text=True).strip()
     environment = os.environ.copy()
     environment["GIT_SSH_COMMAND"] = (
         f"ssh -i {GIT_KEY} -o IdentitiesOnly=yes -o BatchMode=yes "
         "-o StrictHostKeyChecking=accept-new -o ConnectTimeout=15"
     )
-    remote = subprocess.check_output(["git", "ls-remote", "origin", "refs/heads/main"],
-                                     cwd=REPOSITORY, env=environment, text=True, timeout=60).split()[0]
-    if local != remote:
-        raise RuntimeError("GitHub main differs from the chapter commit")
-    print(f"SUCCESS: serial novel date={today} chapter={number} chars={count} commit={local} remote=verified")
+    subprocess.run(["git", "fetch", "--no-tags", "origin", "main"], cwd=REPOSITORY,
+                   env=environment, check=True, stdout=subprocess.DEVNULL,
+                   stderr=subprocess.PIPE, timeout=120)
+    relative = publication.relative_to(REPOSITORY).as_posix()
+    remote_ref = "origin/main"
+    subprocess.run(["git", "cat-file", "-e", f"{remote_ref}:{relative}"], cwd=REPOSITORY,
+                   check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+    remote_data = subprocess.check_output(
+        ["git", "show", f"{remote_ref}:{relative}"], cwd=REPOSITORY, env=environment,
+    )
+    if hashlib.sha256(remote_data).hexdigest() != digest:
+        raise RuntimeError("GitHub main contains a different chapter body")
+    local = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPOSITORY, text=True).strip()
+    remote = subprocess.check_output(["git", "rev-parse", remote_ref], cwd=REPOSITORY, text=True).strip()
+    print(f"SUCCESS: serial novel date={today} chapter={number} chars={count} local={local} remote_commit={remote} remote=verified")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,9 @@
+[project]
+name = "reader"
+version = "1.0.0"
+description = "Static web-based reading, archiving, and publishing system for AI-generated web fiction"
+requires-python = ">=3.10"
+license = "MIT"
+
+[tool.unittest]
+start-dir = "tests"

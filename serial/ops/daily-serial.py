@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Publish at most one validated chapter of the selected InkOS book per date."""
 
-import fcntl
 import hashlib
 import json
 import os
@@ -10,9 +9,28 @@ import signal
 import subprocess
 import sys
 import time
+from contextlib import contextmanager
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
+
+try:
+    import fcntl
+except ImportError:  # pragma: no cover - exercised on Windows runners
+    fcntl = None
+
+try:
+    import msvcrt
+except ImportError:  # pragma: no cover - exercised on POSIX runners
+    msvcrt = None
+
+try:
+    from platform_state import default_platforms
+except ModuleNotFoundError:  # Allows importlib-based tests from the repository root.
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from platform_state import default_platforms, normalize_platforms
+else:
+    from platform_state import normalize_platforms
 
 
 PROJECT = Path(__file__).resolve().parents[1]
@@ -22,12 +40,16 @@ ACTIVE_BOOK_ID = os.environ.get("SERIAL_BOOK_ID", "旧城清算")
 ACTIVE_BOOK = BOOKS / ACTIVE_BOOK_ID
 PUBLISHED = ACTIVE_BOOK / "published"
 RUNS = ACTIVE_BOOK / "runs"
-LOGS = Path("/var/log/openclaw-jobs")
-START_DATE = date(2026, 9, 20)
+LOGS = Path(os.environ.get(
+    "READER_LOG_DIR",
+    "/var/log/openclaw-jobs" if os.name != "nt" else str(REPOSITORY / ".runtime" / "logs"),
+))
+TIMEZONE = ZoneInfo(os.environ.get("READER_TIMEZONE", "Asia/Shanghai"))
+START_DATE = date.fromisoformat(os.environ.get("SERIAL_START_DATE", "2026-09-20"))
 MIN_CJK = 2000
 TARGET_WORDS = 2500
 MAX_SECONDS = 1500
-GIT_KEY = "/root/.ssh/id_xw9114_reader_deploy"
+GIT_KEY = os.environ.get("READER_GIT_KEY", "/root/.ssh/id_xw9114_reader_deploy")
 INKOS = PROJECT / "ops" / "inkos-with-secret.py"
 
 
@@ -67,32 +89,81 @@ def remote_head() -> str:
     return head
 
 
-def sync_git(message: str) -> str:
-    if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=REPOSITORY).returncode:
-        fail("unrelated staged changes exist")
-    run(["git", "add", "--", "serial"], timeout=30)
-    if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=REPOSITORY).returncode:
-        run(["git", "commit", "-m", message, "--", "serial"], timeout=60)
-    local = run(["git", "rev-parse", "HEAD"])
-    remote = remote_head()
-    if local != remote:
-        run(["git", "fetch", "--no-tags", "origin", "main"], env=git_environment(), timeout=120)
-        ancestor = subprocess.run(["git", "merge-base", "--is-ancestor", remote, local],
-                                  cwd=REPOSITORY, stdout=subprocess.DEVNULL,
-                                  stderr=subprocess.DEVNULL).returncode
-        if ancestor:
-            merged = subprocess.run(["git", "merge", "--no-edit", remote], cwd=REPOSITORY,
-                                    text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            if merged.returncode:
-                if (REPOSITORY / ".git" / "MERGE_HEAD").exists():
-                    subprocess.run(["git", "merge", "--abort"], cwd=REPOSITORY,
-                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                fail(f"remote main conflicts with serial state: {merged.stderr[-300:]}")
-            local = run(["git", "rev-parse", "HEAD"])
-        run(["git", "push", "origin", "HEAD:main"], env=git_environment(), timeout=120)
-        if remote_head() != local:
-            fail("remote main did not reach the local commit")
-    return local
+@contextmanager
+def exclusive_file_lock(lock_path: Path, *, non_blocking: bool = False):
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open("a+", encoding="utf-8") as lock:
+        if fcntl is not None:
+            flags = fcntl.LOCK_EX | (fcntl.LOCK_NB if non_blocking else 0)
+            try:
+                fcntl.flock(lock, flags)
+            except BlockingIOError:
+                fail("another serial chapter job is running")
+        elif msvcrt is not None:
+            lock.seek(0)
+            lock.write("0")
+            lock.flush()
+            lock.seek(0)
+            mode = msvcrt.LK_NBLCK if non_blocking else msvcrt.LK_LOCK
+            try:
+                msvcrt.locking(lock.fileno(), mode, 1)
+            except OSError:
+                fail("another serial chapter job is running")
+        try:
+            yield
+        finally:
+            if fcntl is not None:
+                fcntl.flock(lock, fcntl.LOCK_UN)
+            elif msvcrt is not None:
+                lock.seek(0)
+                msvcrt.locking(lock.fileno(), msvcrt.LK_UNLCK, 1)
+
+
+@contextmanager
+def git_sync_lock():
+    """Serialize repository mutations across different book jobs."""
+    lock_path = Path(os.environ.get("READER_GIT_LOCK", str(REPOSITORY / ".git" / "reader-git-sync.lock")))
+    with exclusive_file_lock(lock_path):
+        yield
+
+
+def _staged_paths() -> list[str]:
+    output = run(["git", "diff", "--cached", "--name-only"], timeout=30)
+    return [line for line in output.splitlines() if line]
+
+
+def sync_git(message: str, paths: list[Path] | None = None) -> str:
+    allowed = [path.as_posix().rstrip("/") for path in (paths or [Path("serial")])]
+    with git_sync_lock():
+        if _staged_paths():
+            fail("unrelated staged changes exist")
+        run(["git", "add", "--", *allowed], timeout=30)
+        staged = _staged_paths()
+        if any(not any(path == prefix or path.startswith(prefix + "/") for prefix in allowed) for path in staged):
+            run(["git", "reset", "--", *allowed], timeout=30)
+            fail("staged changes escaped the current serial book")
+        if staged:
+            run(["git", "commit", "-m", message, "--", *allowed], timeout=60)
+        local = run(["git", "rev-parse", "HEAD"])
+        remote = remote_head()
+        if local != remote:
+            run(["git", "fetch", "--no-tags", "origin", "main"], env=git_environment(), timeout=120)
+            ancestor = subprocess.run(["git", "merge-base", "--is-ancestor", remote, local],
+                                      cwd=REPOSITORY, stdout=subprocess.DEVNULL,
+                                      stderr=subprocess.DEVNULL).returncode
+            if ancestor:
+                merged = subprocess.run(["git", "merge", "--no-edit", remote], cwd=REPOSITORY,
+                                        text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                if merged.returncode:
+                    if (REPOSITORY / ".git" / "MERGE_HEAD").exists():
+                        subprocess.run(["git", "merge", "--abort"], cwd=REPOSITORY,
+                                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    fail(f"remote main conflicts with serial state: {merged.stderr[-300:]}")
+                local = run(["git", "rev-parse", "HEAD"])
+            run(["git", "push", "origin", "HEAD:main"], env=git_environment(), timeout=120)
+            if remote_head() != local:
+                fail("remote main did not reach the local commit")
+        return local
 
 
 def book() -> tuple[str, Path, dict]:
@@ -183,7 +254,7 @@ def repair_chapter_state(book_id: str, number: int) -> None:
 
 
 def selected_date() -> date | None:
-    today = datetime.now(ZoneInfo("Asia/Shanghai")).date()
+    today = datetime.now(TIMEZONE).date()
     candidate = START_DATE
     while candidate <= today:
         if not list(PUBLISHED.glob(f"{candidate.isoformat()}-chapter-*.md")):
@@ -211,6 +282,7 @@ def validate_existing_publications(book_id: str, book_dir: Path) -> None:
         number = int(match.group(2))
         record_path = RUNS / f"{match.group(1)}.json"
         record = json.loads(record_path.read_text(encoding="utf-8"))
+        normalize_platforms(record.get("platforms"))
         source = chapter_file(book_dir, number)
         if (source is None or record.get("bookId") != book_id
                 or record.get("chapter") != number or record.get("status") != "published"):
@@ -227,11 +299,12 @@ def main() -> None:
     PUBLISHED.mkdir(exist_ok=True)
     RUNS.mkdir(exist_ok=True)
     lock_id = hashlib.sha256(ACTIVE_BOOK_ID.encode("utf-8")).hexdigest()[:12]
-    with open(f"/run/lock/openclaw-daily-serial-{lock_id}.lock", "w", encoding="utf-8") as lock:
-        try:
-            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            fail("another serial chapter job is running")
+    lock_root = Path(os.environ.get(
+        "READER_LOCK_DIR",
+        "/run/lock" if os.name != "nt" else str(REPOSITORY / ".runtime" / "locks"),
+    ))
+    book_lock = lock_root / f"openclaw-daily-serial-{lock_id}.lock"
+    with exclusive_file_lock(book_lock, non_blocking=True):
 
         book_id, book_dir, metadata = book()
         validate_existing_publications(book_id, book_dir)
@@ -242,13 +315,19 @@ def main() -> None:
                                          cwd=REPOSITORY, stdout=subprocess.DEVNULL,
                                          stderr=subprocess.DEVNULL).returncode]
         if unpublished:
-            commit = sync_git("Publish pending serial chapter")
+            commit = sync_git(
+                "Publish pending serial chapter",
+                [Path("serial") / "books" / ACTIVE_BOOK_ID],
+            )
             say(f"SUCCESS: pending chapter pushed; commit={commit}")
             return
 
         publish_date = selected_date()
         if publish_date is None:
-            commit = sync_git("Sync serial novel state")
+            commit = sync_git(
+                "Sync serial novel state",
+                [Path("serial") / "books" / ACTIVE_BOOK_ID],
+            )
             say(f"SUCCESS: today's serial chapter already published; commit={commit}")
             return
         published_count = len(list(PUBLISHED.glob("*-chapter-*.md")))
@@ -263,7 +342,8 @@ def main() -> None:
                 fail("date reservation disagrees with the chapter sequence")
         else:
             atomic_json(reservation, {"date": publish_date.isoformat(), "chapter": number,
-                                      "bookId": book_id, "createdAt": datetime.now(ZoneInfo("Asia/Shanghai")).isoformat()})
+                                      "bookId": book_id, "createdAt": datetime.now(TIMEZONE).isoformat(),
+                                      "platforms": default_platforms()})
 
         source = chapter_file(book_dir, number)
         if source is None:
@@ -314,9 +394,13 @@ def main() -> None:
         digest = hashlib.sha256(destination.read_bytes()).hexdigest()
         record = json.loads(reservation.read_text(encoding="utf-8"))
         record.update({"status": "published", "characters": count, "sha256": digest,
-                       "publishedAt": datetime.now(ZoneInfo("Asia/Shanghai")).isoformat()})
+                       "platforms": default_platforms(),
+                       "publishedAt": datetime.now(TIMEZONE).isoformat()})
         atomic_json(reservation, record)
-        commit = sync_git(f"Publish {metadata['title']} chapter {number:04d} ({publish_date})")
+        commit = sync_git(
+            f"Publish {metadata['title']} chapter {number:04d} ({publish_date})",
+            [Path("serial") / "books" / ACTIVE_BOOK_ID],
+        )
         say(f"SUCCESS: book={metadata['title']} chapter={number} date={publish_date} chars={count} "
             f"path={destination.relative_to(REPOSITORY)} commit={commit} remote=verified")
 

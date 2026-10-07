@@ -13,7 +13,8 @@ async function openFixture(browser, filename) {
 }
 
 (async () => {
-  const browser = await chromium.launch({ headless: true, channel: "msedge" });
+  const channel = process.env.BROWSER_CHANNEL || (process.platform === "win32" ? "msedge" : undefined);
+  const browser = await chromium.launch({ headless: true, ...(channel ? { channel } : {}) });
   try {
     const chapterPage = await openFixture(browser, "fanqie-editor.html");
     const chapterPanel = chapterPage.locator("#reader-fanqie-importer");
@@ -192,6 +193,17 @@ async function openFixture(browser, filename) {
     assert.equal(await fanqieWorkPage.evaluate(() => window.__FANQIE_UPDATE_CLICKS__), 0);
     assert.match(await fanqieWorkPanel.locator(".status").textContent(), /作品名称和简介草稿已填入/);
     await fanqieWorkPage.close();
+
+    const fanqieCreatePage = await openFixture(browser, "fanqie-create-editor.html");
+    const fanqieCreatePanel = fanqieCreatePage.locator("#reader-fanqie-importer");
+    assert.equal(await fanqieCreatePanel.locator(".mode").textContent(), "番茄 · 作品信息");
+    assert.equal(await fanqieCreatePanel.locator(".fill").textContent(), "填入作品信息");
+    assert.equal(await fanqieCreatePanel.locator(".chapter-row").isVisible(), false);
+    await fanqieCreatePanel.locator(".fill").click();
+    assert.equal(await fanqieCreatePage.locator("#book-title").inputValue(), "我的渣男前夫成了我的下属");
+    assert.match(await fanqieCreatePage.locator("#work-summary").inputValue(), /^周晓雨没想到/);
+    assert.match(await fanqieCreatePanel.locator(".status").textContent(), /作品名称和简介草稿已填入/);
+    await fanqieCreatePage.close();
 
     const volumePage = await openFixture(browser, "fanqie-volume-manager.html");
     const volumePanel = volumePage.locator("#reader-fanqie-importer");

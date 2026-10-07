@@ -37,6 +37,30 @@ serial/books/<作品目录>/
 
 不同长篇的章节编号、分卷和更新日期互不影响。封面仍放在 `covers/<readerId>.png`。
 
+每次自动连载运行会在 `runs/YYYY-MM-DD.json` 中记录本地发布状态，以及番茄和七猫各自的上传状态：
+
+```json
+{
+  "platforms": {
+    "fanqie": {"status": "pending"},
+    "qimao": {"status": "pending"}
+  }
+}
+```
+
+平台状态可用 `pending`、`draft_saved`、`published` 和 `failed` 表示。平台自动化任务应根据章节内容哈希和平台状态重试，避免重复上传；遇到登录失效或验证码时应停在 `failed` 并通知人工处理。
+
+## 平台自动上传
+
+可以使用 `automation/publish_queue.js` 自动打开已经登录的浏览器配置、填写章节并保存草稿：
+
+```powershell
+$env:FANQIE_CHAPTER_URL = "https://fanqienovel.com/main/writer/<作品>/publish/<章节>"
+npm run publish:queue -- --platform fanqie --book-id lianai-daka --chapter 7
+```
+
+地址模板支持 `{bookId}`、`{storyId}` 和 `{chapter}`。默认只保存草稿；确认平台页面和选择器稳定后，才使用 `--publish` 开启最终发布。浏览器配置保存在 `.runtime/browser-profiles/<platform>`，不要把该目录提交到 Git。检测到登录页、验证码或找不到安全按钮时，任务会记录为 `failed` 并停止。
+
 发布页同时提供整篇 TXT、原始 Markdown、逐章 ZIP、每篇作品对应的竖版封面和电脑端导入扩展。扩展在番茄、七猫的作品信息或短故事页面中显示封面预览；打开平台封面上传控件后，点击“填入封面”即可选择当前作品的图片，最终保存仍由作者确认。
 
 构建器会为没有自定义图片的作品生成独立默认封面。要替换封面，可以把 `PNG/JPEG/WebP/SVG` 放进 `covers/`，文件名使用作品 `id`（例如 `serial-main.png`），然后重新构建。

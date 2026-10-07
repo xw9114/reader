@@ -4,6 +4,8 @@
 
 This contract applies when `daily/`, `serial/books/*/published/`, the publishing page, or the browser extension changes. The build output is consumed by both the static site and `extension/background.js`.
 
+Serial run records may include a `platforms` object. Each supported platform uses one of `pending`, `draft_saved`, `published`, or `failed`; retries must compare the chapter `sha256` and the platform state before writing again.
+
 ## 2. Signatures
 
 ```text
