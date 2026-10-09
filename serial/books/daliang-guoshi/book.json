@@ -1,0 +1,73 @@
+{
+  "id": "daliang-guoshi",
+  "readerId": "serial-daliang-guoshi",
+  "title": "大梁第一国师：开局死牢，我推演算哭满朝文武",
+  "platform": "tomato",
+  "genre": "fantasy",
+  "status": "active",
+  "targetChapters": 100,
+  "chapterWordCount": 2500,
+  "language": "zh",
+  "synopsis": "穿越大梁死牢，明日问斩。身为替罪小典吏的顾衡，开局绑定【万物天机神级推演系统】！只要消耗推演点，世间万物因果、贪官密账、破案生机、边关军情，皆在一念之间！恶霸狱头勒索打断双腿？顾衡一眼推演出他私藏死囚金玉，一句话吓得狱头当场跪地磕头喊爹！县令栽赃万石亏空欲斩草除根？顾衡升堂三声冷笑，当场推算出县衙枯井下暗藏的三万两官银与通敌密信，逼得狗官狂吐三升逆血当场下跪！边关蛮夷十万铁骑合围？顾衡借三缕东风，推演出敌军粮道与山洪地脉，弹指间全歼两万狼骑！从死牢替罪羊到大梁第一国师，满朝文武哭爹喊娘：“求国师收了神通吧，我们连底裤都要被算光了！”",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "男频",
+    "readingTags": [
+      "历史脑洞",
+      "系统爽文"
+    ],
+    "contentTags": [
+      "穿越",
+      "推演万物",
+      "杀伐果断",
+      "智斗打脸"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "死牢翻盘",
+        "当众打脸",
+        "抄家审案",
+        "降维打击"
+      ],
+      "emotion": [
+        "爽快利落",
+        "扬眉吐气"
+      ],
+      "persona": [
+        "从容不迫",
+        "智商碾压",
+        "腹黑杀伐"
+      ],
+      "worldview": [
+        "架空历史"
+      ]
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "第一卷：死牢算圣，三声神谕抄翻县衙",
+      "startChapter": 1,
+      "endChapter": 25
+    },
+    {
+      "number": 2,
+      "title": "第二卷：幽州定局，三万两官银与十万蛮骑",
+      "startChapter": 26,
+      "endChapter": 50
+    },
+    {
+      "number": 3,
+      "title": "第三卷：入主中枢，算尽满朝文武满门贪墨",
+      "startChapter": 51,
+      "endChapter": 75
+    },
+    {
+      "number": 4,
+      "title": "第四卷：神级国师，算无遗策定万世太平",
+      "startChapter": 76,
+      "endChapter": 100
+    }
+  ]
+}
