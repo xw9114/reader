@@ -1,0 +1,74 @@
+{
+  "id": "yinsi-linshigong",
+  "readerId": "serial-yinsi-linshigong",
+  "title": "阴司临时工：我在规则怪谈里搞绩效考核",
+  "platform": "qimao",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 100,
+  "chapterWordCount": 2500,
+  "language": "zh",
+  "synopsis": "沈砚是民俗档案馆的一名编外夜班临时工，熬满三年试用期即可转正享受阴司带薪退休待遇。然而在转正前最后一晚，404次阴途末班车诡异突发，规则怪谈降临！面对必死的乘车守则与索命红衣女鬼，沈砚淡定掏出《阴司考勤与绩效工作簿》——无证截停阳间地铁？私设鬼打墙收费项目？还害得本判官全勤奖泡汤、试用期面临清零？“双手抱头，靠墙立正！你今年下半年的阴德绩效被扣光了！”三十年前地府大断代，十殿阎罗失踪，人间怪谈横行。且看手握考功司正统底册的沈砚，如何在规则怪谈里反客为主，整顿黑心作坊，按章考勤稽查，重塑阴阳秩序！",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "男频",
+    "readingTags": [
+      "悬疑灵异",
+      "都市脑洞"
+    ],
+    "contentTags": [
+      "规则怪谈",
+      "幽冥地府",
+      "反差搞笑",
+      "职场爽文"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "反差爽文",
+        "机智幽默",
+        "规则破解",
+        "破案悬疑"
+      ],
+      "emotion": [
+        "轻松搞笑",
+        "热血爽快"
+      ],
+      "persona": [
+        "杀伐果断",
+        "智商在线",
+        "反差萌",
+        "老六"
+      ],
+      "worldview": [
+        "规则怪谈"
+      ]
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "第一卷：试用期判官与违规副本",
+      "startChapter": 1,
+      "endChapter": 25
+    },
+    {
+      "number": 2,
+      "title": "第二卷：生死簿残卷与阴司重构",
+      "startChapter": 26,
+      "endChapter": 50
+    },
+    {
+      "number": 3,
+      "title": "第三卷：百鬼夜行案与阳间总监",
+      "startChapter": 51,
+      "endChapter": 75
+    },
+    {
+      "number": 4,
+      "title": "第四卷：独断幽冥敕封十殿阎罗",
+      "startChapter": 76,
+      "endChapter": 100
+    }
+  ]
+}
