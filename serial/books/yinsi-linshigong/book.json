@@ -50,24 +50,24 @@
       "number": 1,
       "title": "第一卷：试用期判官与违规副本",
       "startChapter": 1,
-      "endChapter": 25
+      "endChapter": 30
     },
     {
       "number": 2,
       "title": "第二卷：生死簿残卷与阴司重构",
-      "startChapter": 26,
-      "endChapter": 50
+      "startChapter": 31,
+      "endChapter": 55
     },
     {
       "number": 3,
       "title": "第三卷：百鬼夜行案与阳间总监",
-      "startChapter": 51,
-      "endChapter": 75
+      "startChapter": 56,
+      "endChapter": 80
     },
     {
       "number": 4,
       "title": "第四卷：独断幽冥敕封十殿阎罗",
-      "startChapter": 76,
+      "startChapter": 81,
       "endChapter": 100
     }
   ]
