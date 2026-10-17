@@ -1,0 +1,62 @@
+{
+  "id": "mangqu-huisheng",
+  "readerId": "serial-mangqu-huisheng",
+  "title": "盲区回声",
+  "platform": "qimao",
+  "genre": "suspense",
+  "status": "completed",
+  "targetChapters": 52,
+  "chapterWordCount": 2600,
+  "language": "zh",
+  "synopsis": "2034年的临江新区，一名负责城市感知系统审计的前调查记者在暴雨夜发现失踪三年的弟弟竟被一次交通事故“重新识别”为死者。她追查身份数据为何会复活，却逐步逼近一套以公共安全为名的记忆筛除与身份篡改机制。当机器把活人异议定义为系统噪声，当算法为了低延迟不断切断求救信号，林照夜与伙伴们毅然撕开冰冷的数据铁幕，剪断主干光缆，把名字还给每一个活生生的人。",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "女频",
+    "readingTags": [
+      "悬疑灵异",
+      "都市脑洞"
+    ],
+    "contentTags": [
+      "科技伦理",
+      "硬核推理",
+      "家庭羁绊",
+      "反抗算法"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "真相追踪",
+        "职场博弈",
+        "硬核推理",
+        "绝地反击"
+      ],
+      "emotion": [
+        "情感克制",
+        "亲情羁绊"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "冷静理智",
+        "坚韧成长"
+      ],
+      "worldview": [
+        "规则怪谈"
+      ]
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "第一卷：清昼案",
+      "startChapter": 1,
+      "endChapter": 26
+    },
+    {
+      "number": 2,
+      "title": "第二卷：回声之外",
+      "startChapter": 27,
+      "endChapter": 52
+    }
+  ]
+}
