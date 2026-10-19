@@ -1,0 +1,79 @@
+{
+  "id": "chenghuang-yeban",
+  "readerId": "serial-chenghuang-yeban",
+  "title": "考公落榜后，我在城隍庙上夜班",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 200,
+  "chapterWordCount": 2000,
+  "language": "zh",
+  "synopsis": "考公三年，三次笔试，三次都差0.5分进面。\n银行卡余额只剩三百四十七块六的那天，我在城隍庙门口看到一张招聘：\n“月薪四千五，五险一金，包住。要求：男，二十五周岁，属蛇，八字硬，不怕黑，会写毛笔字。”\n上班第一夜，值班室抽屉里有一本守则：\n一、子时以后，若有人在庙门外喊你的名字，不要答应，不要开门。\n二、正殿香炉里的三炷香不能断。\n三、若有穿红鞋的女人进来上香，告诉她：“庙已经关门了，明天请早。”\n……\n最后一条是红笔写的：不要相信第一条。\n后来我才知道，这份工作确实有编制——阴间的。\n而那三次差的0.5分，是城隍爷亲手扣的。",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "男频",
+    "readingTags": [
+      "都市脑洞",
+      "悬疑脑洞"
+    ],
+    "contentTags": [
+      "规则怪谈",
+      "民俗灵异",
+      "单元剧",
+      "功德系统"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "规则破解",
+        "单元探案",
+        "小人物逆袭",
+        "伏笔反转"
+      ],
+      "emotion": [
+        "人间温情",
+        "亲情羁绊"
+      ],
+      "persona": [
+        "考公落榜生",
+        "冷静理智",
+        "嘴硬心软"
+      ],
+      "worldview": [
+        "规则怪谈"
+      ]
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "第一卷 夜班守则",
+      "startChapter": 1,
+      "endChapter": 40
+    },
+    {
+      "number": 2,
+      "title": "第二卷 人间烟火",
+      "startChapter": 41,
+      "endChapter": 90
+    },
+    {
+      "number": 3,
+      "title": "第三卷 七月半",
+      "startChapter": 91,
+      "endChapter": 140
+    },
+    {
+      "number": 4,
+      "title": "第四卷 城隍出巡",
+      "startChapter": 141,
+      "endChapter": 180
+    },
+    {
+      "number": 5,
+      "title": "第五卷 天亮以后",
+      "startChapter": 181,
+      "endChapter": 200
+    }
+  ]
+}
