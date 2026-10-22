@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-17",
+  "chapter": 3,
+  "bookId": "mangqu-huisheng",
+  "createdAt": "2026-10-22T06:10:23.000Z",
+  "status": "published",
+  "characters": 3293,
+  "sha256": "22ecde862b1136d1837a6a5e33e1e553700fb963776bd3435cb59375d8f3eb98",
+  "publishedAt": "2026-10-22T06:10:23.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "skipped",
+      "updatedAt": "2026-10-22T06:10:23.000Z"
+    },
+    "qimao": {
+      "status": "skipped",
+      "updatedAt": "2026-10-22T06:10:23.000Z"
+    }
+  },
+  "note": "台账于 2026-10-22 补建。注意：番茄账号上已有同名作品《盲区的回声》（已完结·已签约，50 章），与本地 52 章的对应关系未经核对；两平台暂标 skipped，核对并经作者确认后再启用队列。createdAt/publishedAt 为补建时间。"
+}

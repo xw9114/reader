@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-06",
+  "chapter": 6,
+  "bookId": "lianai-daka",
+  "createdAt": "2026-10-22T06:10:23.000Z",
+  "status": "published",
+  "characters": 1970,
+  "sha256": "84ebe985ec2c1732b9d86c2ba5531804d7ae536f7b930e0588640c0e45c4c652",
+  "publishedAt": "2026-10-22T06:10:23.000Z",
+  "platforms": {
+    "qimao": {
+      "status": "pending",
+      "updatedAt": "2026-10-22T06:10:23.000Z"
+    },
+    "fanqie": {
+      "status": "skipped",
+      "updatedAt": "2026-10-22T06:10:23.000Z"
+    }
+  },
+  "note": "台账于 2026-10-22 补建。本书尚未上传任何平台；目标平台（见 book.json）标 pending，非目标平台标 skipped 以防误投。createdAt/publishedAt 为补建时间。"
+}

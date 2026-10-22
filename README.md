@@ -37,7 +37,7 @@ serial/books/<作品目录>/
 
 不同长篇的章节编号、分卷和更新日期互不影响。封面仍放在 `covers/<readerId>.png`。
 
-每次自动连载运行会在 `runs/YYYY-MM-DD.json` 中记录本地发布状态，以及番茄和七猫各自的上传状态：
+每次自动连载运行会在 `runs/YYYY-MM-DD-chapter-NNNN.json` 中记录本地发布状态，以及番茄和七猫各自的上传状态（一章一文件，同一天可多章；旧格式 `runs/YYYY-MM-DD.json` 仍可被读取）：
 
 ```json
 {

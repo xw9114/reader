@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-17",
+  "chapter": 1,
+  "bookId": "yinsi-linshigong",
+  "createdAt": "2026-10-22T06:10:23.000Z",
+  "status": "published",
+  "characters": 2503,
+  "sha256": "d1ecb7fa4fd55d02b71bde13ef77dd5956eceba949d5d8bdfcbfa0388188097d",
+  "publishedAt": "2026-10-22T06:10:23.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "draft_saved",
+      "updatedAt": "2026-10-22T07:14:00.000Z"
+    },
+    "qimao": {
+      "status": "skipped",
+      "updatedAt": "2026-10-22T06:51:00.000Z"
+    }
+  },
+  "note": "台账于 2026-10-22 补建。本书尚未上传任何平台；目标平台（见 book.json）标 pending，非目标平台标 skipped 以防误投。createdAt/publishedAt 为补建时间。 2026-10-22 作者改投番茄：新书已创建，番茄书籍ID 7699380588012112920，平台书名《我在规则怪谈里搞绩效考核》（原名超15字上限，经作者选定）；qimao 改标 skipped。 第1章草稿经人工核验补正：新书编辑器的「有刚刚更新的草稿」恢复弹窗使自动填稿三度失效，最终在既有草稿上补填正文并核验（平台计2835字、首尾段落无误）后回写 draft_saved。"
+}

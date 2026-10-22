@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-08",
+  "chapter": 18,
+  "bookId": "旧城清算",
+  "createdAt": "2026-10-22T05:50:00.000Z",
+  "status": "published",
+  "characters": 2682,
+  "sha256": "0fc71a23c4c1ba5ded74d8d2240d7360e2650f1b78c790947a80e87ebdae452e",
+  "publishedAt": "2026-10-22T05:50:00.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "draft_saved",
+      "updatedAt": "2026-10-22T10:07:55.102Z"
+    },
+    "qimao": {
+      "status": "pending",
+      "updatedAt": "2026-10-22T05:50:00.000Z"
+    }
+  },
+  "note": "台账于 2026-10-22 按新格式（一章一文件）补建；原日期制格式无法容纳同日两章。本章尚未上传任何平台。createdAt/publishedAt 为补建时间。"
+}

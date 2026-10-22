@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-15",
+  "chapter": 7,
+  "bookId": "chenghuang-yeban",
+  "createdAt": "2026-10-22T06:10:23.000Z",
+  "status": "published",
+  "characters": 1825,
+  "sha256": "90787adac87b76380e160bed856a6c214493529101116eaf4660c0f45d6e6a1c",
+  "publishedAt": "2026-10-22T06:10:23.000Z",
+  "platforms": {
+    "qimao": {
+      "status": "published",
+      "updatedAt": "2026-10-22T06:10:23.000Z"
+    },
+    "fanqie": {
+      "status": "skipped",
+      "updatedAt": "2026-10-22T06:10:23.000Z"
+    }
+  },
+  "note": "台账于 2026-10-22 补建。本书经作者决定改发七猫（book.json 标 tomato）；全部 21 章已于 2026-10-22 经浏览器手动发布至七猫（未签约，待平台签约评估审核）。fanqie 标 skipped 以防误投。createdAt/publishedAt 为补建时间。"
+}

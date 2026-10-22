@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-21",
+  "chapter": 2,
+  "bookId": "旧城清算",
+  "createdAt": "2026-09-21T17:00:00.148935+08:00",
+  "status": "published",
+  "characters": 2491,
+  "sha256": "bf679369a5be91c3c5a66e1db7d8d4410062bdb9cf4ad615a2265f3c793f22ce",
+  "publishedAt": "2026-09-22T10:41:18.957180+08:00",
+  "platforms": {
+    "fanqie": {
+      "status": "published",
+      "updatedAt": "2026-10-22T05:19:38.696335Z",
+      "note": "2026-10-22 对齐平台实况补记：第1-11章已在番茄发布（平台章节列表核实）"
+    },
+    "qimao": {
+      "status": "pending"
+    }
+  }
+}
