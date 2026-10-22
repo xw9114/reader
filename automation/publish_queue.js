@@ -180,13 +180,66 @@ async function fillTextControl(locator, value) {
   }
 }
 
+function splitChapterTitle(title) {
+  const match = String(title).match(/^\s*第\s*(\d+)\s*章[\s、：:．.]*(.+)$/);
+  if (!match) return { number: null, title: String(title).trim() };
+  return { number: match[1], title: match[2].trim() };
+}
+
+async function fillChapterFanqie(page, chapter) {
+  // 番茄新版编辑器：标题拆为「章节序号」输入框 +「请输入标题」输入框，
+  // 且没有保存草稿按钮，内容靠编辑器自动保存进草稿箱。
+  const body = await firstVisible(page, ["[contenteditable=true]:not([data-placeholder*=有话说]):not([id*=message])", ".chapter-editor[contenteditable=true]", "[contenteditable=true]"]);
+  const titleInput = await firstVisible(page, ["input[placeholder*=请输入标题]", "input[placeholder*=章节标题]"]);
+  if (!titleInput || !body) throw new Error("未识别新版编辑器的标题框或正文编辑器");
+  const { number, title } = splitChapterTitle(chapter.title);
+  if (number) {
+    const numberHandle = await titleInput.evaluateHandle((element) => {
+      const inputs = [...document.querySelectorAll("input")].filter((item) => item.offsetParent);
+      const index = inputs.indexOf(element);
+      return index > 0 ? inputs[index - 1] : null;
+    });
+    const numberInput = numberHandle.asElement();
+    if (!numberInput) throw new Error("未识别新版编辑器的章节序号框");
+    await fillTextControl(numberInput, number);
+  }
+  await fillTextControl(titleInput, title);
+  await fillTextControl(body, chapter.body);
+}
+
+async function confirmFanqieDraftSaved(page, chapter) {
+  const { title } = splitChapterTitle(chapter.title);
+  let sawSavedNote = false;
+  const deadline = Date.now() + 45000;
+  while (Date.now() < deadline) {
+    const text = await page.locator("body").innerText().catch(() => "");
+    if (/已保存|保存成功/.test(text)) { sawSavedNote = true; break; }
+    await page.waitForTimeout(1500);
+  }
+  const match = page.url().match(/main\/writer\/(\d+)/);
+  if (!match) {
+    if (sawSavedNote) return "draft_saved";
+    throw new Error("未能确认草稿已保存（页面无已保存提示且地址中无作品ID）");
+  }
+  const checkPage = await page.context().newPage();
+  try {
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      await checkPage.goto(`https://fanqienovel.com/main/writer/chapter-manage/${match[1]}?type=2`, { waitUntil: "domcontentloaded", timeout: 60000 });
+      await checkPage.waitForTimeout(4000);
+      const text = await checkPage.locator("body").innerText().catch(() => "");
+      if (text.includes(title)) return "draft_saved";
+      await checkPage.waitForTimeout(3000);
+    }
+  } finally {
+    await checkPage.close().catch(() => {});
+  }
+  throw new Error("未能在草稿箱中确认本章草稿已保存");
+}
+
 async function fillChapter(page, platform, chapter) {
-  const title = await firstVisible(page, platform === "qimao"
-    ? ["#chapter-title", "input[placeholder*=章节名称]", "input[placeholder*=章节标题]", "input[aria-label*=章节]", "input[name*=title]", "input:not([type=number]):not([inputmode=numeric])"]
-    : ["#chapter-title", "input[placeholder*=章节标题]", "input[aria-label*=章节标题]", "input[name*=title]", "input:not([type=number]):not([inputmode=numeric])"]);
-  const body = await firstVisible(page, platform === "qimao"
-    ? [".chapter-con .edit-mask[contenteditable=true]", ".chapter-con [contenteditable=true]", "[contenteditable=true]"]
-    : ["[contenteditable=true]:not([data-placeholder*=有话说]):not([id*=message])", ".chapter-editor[contenteditable=true]", "[contenteditable=true]"]);
+  if (platform === "fanqie") return fillChapterFanqie(page, chapter);
+  const title = await firstVisible(page, ["#chapter-title", "input[placeholder*=章节名称]", "input[placeholder*=章节标题]", "input[aria-label*=章节]", "input[name*=title]", "input:not([type=number]):not([inputmode=numeric])"]);
+  const body = await firstVisible(page, [".chapter-con .edit-mask[contenteditable=true]", ".chapter-con [contenteditable=true]", "[contenteditable=true]"]);
   if (!title || !body) throw new Error("未识别章节标题框或正文编辑器");
   await fillTextControl(title, chapter.title);
   await fillTextControl(body, chapter.body);
@@ -302,7 +355,13 @@ async function main() {
       console.log(JSON.stringify({ ok: true, mode: "dry-run", platform, bookId, chapter: chapterNumber }, null, 2));
       return;
     }
-    const status = await clickSafeAction(page, args.publish);
+    let status;
+    if (platform === "fanqie") {
+      if (args.publish) throw new Error("番茄新版编辑器的发布流程（下一步→发布确认）尚未适配，已中止，未做任何提交");
+      status = await confirmFanqieDraftSaved(page, payload.content);
+    } else {
+      status = await clickSafeAction(page, args.publish);
+    }
     updateLedger(payload.chapter.runFile, platform, status);
     console.log(JSON.stringify({ ok: true, mode: status, platform, bookId, chapter: chapterNumber }, null, 2));
   } catch (error) {
@@ -330,4 +389,7 @@ module.exports = {
   templateUrl,
   acquirePublishLock,
   normalizeChapterNumber: (value) => String(value).replace(/^第|章$/g, ""),
+  splitChapterTitle,
+  fillChapter,
+  confirmFanqieDraftSaved,
 };
