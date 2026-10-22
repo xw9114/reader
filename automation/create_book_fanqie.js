@@ -52,19 +52,24 @@ log("建书参数:", JSON.stringify({ BOOK, title, protagonist, audience, catego
     if (/login|passport/.test(page.url())) die(3, "番茄登录已失效，需要在 VPS 浏览器重新登录");
     await page.locator("text=创建新书").first().click();
     await page.waitForTimeout(1500);
+    let freqHit = null;
+    page.on("response", async (res) => {
+      if (res.url().includes("check_frequency")) {
+        try { const j = await res.json(); if (j && j.data && j.data.hit_create_book) freqHit = j.data.hit_create_book_message || "创建作品数超出每日上限"; } catch (e) { /* ignore */ }
+      }
+    });
     const item = page.locator(".write-button-dropdown-item").filter({ hasText: "创建书本" }).first();
     await item.click();
-    await page.waitForTimeout(4000);
-    const toast = await page.evaluate(() => {
-      const els = document.querySelectorAll(".arco-message, [class*=message], [class*=toast]");
-      return [...els].map((e) => (e.innerText || "").trim()).filter(Boolean).join(" ");
-    });
-    if (/上限|频繁/.test(toast) || page.url().includes("book-manage") && /上限/.test(await page.evaluate(() => document.body.innerText.slice(0, 2000)))) {
-      await shot("limit");
-      die(2, "平台提示今日建书额度已用完（创建作品数超出每日上限），明天再点这本书的建书按钮");
+    // 等额度检查结果或表单出现；两者都没有 = 被拦下
+    let formReady = false;
+    for (let i = 0; i < 16; i++) {
+      await page.waitForTimeout(1000);
+      if (freqHit) break;
+      formReady = await page.evaluate(() => document.querySelectorAll(".arco-form-item").length > 0);
+      if (formReady) break;
     }
-    // 等待表单出现
-    await page.waitForFunction(() => document.querySelectorAll("input,textarea").length >= 3, { timeout: 20000 }).catch(() => {});
+    if (freqHit) { await shot("limit"); die(2, `平台提示：${freqHit} — 明天再点这本书的建书按钮`); }
+    if (!formReady) { await shot("blocked"); die(2, "点了创建书本但没进入建书表单（多半是今日建书额度已用完），看截图 create-" + BOOK + "-blocked.png"); }
     const formDump = await page.evaluate(() => {
       const vis = (el) => !!(el.offsetWidth || el.offsetHeight);
       const out = [];
