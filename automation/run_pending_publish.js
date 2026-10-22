@@ -29,19 +29,28 @@ function selectPending(bookId, platform) {
       .filter((entry) => entry.isDirectory())
       .map((entry) => path.join(booksRoot, entry.name));
   const candidates = [];
+  const seen = new Map();
   for (const bookDir of bookDirs) {
     const runs = path.join(bookDir, "runs");
     if (!require("node:fs").existsSync(runs)) continue;
     for (const name of require("node:fs").readdirSync(runs)) {
-      if (!/^\d{4}-\d{2}-\d{2}\.json$/.test(name)) continue;
+      const isNewFormat = /^\d{4}-\d{2}-\d{2}-chapter-\d{4}\.json$/.test(name);
+      const isLegacyFormat = /^\d{4}-\d{2}-\d{2}\.json$/.test(name);
+      if (!isNewFormat && !isLegacyFormat) continue;
       const file = path.join(runs, name);
       const record = readJson(file);
       const state = record.platforms?.[platform]?.status || "pending";
       if (record.status === "published" && ["pending", "failed"].includes(state)) {
-        candidates.push({ bookId: path.basename(bookDir), chapter: record.chapter, date: name.slice(0, 10) });
+        const candidate = { bookId: path.basename(bookDir), chapter: record.chapter, date: name.slice(0, 10) };
+        const key = `${candidate.bookId}:${candidate.chapter}`;
+        const existing = seen.get(key);
+        if (!existing || (isNewFormat && !existing.isNewFormat)) {
+          seen.set(key, { ...candidate, isNewFormat });
+        }
       }
     }
   }
+  candidates.push(...[...seen.values()].map(({ isNewFormat, ...rest }) => rest));
   // Prefer the newest chapter so enabling the scheduler does not replay an old backlog.
   candidates.sort((a, b) => b.date.localeCompare(a.date) || b.chapter - a.chapter || a.bookId.localeCompare(b.bookId));
   return candidates[0];
@@ -60,6 +69,8 @@ function main() {
   const script = path.join(__dirname, "publish_queue.js");
   const command = [script, "--platform", args.platform, "--book-id", selected.bookId, "--chapter", String(selected.chapter)];
   if (args.publish) command.push("--publish");
+  if (args.url) command.push("--url", args.url);
+  if (process.env.READER_HEADLESS === "1") command.push("--headless");
   const result = require("node:child_process").spawnSync(process.execPath, command, {
     cwd: ROOT,
     stdio: "inherit",
@@ -67,6 +78,8 @@ function main() {
   });
   process.exitCode = result.status || 0;
 }
+
+module.exports = { selectPending };
 
 if (require.main === module) {
   try {
