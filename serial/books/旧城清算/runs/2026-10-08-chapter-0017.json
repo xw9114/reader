@@ -13,8 +13,9 @@
       "updatedAt": "2026-10-22T05:50:00.000Z"
     },
     "qimao": {
-      "status": "pending",
-      "updatedAt": "2026-10-22T05:50:00.000Z"
+      "status": "skipped",
+      "updatedAt": "2026-10-22T05:50:00.000Z",
+      "note": "本书只上番茄，七猫不投放（2026-10-22 修正老台账遗留的 pending 标记）"
     }
   },
   "note": "台账于 2026-10-22 按新格式（一章一文件）补建；原日期制格式无法容纳同日两章。fanqie 草稿已于 2026-10-22 经青龙试跑存入（draft_saved）；createdAt/publishedAt 为补建时间。"

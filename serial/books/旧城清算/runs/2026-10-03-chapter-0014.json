@@ -13,7 +13,8 @@
       "updatedAt": "2026-10-22T03:31:30.237Z"
     },
     "qimao": {
-      "status": "pending"
+      "status": "skipped",
+      "note": "本书只上番茄，七猫不投放（2026-10-22 修正老台账遗留的 pending 标记）"
     }
   }
 }
