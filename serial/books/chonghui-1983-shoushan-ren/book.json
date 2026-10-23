@@ -1,0 +1,77 @@
+{
+  "id": "chonghui-1983-shoushan-ren",
+  "readerId": "serial-chonghui-1983",
+  "title": "重回1983：从守山人到山海大王",
+  "platform": "zongheng",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 200,
+  "chapterWordCount": 2500,
+  "language": "zh",
+  "synopsis": "陈望山上辈子走出大山，挣过钱，也坐过牢。等他终于攒够钱回乡，父亲的坟头已经长满了草，妹妹早已嫁去了不知名的远方。再睁眼，是1983年。父亲刚背起猎枪，准备进山找回生产队走失的两头牛。陈望山一把夺下父亲的背篓：“今天不能走黑石沟。”这一年，他知道哪片林子先出菌，哪条水道藏着鱼，也知道山外的收购商最喜欢怎样欺负不识字的山民。别人笑他守着穷山沟没出息，他却要修出一条能通到海边的路。只是路还没修，山里先多出了一串不该属于人的脚印。",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "男频",
+    "readingTags": [
+      "年代重生",
+      "乡村经营"
+    ],
+    "contentTags": [
+      "重生救父",
+      "山林冒险",
+      "山海经营",
+      "家庭群像"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "重生救父",
+        "山海经营",
+        "经营闭环",
+        "前世悬案"
+      ],
+      "emotion": [
+        "亲情",
+        "奋斗成长"
+      ],
+      "persona": [
+        "务实沉稳",
+        "重情重义",
+        "善于经营"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "第一卷：黑石沟的雨",
+      "startChapter": 1,
+      "endChapter": 40
+    },
+    {
+      "number": 2,
+      "title": "第二卷：山货出青岚",
+      "startChapter": 41,
+      "endChapter": 80
+    },
+    {
+      "number": 3,
+      "title": "第三卷：第一次见海",
+      "startChapter": 81,
+      "endChapter": 120
+    },
+    {
+      "number": 4,
+      "title": "第四卷：一条路，两头鲜",
+      "startChapter": 121,
+      "endChapter": 160
+    },
+    {
+      "number": 5,
+      "title": "第五卷：山海有人家",
+      "startChapter": 161,
+      "endChapter": 200
+    }
+  ]
+}

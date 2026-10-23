@@ -1,0 +1,79 @@
+{
+  "id": "xianmen-yanshi-zushi",
+  "readerId": "serial-xianmen-yanshi",
+  "title": "我在仙门验尸，验出了自家祖师",
+  "platform": "zongheng",
+  "genre": "fantasy",
+  "status": "active",
+  "targetChapters": 200,
+  "chapterWordCount": 2500,
+  "language": "zh",
+  "synopsis": "青玄宗死人的规矩：外门弟子一把火，内门弟子一口棺，长老以上，要请祖师赐字。许无咎的差事，就是烧之前验一验，免得把还没死透的也送进去。直到一具无名尸体躺上验骨台。尸体没有脸，丹田空了，骨头上却有三百年前那场天劫留下的九道雷痕。宗门典籍记得清楚：能从那场天劫里活下来的，只有开山祖师。许无咎把验骨刀放下。昨夜，他还跪在大殿外，听祖师讲了一整晚长生大道。",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "男频",
+    "readingTags": [
+      "幻想修仙",
+      "仙侠悬疑"
+    ],
+    "contentTags": [
+      "宗门验尸",
+      "长生阴谋",
+      "底层逆袭",
+      "多重反转"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "验尸探案",
+        "身份谜团",
+        "宗门阴谋",
+        "证据破局"
+      ],
+      "emotion": [
+        "求真",
+        "责任担当"
+      ],
+      "persona": [
+        "冷静克制",
+        "严谨细致",
+        "底层逆袭"
+      ],
+      "worldview": [
+        "架空仙门"
+      ]
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "第一卷：昨夜祖师讲道",
+      "startChapter": 1,
+      "endChapter": 40
+    },
+    {
+      "number": 2,
+      "title": "第二卷：药谷无病人",
+      "startChapter": 41,
+      "endChapter": 80
+    },
+    {
+      "number": 3,
+      "title": "第三卷：百年登仙簿",
+      "startChapter": 81,
+      "endChapter": 120
+    },
+    {
+      "number": 4,
+      "title": "第四卷：谁在替祖师活着",
+      "startChapter": 121,
+      "endChapter": 160
+    },
+    {
+      "number": 5,
+      "title": "第五卷：长生不借命",
+      "startChapter": 161,
+      "endChapter": 200
+    }
+  ]
+}
