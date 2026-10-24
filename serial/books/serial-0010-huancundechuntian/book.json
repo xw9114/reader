@@ -1,0 +1,46 @@
+{
+  "id": "serial-0010-huancundechuntian",
+  "readerId": "serial-0010-huancundechuntian",
+  "title": "缓存的春天",
+  "platform": "tomato",
+  "genre": "sci-fi",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2498,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "女频",
+    "readingTags": [
+      "轻科幻"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材",
+      "职业成长"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "师徒情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ]
+}
