@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-22",
+  "chapter": 10,
+  "bookId": "xianmen-yanshi-zushi",
+  "createdAt": "2026-10-24T01:10:06.000Z",
+  "status": "published",
+  "characters": 2206,
+  "sha256": "f106f732a8193a7f5898867656c5fe78b809adfbb4d89015d314589af2c4c40b",
+  "publishedAt": "2026-10-24T01:10:06.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "skipped",
+      "updatedAt": "2026-10-24T01:10:06.000Z"
+    },
+    "qimao": {
+      "status": "pending",
+      "updatedAt": "2026-10-24T01:10:06.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-10-24 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}

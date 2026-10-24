@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-24",
+  "chapter": 5,
+  "bookId": "serial-0011-caiyangpingshangdebianhao",
+  "createdAt": "2026-10-24T01:10:06.000Z",
+  "status": "published",
+  "characters": 3288,
+  "sha256": "c3512364b60106a869cc727480062c2f9c728107c0e3cc326dfefb52da3cdcc2",
+  "publishedAt": "2026-10-24T01:10:06.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "pending",
+      "updatedAt": "2026-10-24T01:10:06.000Z"
+    },
+    "qimao": {
+      "status": "skipped",
+      "updatedAt": "2026-10-24T01:10:06.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-10-24 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}

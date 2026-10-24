@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-24",
+  "chapter": 4,
+  "bookId": "serial-0010-huancundechuntian",
+  "createdAt": "2026-10-24T01:10:06.000Z",
+  "status": "published",
+  "characters": 2369,
+  "sha256": "2d1dab168d92cfd6a8ef579922981be49e89dac5d875c5d5f2fece2e1116b5af",
+  "publishedAt": "2026-10-24T01:10:06.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "pending",
+      "updatedAt": "2026-10-24T01:10:06.000Z"
+    },
+    "qimao": {
+      "status": "skipped",
+      "updatedAt": "2026-10-24T01:10:06.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-10-24 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}

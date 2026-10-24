@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-24",
+  "chapter": 1,
+  "bookId": "serial-0013-shaichangdeyijiuyiyi",
+  "createdAt": "2026-10-24T01:10:06.000Z",
+  "status": "published",
+  "characters": 2048,
+  "sha256": "3671095512c152a73fa515bd9bb92bdf8befbf55a2a84c2df7dc35f78e5a4842",
+  "publishedAt": "2026-10-24T01:10:06.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "pending",
+      "updatedAt": "2026-10-24T01:10:06.000Z"
+    },
+    "qimao": {
+      "status": "skipped",
+      "updatedAt": "2026-10-24T01:10:06.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-10-24 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}

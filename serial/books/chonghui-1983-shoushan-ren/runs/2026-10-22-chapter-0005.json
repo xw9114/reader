@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-22",
+  "chapter": 5,
+  "bookId": "chonghui-1983-shoushan-ren",
+  "createdAt": "2026-10-24T01:10:06.000Z",
+  "status": "published",
+  "characters": 1826,
+  "sha256": "4121f3c811533ca20e1a8da5329fad69728591b9e2c653d29086e5a3b02bfb8d",
+  "publishedAt": "2026-10-24T01:10:06.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "skipped",
+      "updatedAt": "2026-10-24T01:10:06.000Z"
+    },
+    "qimao": {
+      "status": "pending",
+      "updatedAt": "2026-10-24T01:10:06.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-10-24 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}

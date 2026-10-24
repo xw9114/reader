@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-24",
+  "chapter": 6,
+  "bookId": "serial-0005-buwutadediqixingdaima",
+  "createdAt": "2026-10-24T01:10:06.000Z",
+  "status": "published",
+  "characters": 2631,
+  "sha256": "5a2153155700e9d4ae990b53d6a4aed3d727a889443f3b485f8fbf8c4e47a0a5",
+  "publishedAt": "2026-10-24T01:10:06.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "pending",
+      "updatedAt": "2026-10-24T01:10:06.000Z"
+    },
+    "qimao": {
+      "status": "skipped",
+      "updatedAt": "2026-10-24T01:10:06.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-10-24 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}

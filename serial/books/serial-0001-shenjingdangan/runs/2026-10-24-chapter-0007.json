@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-24",
+  "chapter": 7,
+  "bookId": "serial-0001-shenjingdangan",
+  "createdAt": "2026-10-24T01:10:06.000Z",
+  "status": "published",
+  "characters": 2840,
+  "sha256": "670393a9ba80157ee6c0ca31c19b1a12af4c9ea2a150c93adef370fcd8f8fdeb",
+  "publishedAt": "2026-10-24T01:10:06.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "pending",
+      "updatedAt": "2026-10-24T01:10:06.000Z"
+    },
+    "qimao": {
+      "status": "skipped",
+      "updatedAt": "2026-10-24T01:10:06.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-10-24 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}
