@@ -85,85 +85,136 @@ log("建书参数:", JSON.stringify({ BOOK, title, protagonist, audience, catego
     log("表单结构:", JSON.stringify(formDump));
     await shot("form");
 
-    const itemByLabel = (re) => page.locator(".arco-form-item").filter({ has: page.locator(".arco-form-item-label", { hasText: re }) }).first();
+    // 2026-10-23 fix1: 实测番茄建书表单所有 .arco-form-item-label 均为空字符串（见 2026-10-23 12:37 失败日志的表单结构转储），
+    // 改为按 input/textarea 的 placeholder 属性与控件可见文本定位，不再依赖 label 文本。
+    const itemByText = (re) => page.locator(".arco-form-item").filter({ hasText: re }).first();
+    const formItems = page.locator(".arco-form-item");
+    const readTagItem = formItems.nth(3);    // 阅读标签（内含主分类单选）
+    const contentTagItem = formItems.nth(4); // 内容标签
+    const clickChip = async (text) => {
+      const loc = page.getByText(text, { exact: true });
+      const n = await loc.count();
+      for (let i = 0; i < n; i++) {
+        const el = loc.nth(i);
+        if (await el.isVisible().catch(() => false)) { await el.click().catch(() => {}); return true; }
+      }
+      return false;
+    };
+    const closePicker = async () => { await page.keyboard.press("Escape").catch(() => {}); await page.mouse.click(100, 100).catch(() => {}); await page.waitForTimeout(500); };
+    // 标签类弹窗（阅读标签/内容标签）必须点「确认」才会把已选 chip 提交到表单，Escape/点外部会丢弃选择
+    const confirmPicker = async (title) => {
+      const modal = page.locator(".arco-modal").filter({ hasText: title }).first();
+      const btn = modal.locator("button, [class*=btn]").filter({ hasText: /确认/ }).first();
+      if (await btn.count()) { await btn.click().catch(() => {}); await page.waitForTimeout(900); return true; }
+      await closePicker();
+      return false;
+    };
 
-    // 书名
-    const titleInput = itemByLabel(/书名|作品名称/).locator("input").first();
+    // fix1b: 表单打开即弹「签约模式说明」模态框，会拦截后续所有点击，先点「知道了」关掉
+    const knowBtn = page.locator(".arco-modal").filter({ hasText: "签约模式说明" }).locator("button, [class*=btn]").filter({ hasText: /知道了/ }).first();
+    if (await knowBtn.count()) { await knowBtn.click().catch(() => {}); await page.waitForTimeout(800); log("已关闭签约模式说明弹窗"); }
+
+    // 书名（placeholder=「请输入作品名称」）
+    const titleInput = page.locator('input[placeholder*="作品名称"]').first();
     await titleInput.fill(title);
     log("书名已填:", await titleInput.inputValue());
 
+    // 签约模式（必填、默认未选）：选「连载模式」
+    const modeItem = itemByText(/连载模式/);
+    if (await modeItem.count()) {
+      await modeItem.locator("text=连载模式").first().click().catch(() => {});
+      await page.waitForTimeout(400);
+      log("签约模式已选: 连载模式");
+    } else { log("未找到签约模式项，跳过"); }
+
     // 频道/目标读者
-    const audItem = itemByLabel(/目标读者|频道|作品频道/);
+    const audItem = itemByText(/男频/); // 频道项控件文本为「男频 女频」
     if (await audItem.count()) {
       await audItem.locator(`text=${audience}`).first().click().catch(() => {});
-      log("频道已选:", audience);
+      await page.waitForTimeout(400);
+      const audOk = await page.evaluate((a) => [...document.querySelectorAll(".arco-radio")].some((el) => (el.innerText || "").trim() === a && !!((el.querySelector("input") || {}).checked)), audience);
+      log("频道已选:", audience, "verified=", audOk);
     } else { log("未找到频道项，跳过"); }
 
-    // 主分类
+    // 主分类：在「阅读标签」选择器（.category-choose-list）中单选第一个命中的候选
     let catOk = false;
-    const catItem = itemByLabel(/主分类|作品分类|分类/);
-    if (await catItem.count()) {
-      await catItem.locator(".arco-select, [class*=select]").first().click().catch(async () => { await catItem.locator("input").first().click().catch(() => {}); });
-      await page.waitForTimeout(1200);
-      const options = await page.evaluate(() => [...document.querySelectorAll(".arco-select-option, [class*=option]")].map((e) => (e.innerText || "").trim()).filter(Boolean));
-      log("分类可选项:", JSON.stringify(options.slice(0, 40)));
+    if (await readTagItem.count()) {
+      await readTagItem.locator(".arco-form-item-control").first().click().catch(() => {});
+      await page.waitForTimeout(1500);
+      const options = await page.evaluate(() => {
+        const root = document.querySelector(".category-choose-list");
+        return root ? [...root.querySelectorAll("*")].filter((e) => e.children.length === 0).map((e) => (e.innerText || "").trim()).filter(Boolean) : [];
+      });
+      log("阅读标签可选项:", JSON.stringify([...new Set(options)].slice(0, 60)));
+      let chosenCand = null;
       for (const cand of categories) {
-        const hit = options.find((o) => o === cand || o.includes(cand));
-        if (hit) {
-          await page.locator(".arco-select-option, [class*=option]").filter({ hasText: hit }).first().click();
-          await page.waitForTimeout(600);
-          catOk = true;
-          log("主分类已选:", hit);
-          break;
-        }
+        if (options.includes(cand) && (await clickChip(cand))) { chosenCand = cand; break; }
+      }
+      await page.waitForTimeout(500);
+      await confirmPicker("阅读标签");
+      if (chosenCand) {
+        const ctrl = await readTagItem.evaluate((el) => (el.querySelector(".arco-form-item-control")?.innerText || "").trim()).catch(() => "");
+        if (ctrl.includes(chosenCand)) { catOk = true; log("主分类已选:", chosenCand); }
+        else { log("主分类确认后控件未显示所选:", chosenCand, "| 控件:", ctrl.slice(0, 60)); }
       }
     }
     if (!catOk) { await shot("category"); die(3, `主分类未匹配成功（候选 ${categories.join("/")}），看截图 create-${BOOK}-category.png`); }
 
-    // 标签：逐个输入并回车/点建议
-    for (const t of tags.slice(0, 5)) {
-      const tagItem = itemByLabel(/标签/);
-      if (!(await tagItem.count())) { log("未找到标签项，跳过标签"); break; }
-      const inp = tagItem.locator("input").first();
-      if (!(await inp.count())) break;
-      await inp.click().catch(() => {});
-      await inp.fill(t).catch(() => {});
-      await page.waitForTimeout(700);
-      const sug = page.locator(".arco-select-option, [class*=suggest], [class*=dropdown] li").filter({ hasText: t }).first();
-      if (await sug.count()) await sug.click().catch(() => {});
-      else await page.keyboard.press("Enter");
-      await page.waitForTimeout(500);
-      log("标签已尝试:", t);
-    }
+    // 内容标签：弹窗内用搜索框逐个定位 chip 点选，最后点「确认」提交（尽力而为，单个未匹配不中断）
+    if (tags.length && (await contentTagItem.count())) {
+      await contentTagItem.locator(".arco-form-item-control").first().click().catch(() => {});
+      await page.waitForTimeout(1500);
+      const tagSearch = page.locator('.arco-modal input[placeholder*="搜索标签"]').first();
+      for (const t of tags.slice(0, 5)) {
+        let hit = false;
+        if (await tagSearch.count()) {
+          await tagSearch.fill(t).catch(() => {});
+          await page.waitForTimeout(800);
+          hit = await clickChip(t);
+          await tagSearch.fill("").catch(() => {});
+          await page.waitForTimeout(300);
+        }
+        if (!hit) hit = await clickChip(t);
+        log(hit ? "内容标签已点选:" : "内容标签未匹配:", t);
+        await page.waitForTimeout(300);
+      }
+      await confirmPicker("内容标签");
+      const tagCtrl = await contentTagItem.evaluate((el) => (el.querySelector(".arco-form-item-control")?.innerText || "").trim().replace(/\s+/g, " ").slice(0, 120)).catch(() => "");
+      log("内容标签现状:", tagCtrl);
+    } else { log("未找到内容标签项，跳过标签"); }
 
     // 主角
     if (protagonist) {
-      const heroItem = itemByLabel(/主角|主人公|角色名/);
-      if (await heroItem.count()) {
-        const inp = heroItem.locator("input").first();
-        await inp.fill(protagonist).catch(() => {});
-        log("主角已填:", protagonist);
+      const heroInput = page.locator('input[placeholder*="主角名"]').first();
+      if (await heroInput.count()) {
+        await heroInput.fill(protagonist).catch(() => {});
+        log("主角已填:", protagonist, "->", await heroInput.inputValue().catch(() => ""));
       } else { log("未找到主角项，跳过"); }
     }
 
     // 简介
-    const synItem = itemByLabel(/简介|内容简介/);
-    if (await synItem.count()) {
-      const ta = synItem.locator("textarea").first();
-      await ta.fill(meta.synopsis.trim()).catch(() => {});
-      log("简介已填，字数:", (await ta.inputValue()).length);
+    const synTa = page.locator('textarea[placeholder*="作品简介"]').first();
+    if (await synTa.count()) {
+      await synTa.fill(meta.synopsis.trim()).catch(() => {});
+      log("简介已填，字数:", (await synTa.inputValue()).length);
     } else { log("未找到简介项"); }
 
-    // 封面
-    const fileInput = page.locator('input[type="file"]').first();
+    // 封面：新版需先点「选择封面」打开弹窗，弹窗内才有 file input，选完文件点「确定」生效
+    let fileInput = page.locator('input[type="file"]').first();
+    if (!(await fileInput.count())) {
+      const coverBtn = page.locator("text=选择封面").first();
+      if (await coverBtn.count()) { await coverBtn.click().catch(() => {}); await page.waitForTimeout(1500); fileInput = page.locator('input[type="file"]').first(); }
+    }
     if (await fileInput.count()) {
       await fileInput.setInputFiles(cover);
-      await page.waitForTimeout(3500);
+      await page.waitForTimeout(2500);
+      const okBtn = page.locator(".arco-modal button, .arco-modal [class*=btn]").filter({ hasText: /确定/ }).first();
+      if (await okBtn.count()) { await okBtn.click().catch(() => {}); await page.waitForTimeout(1500); }
       log("封面已上传:", cover);
     } else { log("未找到封面上传控件"); }
 
     // AI 声明（如表单有）
-    const aiItem = itemByLabel(/AI|人工智能|生成内容/);
+    const aiItem = itemByText(/AI|人工智能|生成内容/);
     if (await aiItem.count()) {
       await aiItem.locator("text=是").first().click().catch(() => {});
       log("AI 声明已尝试选「是」");
@@ -173,7 +224,22 @@ log("建书参数:", JSON.stringify({ BOOK, title, protagonist, audience, catego
     if (DRY) { console.log("DRY_DONE 已填表未提交"); await browser.close(); process.exit(0); }
 
     // 提交
-    const submit = page.locator("button").filter({ hasText: /创建|提交|立即发布|确定/ }).last();
+    // fix2 (2026-10-23): 13:14 实跑 CREATE_FAIL——与 /创建|提交|立即发布|确定/ 匹配的 primary 按钮有两个：
+    // 表单底部可见的「立即创建」(1212,797 96x36) 与封面弹窗内隐藏的「确定」(0x0, offsetParent=null)，
+    // 原 .last() 命中隐藏按钮，click 等可见性 30s 超时。改为先精确匹配「立即创建」，否则在原正则候选里
+    // 取第一个可见+可用的；点击前 scrollIntoViewIfNeeded，其余提交后流程（确认弹窗/ID 捕获/接入队列）不变。
+    let submit = page.locator("button").filter({ hasText: /^立即创建$/ }).first();
+    if (!(await submit.count()) || !(await submit.isVisible().catch(() => false))) {
+      const cands = page.locator("button").filter({ hasText: /创建|提交|立即发布|确定/ });
+      submit = null;
+      for (let i = 0; i < (await cands.count()); i++) {
+        const el = cands.nth(i);
+        if ((await el.isVisible().catch(() => false)) && (await el.isEnabled().catch(() => false))) { submit = el; break; }
+      }
+    }
+    if (!submit) { await shot("nosubmit"); die(3, "未找到可见可用的提交按钮，看截图 create-" + BOOK + "-nosubmit.png"); }
+    log("提交按钮:", (await submit.innerText().catch(() => "")).trim());
+    await submit.scrollIntoViewIfNeeded().catch(() => {});
     await submit.click();
     await page.waitForTimeout(2500);
     const confirm = page.locator(".arco-modal button, [class*=modal] button").filter({ hasText: /确认|确定|创建/ }).first();
