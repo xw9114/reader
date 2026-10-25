@@ -4,8 +4,8 @@
   "bookId": "serial-0010-huancundechuntian",
   "createdAt": "2026-10-24T01:10:06.000Z",
   "status": "published",
-  "characters": 3010,
-  "sha256": "20092d46fba4aae70fc6244c35c6d0da79dfab39959191dd8337a07452d32323",
+  "characters": 3004,
+  "sha256": "dcbf16832350d12c0a25ea49e73d76c1cff37455872c5a38ec0ebdbc75176efd",
   "publishedAt": "2026-10-24T01:10:06.000Z",
   "platforms": {
     "fanqie": {

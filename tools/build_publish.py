@@ -23,6 +23,7 @@ from reader_schema import (
     validate_publishing_hint as _validate_publishing_hint,
     validate_volumes as _validate_volumes,
 )
+from tools.chapter_format import normalize_chapter
 
 
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
@@ -379,7 +380,10 @@ def parse_serial_book(book_path: Path, published: Path, serial_dir: Path) -> tup
         heading = HEADING_RE.match(lines[0]) if lines else None
         if heading is None or len(heading.group(1)) != 1:
             raise ValueError(f"Missing chapter heading: {path}")
-        body = markdown_lines_to_text(lines[1:])
+        chapter_title, manuscript = normalize_chapter(
+            number, heading.group(2), "\n".join(lines[1:]), preserve_title_style=True,
+        )
+        body = markdown_lines_to_text(manuscript.splitlines())
         if not body:
             raise ValueError(f"Empty serial chapter: {path}")
         volume = next((item for item in volumes if item["startChapter"] <= number <= item["endChapter"]), None)
@@ -388,10 +392,10 @@ def parse_serial_book(book_path: Path, published: Path, serial_dir: Path) -> tup
         chapters.append(
             {
                 "id": f"chapter-{number}",
-                "title": inline_to_text(heading.group(2)),
+                "title": inline_to_text(chapter_title),
                 "body": body,
                 "characters": len(re.sub(r"\s", "", body)),
-                "interaction": chapter_interaction(inline_to_text(heading.group(2)), body),
+                "interaction": chapter_interaction(inline_to_text(chapter_title), body),
                 "volume": {"number": volume["number"], "title": volume["title"]},
             }
         )

@@ -219,6 +219,44 @@ class BuildPublishTests(unittest.TestCase):
         self.assertIn("# 长篇乙", exported)
         self.assertIn("## 第1章 长篇乙", exported)
 
+    def test_serial_downloads_have_only_one_chapter_heading(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "daily").mkdir()
+            (root / "site").mkdir()
+            published = root / "serial" / "books" / "imported" / "published"
+            published.mkdir(parents=True)
+            (published.parent / "book.json").write_text(json.dumps({
+                "title": "面光",
+                "readerId": "serial-imported",
+                "targetChapters": 1,
+                "publishingHint": {
+                    "schemaVersion": 1, "source": "external-ai", "audience": "女频",
+                    "readingTags": ["女性成长"], "contentTags": ["现实题材"],
+                    "tagDimensions": {"plot": [], "emotion": [], "persona": [], "worldview": []},
+                },
+                "volumes": [{"number": 1, "title": "全书", "startChapter": 1, "endChapter": 1}],
+            }, ensure_ascii=False), encoding="utf-8")
+            (published / "2026-10-24-chapter-0001.md").write_text(
+                "# 第1章 第一章 四十天\n\n# 第一章 四十天\n\n正文。\n\n第二段。\n",
+                encoding="utf-8",
+            )
+
+            output = root / "dist"
+            story = build(root / "daily", root / "site", output)[0]
+            payload = json.loads((output / "data.json").read_text(encoding="utf-8"))
+            chapter = payload["stories"][0]["chapters"][0]
+            self.assertEqual(chapter["title"], "第1章 四十天")
+            self.assertEqual(chapter["body"], "正文。\n\n第二段。")
+            self.assertEqual(chapter["characters"], 7)
+            for extension in ("txt", "md"):
+                text = (output / story["downloads"][extension]).read_text(encoding="utf-8-sig")
+                self.assertEqual(text.count("第1章 四十天"), 1)
+                self.assertNotIn("第一章 四十天", text)
+            with zipfile.ZipFile(output / story["downloads"]["zip"]) as archive:
+                chapter_text = archive.read("面光/01-第1章 四十天.txt").decode("utf-8-sig")
+                self.assertEqual(chapter_text, "第1章 四十天\n\n正文。\n\n第二段。\n")
+
     def test_build_orders_daily_and_serial_stories_by_latest_date(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

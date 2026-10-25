@@ -121,6 +121,7 @@ The content script detects Fanqie and Qimao from the current hostname, then dete
 | --- | --- | --- |
 | Daily source | UTF-8 Markdown; first H1 is the story title | Filename becomes the fallback title |
 | Serial source | Per-book `published/` containing consecutive `YYYY-MM-DD-chapter-NNNN.md` files | Build raises `ValueError` and identifies the affected directory |
+| Novel Studio chapter headings | One `# 第N章 标题` per file; matching Chinese/Arabic numbered prefixes are collapsed, and only matching leading manuscript headings are removed | Different chapter headings, prose, paragraph breaks, and scene separators remain intact; heading-only manuscripts are rejected |
 | Serial configuration | Zero or more `serial/books/*/book.json`; each populated book has its own `published/`; `readerId` values are unique | Build raises `ValueError`; legacy root `serial/published/` remains valid only while exactly one book exists |
 | Serial publishing metadata | Schema version 1; source `inkos`, `external-ai`, or `manual`; 1–2 reading tags; 1–4 content tags; plot ≤ 4, emotion ≤ 2, persona ≤ 4, worldview ≤ 1 | Build raises `ValueError`; the extension never silently reclassifies the serial from prose |
 | Serial volume plan | 1–12 volumes; consecutive numbers; chapter ranges continuously cover chapter 1 through `targetChapters`; names contain 1–30 characters | Build raises `ValueError`; chapters are never assigned to an ambiguous or missing volume |

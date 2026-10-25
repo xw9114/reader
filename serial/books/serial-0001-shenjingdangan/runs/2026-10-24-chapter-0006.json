@@ -4,8 +4,8 @@
   "bookId": "serial-0001-shenjingdangan",
   "createdAt": "2026-10-24T01:10:06.000Z",
   "status": "published",
-  "characters": 3245,
-  "sha256": "c0eb644f6e120b6f0609e4f2772a5ad827e488f3886df58916637829d9e0740e",
+  "characters": 3238,
+  "sha256": "fb209ae20f3e3e67c51302212f1a343386dec0466ceaf1a212e85d4881ae6a71",
   "publishedAt": "2026-10-24T01:10:06.000Z",
   "platforms": {
     "fanqie": {

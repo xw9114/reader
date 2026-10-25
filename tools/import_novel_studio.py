@@ -7,6 +7,7 @@ import argparse
 import base64
 import json
 import re
+import sys
 import urllib.parse
 import urllib.request
 from datetime import date
@@ -14,6 +15,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from tools.chapter_format import normalize_chapter
+
 DEFAULT_ACCESS_FILE = ROOT.parent / "novel-studio" / "artifacts" / "vps" / "access.json"
 BOOKS = {
     "停摆的陀飞轮-自动0009-47c27b": "serial-0009-tingbaidetuofeilun",
@@ -138,9 +144,11 @@ def import_book(
         body = stages.get("final") or stages.get("revised") or stages.get("draft")
         if not isinstance(body, str) or not body.strip():
             raise ValueError(f"{project_id}: chapter {number} has no readable manuscript stage")
-        title = str(chapter["title"]).strip()
+        title, body = normalize_chapter(number, str(chapter["title"]), body)
+        if not body:
+            raise ValueError(f"{project_id}: chapter {number} contains only a heading")
         target = published_dir / f"{publish_date}-chapter-{number:04d}.md"
-        target.write_text(f"# 第{number}章 {title}\n\n{body.strip()}\n", encoding="utf-8")
+        target.write_text(f"# {title}\n\n{body}\n", encoding="utf-8", newline="\n")
         written.append(target)
         word_counts.append(int(chapter.get("word_count") or 0))
 

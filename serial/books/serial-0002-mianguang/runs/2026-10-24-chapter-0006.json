@@ -4,8 +4,8 @@
   "bookId": "serial-0002-mianguang",
   "createdAt": "2026-10-24T01:10:06.000Z",
   "status": "published",
-  "characters": 3122,
-  "sha256": "a3df0c04a1fef046f30998a9ea2fcaada84d32e124e7f897eadf2c8fd766eebc",
+  "characters": 3117,
+  "sha256": "04a1341ee9156d13bd4074b0a85460209f5d992446af3a3d2e091804b75412d8",
   "publishedAt": "2026-10-24T01:10:06.000Z",
   "platforms": {
     "fanqie": {
