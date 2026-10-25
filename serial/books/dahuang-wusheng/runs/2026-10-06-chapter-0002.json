@@ -9,9 +9,8 @@
   "publishedAt": "2026-10-22T06:10:23.000Z",
   "platforms": {
     "fanqie": {
-      "status": "draft_saved",
-      "updatedAt": "2026-10-23T16:53:19.451Z",
-      "note": "publish_queue 两次云端同步超时后手工修复：复用未命名草稿 7699906388536869438 补填正文并等到「已保存到云端」"
+      "status": "published",
+      "updatedAt": "2026-10-25T01:12:13.997Z"
     },
     "qimao": {
       "status": "skipped",
