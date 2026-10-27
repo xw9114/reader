@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from tools.chapter_format import normalize_chapter
+from tools.publishing_metadata import resolve_publishing_metadata
 
 DEFAULT_ACCESS_FILE = ROOT.parent / "novel-studio" / "artifacts" / "vps" / "access.json"
 BOOKS = {
@@ -130,9 +131,11 @@ def import_book(
     published_dir = book_dir / "published"
     if book_dir.exists() and not force:
         raise FileExistsError(f"{book_dir} already exists; use --force to replace it")
-    published_dir.mkdir(parents=True, exist_ok=True)
+    metadata_file = book_dir / "book.json"
+    existing = json.loads(metadata_file.read_text(encoding="utf-8")) if metadata_file.exists() else {}
+    characters = fetch_json(project_url(base_url, project_id, "/characters"), username, password)
 
-    written = []
+    manuscripts = []
     word_counts = []
     for chapter in chapters:
         number = int(chapter["number"])
@@ -147,14 +150,16 @@ def import_book(
         title, body = normalize_chapter(number, str(chapter["title"]), body)
         if not body:
             raise ValueError(f"{project_id}: chapter {number} contains only a heading")
-        target = published_dir / f"{publish_date}-chapter-{number:04d}.md"
-        target.write_text(f"# {title}\n\n{body}\n", encoding="utf-8", newline="\n")
-        written.append(target)
+        manuscripts.append((number, title, body))
         word_counts.append(int(chapter.get("word_count") or 0))
 
+    publishing_metadata = resolve_publishing_metadata(
+        project, existing, "\n".join(body for _, _, body in manuscripts), characters,
+    )
     genre = str(project.get("genre") or "现实题材").strip()
     tags = preset_for(genre)
     book = {
+        **existing,
         "id": reader_id,
         "readerId": reader_id,
         "title": clean_title(str(project.get("title") or project_id)),
@@ -192,14 +197,23 @@ def import_book(
             }
         ],
     }
-    (book_dir / "book.json").write_text(
+    # Force imports must retain authored metadata and publishing configuration.
+    if existing.get("publishingHint"):
+        book["publishingHint"] = existing["publishingHint"]
+    book.update(publishing_metadata)
+    book["sourceProjectId"] = project_id
+    published_dir.mkdir(parents=True, exist_ok=True)
+    for number, title, body in manuscripts:
+        target = published_dir / f"{publish_date}-chapter-{number:04d}.md"
+        target.write_text(f"# {title}\n\n{body}\n", encoding="utf-8", newline="\n")
+    metadata_file.write_text(
         json.dumps(book, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
     return {
         "title": book["title"],
         "readerId": reader_id,
-        "chapters": len(written),
+        "chapters": len(manuscripts),
         "words": sum(word_counts),
         "directory": str(book_dir),
     }

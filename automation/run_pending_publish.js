@@ -40,19 +40,19 @@ function selectPending(bookId, platform) {
       const file = path.join(runs, name);
       const record = readJson(file);
       const state = record.platforms?.[platform]?.status || "pending";
-      if (record.status === "published" && ["pending", "failed"].includes(state)) {
-        const candidate = { bookId: path.basename(bookDir), chapter: record.chapter, date: name.slice(0, 10) };
-        const key = `${candidate.bookId}:${candidate.chapter}`;
-        const existing = seen.get(key);
-        if (!existing || (isNewFormat && !existing.isNewFormat)) {
-          seen.set(key, { ...candidate, isNewFormat });
-        }
+      const candidate = { bookId: path.basename(bookDir), chapter: record.chapter, date: name.slice(0, 10) };
+      const key = `${candidate.bookId}:${candidate.chapter}`;
+      const existing = seen.get(key);
+      if (!existing || (isNewFormat && !existing.isNewFormat)) {
+        seen.set(key, { ...candidate, isNewFormat, status: record.status, state });
       }
     }
   }
-  candidates.push(...[...seen.values()].map(({ isNewFormat, ...rest }) => rest));
-  // Prefer the newest chapter so enabling the scheduler does not replay an old backlog.
-  candidates.sort((a, b) => b.date.localeCompare(a.date) || b.chapter - a.chapter || a.bookId.localeCompare(b.bookId));
+  candidates.push(...[...seen.values()]
+    .filter(({ status, state }) => status === "published" && ["pending", "failed"].includes(state))
+    .map(({ isNewFormat, status, state, ...rest }) => rest));
+  // Fill earlier gaps before preparing later chapters for sequential publication.
+  candidates.sort((a, b) => a.chapter - b.chapter || a.date.localeCompare(b.date) || a.bookId.localeCompare(b.bookId));
   return candidates[0];
 }
 

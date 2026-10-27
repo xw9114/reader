@@ -2,6 +2,8 @@
   "id": "serial-0001-shenjingdangan",
   "readerId": "serial-0001-shenjingdangan",
   "title": "深井档案",
+  "protagonist": "程蔚",
+  "synopsis": "九年前，年轻的程蔚在枯桐水库的加固验收单上签下名字，也把一处可疑的数据涂改留在了沉默里。那年秋天，两名垂钓者溺亡，事故最终被归为个人冒险。九年后，她以一级建造师的身份重返水库，负责新一轮除险加固的前期勘测。旧档案里的签名与涂改痕迹再次出现，还有一条三个月前的借阅记录。开工只剩四十天，她决定追查被改写的泄洪数据。回避往事的管理站站长、追索真相多年的死者家属、坚信验收无误的恩师，以及急于推动工程的监理公司，逐渐被拉进同一条证据链。可第一个必须解释当年为何没有上报的人，正是她自己。执业资格、工作与恩师的名誉都压在那张签字单上。这一次，她还会说出那句“算了”吗？",
   "platform": "tomato",
   "genre": "suspense",
   "status": "active",
@@ -12,34 +14,16 @@
     "schemaVersion": 1,
     "source": "external-ai",
     "audience": "女频",
-    "readingTags": [
-      "现实悬疑"
-    ],
-    "contentTags": [
-      "调查取证",
-      "现实题材"
-    ],
+    "readingTags": ["现实悬疑"],
+    "contentTags": ["调查取证", "现实题材"],
     "tagDimensions": {
-      "plot": [
-        "推理",
-        "调查取证"
-      ],
-      "emotion": [
-        "亲情"
-      ],
-      "persona": [
-        "理性清醒",
-        "坚韧成长"
-      ],
+      "plot": ["推理", "调查取证"],
+      "emotion": ["亲情"],
+      "persona": ["理性清醒", "坚韧成长"],
       "worldview": []
     }
   },
   "volumes": [
-    {
-      "number": 1,
-      "title": "全书",
-      "startChapter": 1,
-      "endChapter": 12
-    }
+    { "number": 1, "title": "全书", "startChapter": 1, "endChapter": 12 }
   ]
 }

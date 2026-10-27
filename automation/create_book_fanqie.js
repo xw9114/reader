@@ -8,6 +8,7 @@
 const fs = require("fs");
 const path = require("path");
 const { chromium } = require("playwright");
+const { resolveCreateMetadata, missingCreateFields } = require("./book_create_metadata");
 
 const args = process.argv.slice(2);
 const arg = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
@@ -22,13 +23,17 @@ if (!BOOK) die(4, "missing --book");
 
 const bookDir = path.join(ROOT, "serial", "books", BOOK);
 const meta = JSON.parse(fs.readFileSync(path.join(bookDir, "book.json"), "utf8"));
-const cfgAll = JSON.parse(fs.readFileSync(path.join(ROOT, "automation", "create_books.json"), "utf8"));
-const cfg = cfgAll[BOOK] || {};
+const cfgFile = path.join(ROOT, "automation", "create_books.json");
+const cfgAll = fs.existsSync(cfgFile) ? JSON.parse(fs.readFileSync(cfgFile, "utf8")) : {};
+const cfg = resolveCreateMetadata(meta, cfgAll[BOOK]);
 const title = arg("--title", meta.title);
 const protagonist = arg("--protagonist", cfg.protagonist || "");
-const audience = cfg.audience || "男频";
+const synopsis = arg("--synopsis", cfg.synopsis);
+const audience = cfg.audience;
 const categories = cfg.categories || [];
 const tags = cfg.tags || [];
+const missing = missingCreateFields({ ...cfg, protagonist: protagonist.trim(), synopsis: synopsis.trim() });
+if (missing.length) die(4, `建书资料未完整：${missing.join("、")}`);
 if ([...title].length > 15) die(4, `书名「${title}」共 ${[...title].length} 字，超过番茄 15 字上限，请在控制台填写平台短书名`);
 let cover = null;
 for (const ext of ["jpg", "png", "jpeg"]) {
@@ -36,7 +41,6 @@ for (const ext of ["jpg", "png", "jpeg"]) {
   if (fs.existsSync(c)) { cover = c; break; }
 }
 if (!cover) die(4, `封面缺失（covers/${meta.readerId}.jpg|png）`);
-if (!meta.synopsis) die(4, "book.json 缺简介");
 log("建书参数:", JSON.stringify({ BOOK, title, protagonist, audience, categories, tags, cover, DRY }));
 
 (async () => {
@@ -187,17 +191,19 @@ log("建书参数:", JSON.stringify({ BOOK, title, protagonist, audience, catego
     if (protagonist) {
       const heroInput = page.locator('input[placeholder*="主角名"]').first();
       if (await heroInput.count()) {
-        await heroInput.fill(protagonist).catch(() => {});
-        log("主角已填:", protagonist, "->", await heroInput.inputValue().catch(() => ""));
-      } else { log("未找到主角项，跳过"); }
+        await heroInput.fill(protagonist);
+        if ((await heroInput.inputValue()).trim() !== protagonist.trim()) throw new Error("主角名填入校验失败");
+        log("主角已填:", protagonist);
+      } else { throw new Error("未找到主角名输入框，已停止建书"); }
     }
 
     // 简介
     const synTa = page.locator('textarea[placeholder*="作品简介"]').first();
     if (await synTa.count()) {
-      await synTa.fill(meta.synopsis.trim()).catch(() => {});
+      await synTa.fill(synopsis.trim());
+      if ((await synTa.inputValue()).trim() !== synopsis.trim()) throw new Error("简介填入校验失败");
       log("简介已填，字数:", (await synTa.inputValue()).length);
-    } else { log("未找到简介项"); }
+    } else { throw new Error("未找到简介输入框，已停止建书"); }
 
     // 封面：新版需先点「选择封面」打开弹窗，弹窗内才有 file input，选完文件点「确定」生效
     let fileInput = page.locator('input[type="file"]').first();
