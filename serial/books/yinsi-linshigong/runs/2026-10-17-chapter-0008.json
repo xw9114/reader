@@ -9,10 +9,8 @@
   "publishedAt": "2026-10-22T06:10:23.000Z",
   "platforms": {
     "fanqie": {
-      "status": "draft_saved",
-      "error": "等待草稿同步到云端超时",
-      "updatedAt": "2026-10-22T17:55:00+08:00",
-      "note": "2026-10-22 final audit: full draft verified on platform (word count matches local); earlier hollow/missing state repaired via insertText protocol."
+      "status": "published",
+      "updatedAt": "2026-10-28T01:10:57.913Z"
     },
     "qimao": {
       "status": "skipped",
