@@ -381,6 +381,16 @@ async function publishFanqieChapter(page, chapter) {
   }
   await page.goto(editUrl, { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.waitForTimeout(4500);
+  await dismissFanqieEditorOverlays(page);
+  const bodyEditor = await firstVisible(page, ["[contenteditable=true]:not([data-placeholder*=有话说]):not([id*=message])", ".chapter-editor[contenteditable=true]", "[contenteditable=true]"]);
+  const currentBodyLen = bodyEditor
+    ? await bodyEditor.evaluate((element) => (element.innerText || "").replace(/\s/g, "").length).catch(() => 0)
+    : 0;
+  const targetBodyLen = String(chapter.body || "").replace(/\s/g, "").length;
+  if (targetBodyLen > 0 && currentBodyLen < targetBodyLen * 0.9) {
+    await fillChapter(page, "fanqie", chapter);
+    await confirmFanqieDraftSaved(page, chapter);
+  }
   await page.getByRole("button", { name: /下一步/ }).first().click();
   let settingsSeen = false;
   for (let attempt = 0; attempt < 25; attempt += 1) {
@@ -547,6 +557,13 @@ async function main() {
     if (platform === "fanqie" && args.publish && !args.dryRun) {
       status = await publishFanqieChapter(page, payload.content);
     } else {
+      if (platform === "fanqie" && !args.dryRun) {
+        const existingDraftUrl = await findFanqieDraftEditUrl(page, payload.content).catch(() => null);
+        if (existingDraftUrl) {
+          await page.goto(existingDraftUrl, { waitUntil: "domcontentloaded", timeout: 60000 });
+          await page.waitForTimeout(3000);
+        }
+      }
       await fillChapter(page, platform, payload.content);
       if (args.dryRun) {
         console.log(JSON.stringify({ ok: true, mode: "dry-run", platform, bookId, chapter: chapterNumber }, null, 2));

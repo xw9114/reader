@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-31",
+  "chapter": 19,
+  "bookId": "旧城清算",
+  "createdAt": "2026-10-31T16:35:34.000Z",
+  "status": "published",
+  "characters": 2445,
+  "sha256": "703d8cda51a13646c8a87ae7ab4942828ca345cfb98698a423b4dce247b933f8",
+  "publishedAt": "2026-10-31T16:35:34.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "pending",
+      "updatedAt": "2026-10-31T16:35:34.000Z"
+    },
+    "qimao": {
+      "status": "skipped",
+      "updatedAt": "2026-10-31T16:35:34.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-10-31 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}
