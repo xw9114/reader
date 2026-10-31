@@ -1,0 +1,71 @@
+{
+  "id": "luanshi-shoushiren",
+  "readerId": "serial-luanshi-shoushiren",
+  "title": "乱世收尸人：从一口薄棺开始",
+  "platform": "zongheng",
+  "genre": "wuxia",
+  "status": "active",
+  "targetChapters": 200,
+  "chapterWordCount": 2500,
+  "language": "zh",
+  "synopsis": "乱世替人收尸的少年，能从遗骸上看见死者最后一次发力；他由此学会杀人的拳，也一步步查清谁在把活人送上战场。",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "男频",
+    "readingTags": [
+      "武侠"
+    ],
+    "contentTags": [
+      "江湖",
+      "小人物",
+      "群像",
+      "爽文"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "乱世生存",
+        "战场悬疑"
+      ],
+      "emotion": [],
+      "persona": [
+        "小人物"
+      ],
+      "worldview": [
+        "架空王朝"
+      ]
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "第一卷：三十文一具",
+      "startChapter": 1,
+      "endChapter": 40
+    },
+    {
+      "number": 2,
+      "title": "第二卷：抬棺过关",
+      "startChapter": 41,
+      "endChapter": 80
+    },
+    {
+      "number": 3,
+      "title": "第三卷：死人不领饷",
+      "startChapter": 81,
+      "endChapter": 120
+    },
+    {
+      "number": 4,
+      "title": "第四卷：满城皆白",
+      "startChapter": 121,
+      "endChapter": 160
+    },
+    {
+      "number": 5,
+      "title": "第五卷：给活人一条路",
+      "startChapter": 161,
+      "endChapter": 200
+    }
+  ]
+}
