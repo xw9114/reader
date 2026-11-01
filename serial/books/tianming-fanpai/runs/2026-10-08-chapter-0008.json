@@ -3,10 +3,9 @@
   "chapter": 8,
   "bookId": "tianming-fanpai",
   "createdAt": "2026-10-22T06:10:23.000Z",
-  "status": "published",
+  "status": "pending",
   "characters": 2069,
   "sha256": "257a0e8f9a4dd45afef1cf63e996a6e4fe0fc3b01444bbd001969836e18c2cae",
-  "publishedAt": "2026-10-22T06:10:23.000Z",
   "platforms": {
     "fanqie": {
       "status": "skipped",
