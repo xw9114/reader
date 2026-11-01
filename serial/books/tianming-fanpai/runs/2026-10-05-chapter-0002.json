@@ -6,16 +6,16 @@
   "status": "published",
   "characters": 3276,
   "sha256": "f86426341b8e1fbb9110296c1de32f104fee8aa95f4313e82be5de3a0839def9",
-  "publishedAt": "2026-10-22T06:10:23.000Z",
+  "publishedAt": "2026-10-05T12:05:38.000Z",
   "platforms": {
     "fanqie": {
       "status": "skipped",
       "updatedAt": "2026-11-01T03:14:42.136Z"
     },
     "qimao": {
-      "status": "pending",
-      "updatedAt": "2026-11-01T03:14:42.136Z"
+      "status": "published",
+      "updatedAt": "2026-11-01T11:16:04.000Z"
     }
   },
-  "note": "台账于 2026-10-22 补建。本书尚未上传任何平台；目标平台（见 book.json）标 pending，非目标平台标 skipped 以防误投。createdAt/publishedAt 为补建时间。"
+  "note": "2026-11-01 经七猫后台章节表核对补记：本书七猫 id 13656057，第1-6章已于七猫发布（标题与本地1-6章一字不差），状态待审核；publishedAt 为七猫后台显示的发布时间（北京时间转 UTC）。"
 }
