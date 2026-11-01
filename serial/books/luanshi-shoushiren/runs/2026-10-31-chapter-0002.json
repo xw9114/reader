@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-31",
+  "chapter": 2,
+  "bookId": "luanshi-shoushiren",
+  "createdAt": "2026-11-01T01:10:07.000Z",
+  "status": "published",
+  "characters": 1814,
+  "sha256": "75fb80732fa287034f9eaf40e92850636a5368f6724ec3ade8a0d9a5ccceac33",
+  "publishedAt": "2026-11-01T01:10:07.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "skipped",
+      "updatedAt": "2026-11-01T01:10:07.000Z"
+    },
+    "qimao": {
+      "status": "pending",
+      "updatedAt": "2026-11-01T01:10:07.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-11-01 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}
