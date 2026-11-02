@@ -6,17 +6,16 @@
   "status": "published",
   "characters": 3117,
   "sha256": "04a1341ee9156d13bd4074b0a85460209f5d992446af3a3d2e091804b75412d8",
-  "publishedAt": "2026-10-24T01:10:06.000Z",
+  "publishedAt": "2026-11-02T01:12:00.000Z",
   "platforms": {
     "fanqie": {
-      "status": "failed",
-      "error": "发布后本章仍在草稿箱，状态不明确",
-      "updatedAt": "2026-11-02T01:12:37.684Z"
+      "status": "published",
+      "updatedAt": "2026-11-02T01:12:00.000Z"
     },
     "qimao": {
       "status": "skipped",
       "updatedAt": "2026-10-24T01:10:06.000Z"
     }
   },
-  "note": "台账由 sync_ledgers.py 于 2026-10-24 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+  "note": "台账由 sync_ledgers.py 于 2026-10-24 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。 [2026-11-02 订正：09:10  run 误报 failed（草稿箱残留 0 字未命名草稿干扰了校验），平台章节管理实查第6章已发布 2026-11-02 09:12，台账改回 published。]"
 }
