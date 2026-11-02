@@ -10,8 +10,7 @@
   "platforms": {
     "fanqie": {
       "status": "draft_saved",
-      "updatedAt": "2026-11-02T05:51:00.000Z",
-      "note": "2026-10-31 扩写第11-30章至2000+字以解除番茄千字下限阻塞；publishFanqieChapter 会在发布时自动检测字数差并覆盖更新云端草稿后发布。"
+      "updatedAt": "2026-11-02T07:02:17.205Z"
     },
     "qimao": {
       "status": "skipped",
