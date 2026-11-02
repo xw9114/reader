@@ -41,7 +41,9 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i++) {
     const m = argv[i].match(/^--([^=]+)(?:=(.*))?$/);
     if (!m) continue;
-    out[m[1]] = m[2] !== undefined ? m[2] : argv[++i];
+    if (m[2] !== undefined) out[m[1]] = m[2];
+    else if (m[1] === "confirm") out.confirm = true; // boolean flag: consumes nothing
+    else out[m[1]] = argv[++i];
   }
   return out;
 }
@@ -172,13 +174,18 @@ async function publishedRows(page) {
         return { dialogs, bodyText: (document.body ? document.body.innerText : "").replace(/\s+/g, " ").slice(0, 1500) };
       }).catch(() => ({}));
       log({ result: "CONFIRM_MODAL", ...modal });
-      const modalText = [...(modal.dialogs || []), modal.bodyText || ""].join(" ");
+      // Keyword gate applies ONLY to the modal dialog text: the page
+      // chrome (sidebar "签约政策" nav) must not false-positive it.
+      const modalText = (modal.dialogs || []).join(" ");
       const hit = DANGER.find((w) => modalText.includes(w));
       if (hit) { log({ result: "ABORTED", reason: "modal mentions a gated keyword, refusing to confirm", keyword: hit }); process.exitCode = 2; await ctx.close(); return; }
+      // Click the confirm button INSIDE the publish modal only.
       const confirmed = await page.evaluate(() => {
-        const cands = [...document.querySelectorAll("button, a")].filter((el) => el.offsetParent !== null);
-        const exact = cands.find((el) => ["确认发布", "确认", "确定"].includes((el.textContent || "").trim()));
-        if (exact) { exact.click(); return (exact.textContent || "").trim(); }
+        const dialogs = [...document.querySelectorAll("[role=dialog], .el-dialog, .modal, [class*=modal], [class*=dialog]")].filter((el) => el.offsetParent !== null);
+        const dlg = dialogs.find((el) => (el.innerText || "").includes("立即发布确认")) || dialogs[0];
+        if (!dlg) return null;
+        const btn = [...dlg.querySelectorAll("button, a")].find((el) => ["确认发布", "确认", "确定"].includes((el.textContent || "").trim()));
+        if (btn) { btn.click(); return (btn.textContent || "").trim(); }
         return null;
       }).catch(() => null);
       log({ result: "CONFIRM_CLICKED", button: confirmed });
