@@ -9,8 +9,9 @@
   "publishedAt": "2026-10-22T06:10:23.000Z",
   "platforms": {
     "fanqie": {
-      "status": "draft_saved",
-      "updatedAt": "2026-11-02T07:02:17.205Z"
+      "status": "published",
+      "updatedAt": "2026-11-02T07:12:00.000Z",
+      "note": "平台核实：已发布 2026-11-02 15:12，2717字；脚本因草稿箱残留旧963字重复草稿误报失败，实际已发表。"
     },
     "qimao": {
       "status": "skipped",
