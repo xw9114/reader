@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-02",
+  "chapter": 22,
+  "bookId": "chenghuang-yeban",
+  "createdAt": "2026-11-02T06:46:28.000Z",
+  "status": "published",
+  "characters": 2412,
+  "sha256": "f33012b5f3b08a61557657077c6d0ec3fd0b628d8c7b6877448ef45330b93567",
+  "publishedAt": "2026-11-02T06:46:28.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "skipped",
+      "updatedAt": "2026-11-02T06:46:28.000Z"
+    },
+    "qimao": {
+      "status": "skipped",
+      "updatedAt": "2026-11-02T06:46:28.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-11-02 自动补建；因七猫已永久拒签，qimao 与 fanqie 均标 skipped。"
+}

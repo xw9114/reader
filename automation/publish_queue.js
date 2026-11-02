@@ -355,14 +355,21 @@ async function findFanqieDraftEditUrl(page, chapter) {
   const finder = await page.context().newPage();
   try {
     await finder.goto(`https://fanqienovel.com/main/writer/chapter-manage/${match[1]}?type=2`, { waitUntil: "domcontentloaded", timeout: 60000 });
-    await finder.waitForTimeout(4000);
-    return await finder.evaluate((titleText) => {
-      const rows = [...document.querySelectorAll("tr")];
-      const row = rows.find((r) => r.innerText.includes(titleText));
-      if (!row) return null;
-      const anchor = [...row.querySelectorAll("a[href]")].find((a) => /\/publish\//.test(a.href));
-      return anchor ? anchor.href : null;
-    }, title);
+    for (let pageIndex = 0; pageIndex < 5; pageIndex += 1) {
+      await finder.waitForTimeout(3500);
+      const foundUrl = await finder.evaluate((titleText) => {
+        const rows = [...document.querySelectorAll("tr")];
+        const row = rows.find((r) => r.innerText.includes(titleText));
+        if (!row) return null;
+        const anchor = [...row.querySelectorAll("a[href]")].find((a) => /\/publish\//.test(a.href));
+        return anchor ? anchor.href : null;
+      }, title);
+      if (foundUrl) return foundUrl;
+      const nextBtn = finder.locator("li.arco-pagination-item-next:not(.arco-pagination-item-disabled)").first();
+      if ((await nextBtn.count()) === 0) break;
+      await nextBtn.click().catch(() => {});
+    }
+    return null;
   } finally {
     await finder.close().catch(() => {});
   }

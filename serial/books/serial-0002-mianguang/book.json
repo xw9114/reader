@@ -5,7 +5,7 @@
   "platform": "tomato",
   "genre": "women-growth",
   "status": "active",
-  "targetChapters": 6,
+  "targetChapters": 100,
   "chapterWordCount": 2482,
   "language": "zh",
   "publishingHint": {
@@ -38,9 +38,15 @@
   "volumes": [
     {
       "number": 1,
-      "title": "全书",
+      "title": "第一卷：白鹭旧账",
       "startChapter": 1,
       "endChapter": 6
+    },
+    {
+      "number": 2,
+      "title": "第二卷：禾光新招牌",
+      "startChapter": 7,
+      "endChapter": 100
     }
   ],
   "protagonist": "苏禾",
