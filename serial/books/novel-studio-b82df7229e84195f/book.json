@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-b82df7229e84195f",
+  "readerId": "novel-studio-b82df7229e84195f",
+  "title": "笔尖归圆",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2471,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "迟砚秋",
+  "synopsis": "在承包改制与儿子劝他退职去南方打工的双重压力下，凭手艺把柜台承包下来并活下去；代价是必须接下他最看不上的活——修假货水货笔，向市场低头，并放下\"国营老师傅\"的身段。",
+  "sourceProjectId": "笔尖归圆-自动0198-f2a7d5",
+  "sourceSnapshotSHA256": "01cc7289b1d0044d0cafa95bd7f51ce0eaa44e0b2eb6eb9ac78866007c0ae4b0",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

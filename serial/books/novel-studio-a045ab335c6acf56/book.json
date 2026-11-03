@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-a045ab335c6acf56",
+  "readerId": "novel-studio-a045ab335c6acf56",
+  "title": "第七仓的粮温",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2504,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "沈知穗",
+  "synopsis": "第1天，第七仓三千吨代储小麦进入夏季保管关键期，电子系统显示粮温平稳，但沈知穗的手抄底账连续三旬对不上——她扦样实测的粮温比系统数据低了不止两度，粮堆中层的气味也不对。她想查明第七仓真实粮情，代价是：这份手抄底账一旦摆上台面，等于承认库里电子粮情数据失真，她的师傅屠向松和主任贺延川多年经营的形象都会塌掉，她自己『系统之外另记一本账』的习惯也将被追责为越权。",
+  "sourceProjectId": "第七仓的粮温-自动0056-02a8f0",
+  "sourceSnapshotSHA256": "ae5d875c799d1388c89737b7a5e0201dab6bd15d3326cd2b37c1951a150b9910",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

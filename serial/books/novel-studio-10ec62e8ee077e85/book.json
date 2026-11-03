@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-10ec62e8ee077e85",
+  "readerId": "novel-studio-10ec62e8ee077e85",
+  "title": "满弦",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2421,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "荣敬川",
+  "synopsis": "荣敬川想凭手艺承包下里屋那方修理柜台，把机械表疑难修理这门手艺在石英浪潮里撑住，让\"修不好不收钱\"的招牌立得下去；代价是得罪经理，柜台被挪进角落、承包合同百般刁难，与师弟反目，几乎丢了饭碗。",
+  "sourceProjectId": "满弦-自动0153-3ec37e",
+  "sourceSnapshotSHA256": "b9e9b91cdbd01b2f4bd89a3bd6209efa11f9b5e93c28a1917e5ef2c961655def",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

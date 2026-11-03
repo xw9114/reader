@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-98ba6c5d3075886c",
+  "readerId": "novel-studio-98ba6c5d3075886c",
+  "title": "校准一九九一",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2398,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "穆守拙",
+  "synopsis": "电子石英表以低廉价格横扫市场，机械表修理生意一落千丈，公司连年亏损，狄如松宣布修表部年底前撤销，门面腾出来租给广盛电子表行，老师傅们各自安置到柜台卖货。穆守拙要在一个月内凑齐九千元承包款，把修表部承包下来自己经营，并找到一条能让老手艺活下去的新业务，年底前交清承包款，让修表部的炉火不灭。代价：他押上全部积蓄和妻子邵云清（33岁，纺织厂挡车工，正等着钱给儿子交下学期学费和给岳母治腰腿病）；若年底交不齐承包款，门面照租给廖万川，他下岗去仓库当保管员。",
+  "sourceProjectId": "校准一九九一-自动0043-0ff1fc",
+  "sourceSnapshotSHA256": "120963c038643e2a3a7599bbf9279b6cafb704d95588d929d4051f5f81ae5957",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

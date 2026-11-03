@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-ceb336795591b0f3",
+  "readerId": "novel-studio-ceb336795591b0f3",
+  "title": "杀口感",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2478,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "迟映蘅",
+  "synopsis": "四月的风还带着凉意，灌装车间里已经热得冒汗。\n\n迟映蘅踩着铁梯下到流水线底下，底账摊在膝上，铅笔头咬得短短的。拆开的灌装机摆了一地零件，碱水桶里泡着灌针，白汽一股一股往上冒，呛得人眼睛发酸。她不看机器，只看表：糖量计拆开校过没有，含气量表的表针回零回得正不正。一支表针偏了半格，她让检修的徒弟当场调，调完在底账上写：四月八日，三号含气量表校验，回零正。\n\n\"迟姐，你这本私账，比化验室的报表还全。\"徒弟蹲在旁边笑。\n\n\"报表是给人看的。\"她头也不抬，\"账是给自己看的。\"\n\n十五年了。从十九岁进厂当学徒那天起，这本手抄底账没断过一行。到货日期、供货方、熬制锅次、糖度读数、含气量表针、洗瓶菌检、留样瓶编号与抽验结果，一批一行。厂里人笑她较真，她认。较真这两个字，是师父屠万缸拿铜勺敲着锅沿教出来的：糖要一锅一锅熬，账要一行一行记。\n\n合上底账，她又去留样柜前站了一会儿。",
+  "sourceProjectId": "杀口感-自动0123-a17b16",
+  "sourceSnapshotSHA256": "9ae274e62cad97480576b355eb069cc7880785d0da85c1fe059d60f164217698",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "approved-manuscript-excerpt"
+}

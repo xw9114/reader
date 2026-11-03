@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-eeeec81a40d62011",
+  "readerId": "novel-studio-eeeec81a40d62011",
+  "title": "漆面之下",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2322,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "舒砚洲",
+  "synopsis": "融资租赁公司一次性委托评估三十七辆清仓车，舒砚洲在第九辆车——一辆行驶里程仅三万公里的白色SUV——上测出左B柱漆膜值异常、门槛梁内侧焊点为后打胶非原厂点焊，判断为重大事故切割车，应判不合格并整体退单。但委托方项目经理方聿白暗示返修，公司经理因三十七辆的单量与年底续约压力施压放行，同组评估师老同事闻峥的签字也出现在此前两辆同源车的合格报告上——那两辆已在拍卖平台成交过户。舒砚洲的核心欲望是守住签字的职业底线；代价是与供职八年的公司决裂、失去年底晋升评估主管的机会，以及被行业圈内贴上「砸单子」的标签。",
+  "sourceProjectId": "漆面之下-自动0166-cefd25",
+  "sourceSnapshotSHA256": "62858da8fa4cf7e6a4f783f0a1b490adac7e584c739e5b880d31258bed4907d0",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

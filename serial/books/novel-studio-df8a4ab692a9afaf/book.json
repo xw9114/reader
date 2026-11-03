@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-df8a4ab692a9afaf",
+  "readerId": "novel-studio-df8a4ab692a9afaf",
+  "title": "空载里程",
+  "platform": "tomato",
+  "genre": "sci-fi",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2438,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "轻科幻"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材",
+      "职业成长"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "师徒情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "霍衔青",
+  "synopsis": "霍衔青想查清编号D-2173的无人车为何连续四个月每月多出两百余公里深夜空载里程——这不是她的单子，是系统自动判定『无异常』而被她在底账里翻出来的。要查到底，她必须越过组长私自调取非审计范围车辆的数据，等于赌上自己唯一的持证岗位；不查，签字通过的季度账就有一笔说不清的里程，示范线路验收后这笔账会被埋进更大的基数里。",
+  "sourceProjectId": "空载里程-自动0160-53ad70",
+  "sourceSnapshotSHA256": "cfee3bd174637282d3f52ef4db7baa855b1d2091d662043dfa1d42b0b23689da",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

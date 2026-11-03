@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-fddb54984894aeaf",
+  "readerId": "novel-studio-fddb54984894aeaf",
+  "title": "残余壁厚",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2454,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "桑照野",
+  "synopsis": "桑照野要守住『判废的瓶必须熔毁』这条底线，把一批被翻新流回乡镇的报废瓶全部追回；代价是被诬告敲诈、停职交查、与共事十年的同事撕破脸。",
+  "sourceProjectId": "残余壁厚-自动0141-f1e1ec",
+  "sourceSnapshotSHA256": "9681d25fbcd061874b3f92e4b949f988a08263498d376ea383765686b983580c",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

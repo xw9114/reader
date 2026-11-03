@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-a1ad9784e7ae240c",
+  "readerId": "novel-studio-a1ad9784e7ae240c",
+  "title": "突点的位置·盲文校对员",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2493,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "沈聿",
+  "synopsis": "新版四年级数学盲文教材已开印三万册，二十天后发往全省特教学校，沈聿在校对时发现第37页一处分数符号的点字组合与旧版不同——按新版印出，'二分之一'与'负二分之一'在触读上完全无法区分，而这个错误来自电子转译系统的版本升级，流程记录却显示三级校对全部签字通过；她要在教材装订出厂前叫停重印，并在社里推行的'盲文全面电子化、校对岗缩编'的改革中，证明盲人校对员指尖的不可替代。代价：她的试用期转正推荐握在主编手里，坚持叫停等于承认社里质检流程失守，她可能第一个被裁；她还要直面两年前一桩旧账——上一版盲文词典中一处她曾上报却被驳回的同类错误，背后牵出转译软件供应商与社里某位领导的利益关联。",
+  "sourceProjectId": "突点的位置-盲文校对员-自动0024-4239ea",
+  "sourceSnapshotSHA256": "fcfe2d0df6ff502c7b460ace8ab117240aa15023a15d1233415c070cb6e2d105",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

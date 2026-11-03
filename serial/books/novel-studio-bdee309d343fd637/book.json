@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-bdee309d343fd637",
+  "readerId": "novel-studio-bdee309d343fd637",
+  "title": "松手之前",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2440,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "虞知苇",
+  "synopsis": "白露过后，泠川的暑气还是赖着不走。午后两点，训练场的塑胶地面被晒得发软，虞知苇的鞋底踩上去，能感到一层隐约的黏。\n\n\"阿澈，过。\"\n\n黑色拉布拉多的肩胛在她左手边绷紧又松开，牵引线传来的张力均匀、干净，像一段拉直的棉绳。斑马线画在训练场东侧的仿真道上，两侧立着可移动的信号灯柱。她抬手，场边的同事按下遥控，一声骤响炸开 - 改装电动车特有的尖利喇叭，高频，短促，近得像贴着耳膜。\n\n阿澈的耳朵动了半寸，脚步没断。三步之后，他自动把步幅收回到与她齐平，肩带回到那截熟悉的张力上。\n\n\"好。\"她说。声音不高，犬听得懂就够了。\n\n她在心里记账：本月第七次骤响干扰，回正用时一秒以内，肩带偏移零。这样的账她记了小十年，起初存手机备忘录，后来改成手写，一犬一册。基地有统一的电子系统，祁朗录数据比谁都快，可虞知苇还是信自己手里的笔。同事笑她记犬账比种犬档案室还细，她不辩解。",
+  "sourceProjectId": "松手之前-自动0082-4164fb",
+  "sourceSnapshotSHA256": "35ff44885f97e41186b2603db5c2aa0e3f7e34ba234253bfe7e134b02b576ac6",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "approved-manuscript-excerpt"
+}

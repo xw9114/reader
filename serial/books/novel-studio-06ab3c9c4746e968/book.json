@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-06ab3c9c4746e968",
+  "readerId": "novel-studio-06ab3c9c4746e968",
+  "title": "游丝不乱",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2501,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "温叙荃",
+  "synopsis": "她想在柜台承包改制中保住二楼修理间，把这门手艺和老师傅留下的校表仪、修理档案继续传下去；代价是必须接下店里没人愿碰的活——为市百货大楼钟表专柜做售后保修，面对一批评修回来却查不出毛病的石英表，一旦判断失误，承包保证金就要赔进去。",
+  "sourceProjectId": "游丝不乱-自动0203-ec874d",
+  "sourceSnapshotSHA256": "507de3c2ddc7f5cfe32a8c7804dd68972d14b6f3e6bb19dc4d71819e9f07dd8d",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

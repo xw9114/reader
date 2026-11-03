@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-24fae1cbab97ef15",
+  "readerId": "novel-studio-24fae1cbab97ef15",
+  "title": "离子谱上的第七行",
+  "platform": "tomato",
+  "genre": "sci-fi",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2532,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "轻科幻"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材",
+      "职业成长"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "师徒情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "温霁川",
+  "synopsis": "第1天，颍原市启动『校园直供』项目，禾穹农场C座三层两万平方米的生菜将在二十四天后直供全市一百二十所小学的午餐，是市教育局年度民生工程的第一单。温霁川在例行的进料验收中发现，供应商『泽沃肥业』本月发来的C型浓缩营养液，桶身标签、批次号、甚至随货电子质保书都与合同版本一致，但她的快速抽检显示锌铜比例漂移了千分之三。数字极小，在农场自适应系统的自动补偿范围内，不触发任何告警；但铜离子的长期微富集会在叶片里累积，二十天后达到采收峰值。她调阅离子色谱原始图谱存档对比，发现随货图谱是重新生成的——七行关键峰值被软件平滑过，手法干净得像例行格式。她要在采收发运前拿到可核实的证据链：留样桶、第三方比对检测、被平滑掉的原始数据，并顶住项目进度不能停的压力。",
+  "sourceProjectId": "离子谱上的第七行-自动0050-32b70a",
+  "sourceSnapshotSHA256": "fa806b2e48ec50308350b18f9d482734050112fd2bd0fe19065621bd943b6091",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

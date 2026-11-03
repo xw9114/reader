@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-14890258480879b6",
+  "readerId": "novel-studio-14890258480879b6",
+  "title": "漏点十七米",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2424,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "桑迟照",
+  "synopsis": "冬至前第七夜，凌晨一点四十，流动检车碾过霁川大道辅道上结了薄霜的落叶，桑迟照把听音杆从后座设备架上抽出来，金属杆身冰凉，掌心一握便透出寒意。\n\n夜里出巡这些年来，她摸这根杆的手感比摸自己手机还熟。二十二岁从省水利水电职业技术学院给排水工程技术专业毕业，先在管道安装公司干了五年管网敷设，天天跟沟槽、热熔机和晒得发白的太阳打交道，后来考进湓浦水务，跟聂九皋从夜巡听音、贴片定位学起。老师傅教她的第一件事是：耳朵别交给仪器，仪器会骗人，耳朵先骗自己，才有资格说仪器骗没骗。\n\n车停在霁川大道与规划二路交叉口。司机把大灯留着，缩进驾驶室刷手机。这一片归测漏班冬季漏损专项管，分区流量计装上三个月，夜间最小流量连续偏高，折算漏损率百分之二十七。考核线是多少，全公司开会都念过；如今这四个数字压在每个人后颈上，尤其压在测漏班仅有的两名持证测漏员之一、也就是她的签字笔上。",
+  "sourceProjectId": "漏点十七米-自动0196-dac9ce",
+  "sourceSnapshotSHA256": "8ae4ed154b56ac23d31dc2f319c3a64b2ae1107a1b5cabbbcc77d1ed507f288f",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "approved-manuscript-excerpt"
+}

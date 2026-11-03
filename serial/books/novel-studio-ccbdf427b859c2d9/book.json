@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-ccbdf427b859c2d9",
+  "readerId": "novel-studio-ccbdf427b859c2d9",
+  "title": "泡水车",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2479,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "屠砚舟",
+  "synopsis": "屠砚舟想在守住签字公信力的同时保住饭碗，他每压一台车，市场就少一笔流水，他离被辞退就近一步；他必须在'随大流放行'与'把证据做到谁也翻不了案'之间做选择。",
+  "sourceProjectId": "泡水车-自动0139-43ff73",
+  "sourceSnapshotSHA256": "e69c25e6e575ec57e77a8d872134542a6295ef870e141f8848bfab588bc33f65",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

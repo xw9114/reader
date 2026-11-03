@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-1e0fa0b8f3b7c604",
+  "readerId": "novel-studio-1e0fa0b8f3b7c604",
+  "title": "点浆的一九九〇",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2483,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "桂春枝",
+  "synopsis": "厂里连年亏损，市副食品公司决定把各车间切块承包，豆制品车间因『利润薄、耗煤耗豆』列入撤并名单，设备折价处理，工人分流去酱菜组；桂春枝要在一个月内凑齐八千元承包押金，把豆腐生产线承包下来，年底前交齐承包款并让汾宁人清晨还能在副食店门口排队买到热豆腐。代价：她押上全部积蓄和丈夫郑长河（38岁，航运社驳船水手）攒着换机动拖船的股金，若年底交不齐承包款，全家背债，师傅罗有恒连退休前落脚的岗位都没有；她还必须查清一桩压了两年的旧账——厂里账面上豆腐组月月亏损，可她手抄台账算出的出坯率却始终比厂里报表高出两成，账上的黄豆到底去了哪里，只有查清这笔账、拿出真凭实据，她才能以真实的成本核算说服公司按实际盈亏重新定承包基数，否则她背上的是一个被人做亏了的烂摊子。",
+  "sourceProjectId": "点浆的一九九〇-自动0033-01fd4b",
+  "sourceSnapshotSHA256": "b5403e235fc3227b928fec6310b647a85019f6dba8231df217b7bc1f04c210bf",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

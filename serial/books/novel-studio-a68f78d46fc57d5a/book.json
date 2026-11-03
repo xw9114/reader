@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-a68f78d46fc57d5a",
+  "readerId": "novel-studio-a68f78d46fc57d5a",
+  "title": "漆膜里的旧账",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2421,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "阮泊舟",
+  "synopsis": "秋末的清晨，洺川汇金二手车交易市场的卷闸门一扇接一扇掀起来，铁皮摩擦轨道的声响从东区滚到西区，像某种缓慢的苏醒。阮泊舟七点半就到了验车工位，先开灯，再把漆膜仪从绒布盒里取出来，用软布擦了一遍探头，校零。仪器屏幕亮起，数字在零点几的区间跳动，稳了。\n\n工位抽屉最下层压着一册黑皮笔记本，封皮边角磨得发白。他翻开，昨天的最后一页记着一辆白色轿车：车架号、十七个点位的漆膜读数、焊点位置简图、委托人签字，一笔一画。这是他在行里电子验车系统之外自留的底账，一车一页，从考下评估师资格、入职验车行那年起，没断过一天。\n\n三十三岁，入行十年。前五年在4S店钣喷车间修事故车，后五年坐在汇金市场的验车工位上给人看车。市场里的人都知道，这一片能独立签发带法律效力验车报告的签字评估师，只有阮泊舟一个。也有人传得更神：阮工不拆车，漆膜仪贴一贴，手指摸一摸，就知道这车动没动过骨架。",
+  "sourceProjectId": "漆膜里的旧账-自动0106-ee1497",
+  "sourceSnapshotSHA256": "8994120bac69d2fa2d69662ab7d7a79d7cf00781bc2584a77f071c220022cb0e",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "approved-manuscript-excerpt"
+}

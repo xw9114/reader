@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-eed37b7776caf4e2",
+  "readerId": "novel-studio-eed37b7776caf4e2",
+  "title": "省道两厘米",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2392,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "余见蕙",
+  "synopsis": "惊蛰过后，澜庾河尾一带的厂子全都醒了。\n\n凌晨六点，制版室的灯比车间先亮。余见蕙把一件去年的旧成衣平铺在打版台上，手掌从领口往肩线推过去，指尖压过肩缝，停在前胸那条省的尖上。省尖起吊，收势太急，侧缝的弧线被拽得往前提了半寸。她心里已经有数：这件衣服在工艺单上被人动过，原版的斜省被并进了通肩省，为的是让车位的机针走得快些，省下一道换手的时间。\n\n这是她的本事。十五年，从车位工做到制版师，她看一件成衣，手掌一搭，就知道病在哪一道工序上，是省料还是藏拙。\n\n门外车间的平缝机一台接一台响起来，六台，声音却比往年稀。她去年从车位带上手的徒弟小满探头进来，手里捏着两个包子：「师傅，听说了吗，南方那家快反厂把外贸那张单又压了两块钱，厂长在办公室摔了杯子。」\n\n大单丢了。河尾的厂子都靠这几张外贸单过夏天，丢一张，厂里五十多台机器就要哑一半。余见蕙把旧成衣叠好，没接话。",
+  "sourceProjectId": "省道两厘米-自动0172-5d329a",
+  "sourceSnapshotSHA256": "519ca19174d0dffb92073d4005255d7acd48a2528f1bb05f9037c62d3fa2f9b6",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "approved-manuscript-excerpt"
+}

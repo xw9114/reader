@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-2696f2ff0b46a0ff",
+  "readerId": "novel-studio-2696f2ff0b46a0ff",
+  "title": "灰烬第三处",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2596,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "闻照野",
+  "synopsis": "他要证明这场火不是天灾而是有人为痕迹，既为房主翻案，也为洗清自己因嗅觉受损一直被质疑「不再适合做火调」的职业污名。代价：复查会推翻电力公司与物业的联合结论，牵出楼体消防验收档案的造假链，同事宋叙蒲正是当年验收材料经手人之一，闻照野每深挖一步，都在动摇组里人对他的信任，也威胁桂从麓退休前最后一批案卷的清白。",
+  "sourceProjectId": "灰烬第三处-自动0206-eca3dd",
+  "sourceSnapshotSHA256": "3a4d848794200daf0f816d91c0dae5e5382e955c6bb34c0a2d346e7c71e612eb",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-68cb42bbd09a9682",
+  "readerId": "novel-studio-68cb42bbd09a9682",
+  "title": "第二版型",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2503,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "顾照薇",
+  "synopsis": "距秋冬订货会与省服装行业协会的原创设计评奖申报只剩六十天，顾照薇发现『迅季』门店挂出一款销量暴涨的落肩长大衣，其衣身结构与她三个月前为公司新款打的『第三修正样』版型完全同构——肩线角度、袖窿深、腰省位移、下摆起翘，连她为解决面料垂坠问题在侧缝内加的1.2厘米暗褶都分毫不差，而这版样此前并未投产，只存在她自己的底档、公司工艺服务器和郁钟鸣的评审邮件里。她要在六十天内查清版型如何外流，拿出可核实的证据链——底档原件、服务器操作日志调取记录、样衣缝制细节比对照片、快递签收底单——在评奖申报截止前向协会申诉并洗清『帛语抄迅季』的反向指控；她更要借此推出以自己名字命名的独立版型工坊，接下老客户、48岁独立服装店主白霜衣的定制系列订单。",
+  "sourceProjectId": "第二版型-自动0047-80b296",
+  "sourceSnapshotSHA256": "1bb93e33deae099d3a8ee728b4ac893b544129460ba067cfb4e627be35906987",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

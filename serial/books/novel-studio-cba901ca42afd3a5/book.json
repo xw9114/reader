@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-cba901ca42afd3a5",
+  "readerId": "novel-studio-cba901ca42afd3a5",
+  "title": "桥面下的三毫米",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2333,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "路望舒",
+  "synopsis": "第1天，管养所启动津渡大桥『安全评估与加固立项』，检测与加固设计外委给中标的『宸通路桥检测公司』。宸通提交的支座评估报告显示全桥七十二块支座状态良好，仅建议更换八块，加固预算压到最低档，桥面原计划只做浅层铺装翻新。但路望舒手抄底账近三年的数据表明：三号墩与四号墩顶的四块支座累计切向位移持续增大，主梁已压溃橡胶层三毫米并出现偏压剪切迹象，若不换支座先做桥面铺装，等于把裂缝盖在桥面下。她要在二十八天内、在铺装工程开工之前，用可核实的证据让评估结论被推翻、支座更换进图进预算。代价是：宸通公司出具的评估签字人，是十五年前带她巡桥学艺、如今跳槽去检测公司的老师傅蔡闻笛；她坚持推翻结论，等于亲手把师傅的执业信誉放上审查台，而她若拿不出仪器级的复测证据，管养所领导可以以『手抄底账不具效力』为由驳她。",
+  "sourceProjectId": "桥面下的三毫米-自动0054-5e750a",
+  "sourceSnapshotSHA256": "f7da4f61cf97dc49ebac9601fc38c861101f88eae7bfe329b22b00a80ff6e877",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

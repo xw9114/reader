@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-3bf4c9dc12ccfe7b",
+  "readerId": "novel-studio-3bf4c9dc12ccfe7b",
+  "title": "游丝上的霜",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2392,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "桂汝霜",
+  "synopsis": "郝玉屏为一批单位礼品表到店里集体保养，桂汝霜逐块拆检时发现其中六块的机芯编号与上盖刻号对不上、夹板有打磨翻新的痕迹，追查发现这批表当初正是经由本店柜台、由前任副手经手进的广源件——翻新表一旦按正品交付，砸的是修理部二十年招牌；她要凭手抄底账里逐条换件批次与回访记录，把旧账翻个底朝天。",
+  "sourceProjectId": "游丝上的霜-自动0093-76282a",
+  "sourceSnapshotSHA256": "81b011854ef099fcb07f009393105323c13be436ccb0e597830c1e053d3e759e",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

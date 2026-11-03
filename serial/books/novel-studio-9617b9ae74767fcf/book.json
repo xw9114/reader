@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-9617b9ae74767fcf",
+  "readerId": "novel-studio-9617b9ae74767fcf",
+  "title": "索力差半吨",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2468,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "聂溯洄",
+  "synopsis": "在专项检测结束前查清澄澜大桥编号S12斜拉索索力读数与十二年前竣工档案偏差达百分之四点七的原因，守住桥上行人的安全；代价是偏差一旦坐实为结构性伤，他签字上报将意味着大桥限载封道、刚获批的引道拓宽工程停工，班组和施工方都视他为麻烦。",
+  "sourceProjectId": "索力差半吨-自动0214-80a07d",
+  "sourceSnapshotSHA256": "1e0018b181442ea5cd10120420f9d96f4b10b6c5d98bb26da56529262476c437",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

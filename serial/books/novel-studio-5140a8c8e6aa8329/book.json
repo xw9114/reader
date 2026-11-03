@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-5140a8c8e6aa8329",
+  "readerId": "novel-studio-5140a8c8e6aa8329",
+  "title": "池温",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2312,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "祝晚棠",
+  "synopsis": "1992年春，市商业局系统改制，清泉浴池因『耗煤高、利润薄』被列入撤并名单，门面要腾出来改歌舞厅。祝晚棠要在一个月内凑齐九千元承包款，把浴池女部和堂口承包下来，与城南纺织厂签下八百名女工的包月洗浴合同，入冬前完成锅炉改造，让清泉池不断烟火。代价是她押上全部积蓄，还有给丈夫顾长庚做腰伤手术攒下的住院押金；若年底合同款收不齐，浴池交回，押金折抵欠账，她还得背『拖垮男人手术』的名声。",
+  "sourceProjectId": "池温-自动0048-a2832a",
+  "sourceSnapshotSHA256": "33b20eb2c200ac9a8faf9fcb6aa58ad5ba20c180c1ed5de58a0f2a4f949603f3",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

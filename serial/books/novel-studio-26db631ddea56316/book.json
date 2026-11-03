@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-26db631ddea56316",
+  "readerId": "novel-studio-26db631ddea56316",
+  "title": "焙火三分",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2379,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "姜叙蓝",
+  "synopsis": "春分那天早上七点四十，二楼的审评室已经亮灯。窗外临街的老樟树刚抽新叶，湿汽顺着窗缝钻进来，混着干评台上摊开的毛茶香。姜叙蓝把白瓷盘端到窗边自然光下，指尖拨了拨茶样：条索紧细，色泽墨绿带毫，摊晾得匀。\n\n「这批看着不错啊。」郑维止端着保温杯凑过来，杯里的枸杞浮浮沉沉，「记录单上写的是明前，山后那片基地的料。」\n\n姜叙蓝没接话。她称了三克样，投进审评杯，提起电水壶。\n\n「等一下。」\n\n费临渊不知什么时候站在了湿评台边。他今天穿了件洗得发白的灰衬衫，袖口挽到小臂，手背上有一道早年烫伤留下的浅色疤。他不看茶，只看她的手。\n\n「注水。」\n\n姜叙蓝手腕一沉，水流下去。\n\n「直冲了。」费临渊伸手把壶接过去，重新注了一杯。他的水线贴着碗壁走，缓缓旋进去，茶叶在水里慢慢翻身，而不是被冲得上下乱撞。「芽头嫩，直冲把鲜爽气打散，汤色会浊。你焙车间的毛病，习惯了大叶子。」\n\n就这两句话，没有更多。",
+  "sourceProjectId": "焙火三分-自动0202-142369",
+  "sourceSnapshotSHA256": "81ad59b9115ec25a1c9053008ab512f45cfae2d0517874278403086a8361e881",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "approved-manuscript-excerpt"
+}

@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-dfdbac54af7a91f6",
+  "readerId": "novel-studio-dfdbac54af7a91f6",
+  "title": "第七枚游丝·临洹记",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2632,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "宋听澜",
+  "synopsis": "宋听澜要在改制方案定稿前，保住修理部这块能让老主顾们二十三年放心送表来的台面，并证明修理部不是账面上的累赘。核心代价：她越是较真，越会挖出与自己朝夕相处的熟人的私心，齐守拙与佟佩霞都难置身事外；而她坚持不承包、不散伙的底线，可能让徒弟杜小蕊失去改行挣钱的机会，师徒情分被摆在秤上称。",
+  "sourceProjectId": "第七枚游丝-临洹记-自动0068-62a5b1",
+  "sourceSnapshotSHA256": "280403696ed57c387cf0fa0e5d57732d0304a35234469cae33647a90fd3abbf7",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}
