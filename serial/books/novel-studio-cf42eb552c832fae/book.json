@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-cf42eb552c832fae",
+  "readerId": "novel-studio-cf42eb552c832fae",
+  "title": "一封之差",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2495,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "江晚照",
+  "synopsis": "第一夜班卸\"澜沧线\"进口船时，江晚照发现三只申报为\"二手机床配件\"的集装箱铅封完好，但封号与舱单尾号各差一位——是高仿后补封。她按实批注出单，单子却被关峙以\"船期优先\"压回要求复理。她要查清封是谁换的、箱里到底装了什么，代价是差错考核记在她个人头上、同船队友的奖金泡汤、教她手艺的师父在临退休前被拖下水。",
+  "sourceProjectId": "一封之差-自动0159-882721",
+  "sourceSnapshotSHA256": "e31128cf30a9cac5c280fa328f43d4959b268e3531ac6eb27fb41ba05c810866",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

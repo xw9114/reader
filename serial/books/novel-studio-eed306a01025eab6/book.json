@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-eed306a01025eab6",
+  "readerId": "novel-studio-eed306a01025eab6",
+  "title": "夜潮引航",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2406,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "沈溯蓝",
+  "synopsis": "聂照洲暗示她按惯例背下这次投诉，站里内部处理，不影响她正在评审的晋升材料；而温叙蓁悄悄告诉她，那艘船申报吃水与实际装载不符。沈溯蓝的核心欲望是查清擦浅真相、以干净的技术履历晋升一级引航员，证明女性不是被照顾进引航站的；代价是——若坚持复查，等于当众质疑师傅聂照洲多年来在同一浅埂压线抢潮的走法，也等于与同期竞争者罗鼎川正面冲突，还可能牵出航运公司配合谎报吃水的利益链，晋升评审大概率被无限期搁置。",
+  "sourceProjectId": "夜潮引航-自动0107-749a3d",
+  "sourceSnapshotSHA256": "ce5b26890e54afb77057253f75e15e377e90686e83d09259390f52505915bd3f",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

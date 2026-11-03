@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-fecba903127f058d",
+  "readerId": "novel-studio-fecba903127f058d",
+  "title": "十六秒复核",
+  "platform": "tomato",
+  "genre": "sci-fi",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2411,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "轻科幻"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材",
+      "职业成长"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "师徒情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "祝停云",
+  "synopsis": "第1天，总部宣布『十六秒复核』机制升级为『八秒预判』——系统置信度阈值下调，推送次数减少，复核时间砍半，免接管率立刻跳升，组里人人叫好。祝停云却在自己手抄底账里发现：同一天起，城东片区上报给交管部门的『运营异常事件』数量下降了一半，但她复核屏上真实接住的高危场景一单没少——异常只是不再被推送、不再被记录了。她的核心欲望：用可核实的证据证明八秒机制在系统性瞒报高危场景，赶在月底对赌签约前把真相摆上台面；代价是：证据若成立，最先被裁的就是她自己的复核组，而她拖了近十年的房子首付、以及对徒弟程小满转岗的前程担保，全都押在『组还在』上——她要亲手拆掉自己饭碗的承重墙。",
+  "sourceProjectId": "十六秒复核-自动0070-5b880a",
+  "sourceSnapshotSHA256": "6f54e0e008187a530f1d7d25edea71e678499e31fe44f848e0101ec6ca7cfc8b",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

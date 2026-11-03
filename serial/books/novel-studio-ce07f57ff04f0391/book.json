@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-ce07f57ff04f0391",
+  "readerId": "novel-studio-ce07f57ff04f0391",
+  "title": "一百二十米上的绳结",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2484,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "闻笑岚",
+  "synopsis": "队里原来的挂靠关系到期，老队长退了，队面临两条路——要么并入岳克俭的捷翼公司拿固定工钱、交出作业自主权，要么由闻笑岚牵头注册一家独立的小型绳索作业公司自己接活；而霁川中心医院一百二十米高的新院区幕墙维修工程正在招标，工期六十天，是全队拼一次就能立住招牌的单子。闻笑岚要在六十天内凑齐注册资金、组起人手、通过资格预审并完成投标；代价是押上全部积蓄，还要面对岳克俭的低价围堵，以及搭档邝铁生的伤随时可能在高空发作的风险。",
+  "sourceProjectId": "一百二十米上的绳结-自动0052-144efa",
+  "sourceSnapshotSHA256": "7c9484e1d7d26f5377d1431e346eec09da599e7bee3b3e4f7d411a7dbbd966fb",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

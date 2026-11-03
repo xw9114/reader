@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-171dbe8d5ef9c080",
+  "readerId": "novel-studio-171dbe8d5ef9c080",
+  "title": "声纹之外",
+  "platform": "tomato",
+  "genre": "sci-fi",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2453,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "轻科幻"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材",
+      "职业成长"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "师徒情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "骆栖迟",
+  "synopsis": "骆栖迟的核心欲望是守住『授权必须本人』这条底线——她经历过电台同事的声音被盗用去做虚假广告的旧事；代价是复评在即，撤销授权越多，平台季度数据越难看，窦明宇明示她『先归类为用户记忆偏差』。她必须在保住签字资格与追查真相之间做具体选择：调档、复听、走访、录音取证、越级递交。",
+  "sourceProjectId": "声纹之外-自动0150-38024c",
+  "sourceSnapshotSHA256": "cad14b93a5f0ee37ed22fa591b963d4170cb1d93489730a8597e8143f5386c20",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-f19275213f2de102",
+  "readerId": "novel-studio-f19275213f2de102",
+  "title": "听漏记",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2511,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "闻棠",
+  "synopsis": "闻棠要在限期前查明梧桐里损耗真相，保住自己的签字清白——因为三年前一次误判漏点导致开挖错位、她被停岗三个月，这次若再出偏差，持证资格不保。代价：她越查越深，牵出配送站老板与管网所内部维修班长勾连、私接支管盗水再灌装售卖的链条，而维修班长是她当年的带教师傅。\\n\\n人物控制：闻棠；带教师傅、维修班长贺宽（54岁，为人豪爽，暗中给盗水点开方便之门并篡改维修工单）；配送站老板邝照（40岁，负责销赃）；青年同事小司机兼记录员袁一苇（25岁，起初被贺宽指使送烟送礼，后成闻棠的取证帮手）；管网所所长（只作为决策者出现）。核心冲突：师徒情义与职业操守的对撞，闻棠必须在证据与旧恩之间做出选择。\\n\\n",
+  "sourceProjectId": "听漏记-自动0144-e57dfb",
+  "sourceSnapshotSHA256": "27f0d921fbf84527d244c61a725c97469e61f28dffed38f89c738888cbd95141",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

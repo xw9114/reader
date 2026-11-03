@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-af2ddc65df82c386",
+  "readerId": "novel-studio-af2ddc65df82c386",
+  "title": "一秤千钧",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2420,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "阮叙耕",
+  "synopsis": "阮叙耕的检定结果直接决定市场摊主的秤能否继续用。他较真，二十九天里接连检出一批\"隔夜回零\"的可疑秤——送检时准、回到摊位就被遥控短斤缺两，缺量手法指向同一批预装芯片。他要查明作弊秤的进货源头并坐实证据，代价是与市场管理方、秤具经销商的正面冲突、检定站内部有人劝他\"周期检定过了就别多事\"，以及一位受他停用处罚的老摊主上门求情的道德压力。",
+  "sourceProjectId": "一秤千钧-自动0156-09711c",
+  "sourceSnapshotSHA256": "7da6b18523607df81214755a85534e272226db9bb2d522535886ff65610d2e55",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

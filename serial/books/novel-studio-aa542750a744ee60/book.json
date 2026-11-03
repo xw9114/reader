@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-aa542750a744ee60",
+  "readerId": "novel-studio-aa542750a744ee60",
+  "title": "凸点第九行",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2446,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "柯见棠",
+  "synopsis": "分社新上任的年轻负责人桑迟推行『机器转换加抽查』改革，认定人工逐点校对成本过高，要在教材重印项目上试点全面软件转换、人工只抽检百分之十；与此同时，盲童家长联名反映上一季语文课本摸起来『别扭』，盲校数学老师顾聿昭（低视力，柯见棠盲校任教时的旧同事）带来一本被学生摸破的旧课本，指出多处公式层级错误导致全班做题全错。柯见棠的欲望：在改革落地前，用可核实的证据证明机器转换在数学符号上系统性出错，保住盲童课本的最后一道人工关口。代价：桑迟是当年力排众议把她从盲校借调进分社的恩人，改革背后是分社连年亏损、上级要求减员的真实压力；她若坚持全程人工校对，等于亲手把三个同事里的两个推向转岗。她必须主动提出第三条路：用错误清单倒逼软件厂商修符号库，让机器做初排、人做符号专项校——这要求她在八十天里独立复核四百页盲文校样，同时学会把她二十年靠指尖和信任维系的手艺，翻译成采购谈判桌上的条款。",
+  "sourceProjectId": "凸点第九行-自动0192-3ee879",
+  "sourceSnapshotSHA256": "628ecda9990d794935f9b08f0886c973c546823e32dadd12f0c33b94846a0b7f",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

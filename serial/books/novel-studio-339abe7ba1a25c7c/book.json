@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-339abe7ba1a25c7c",
+  "readerId": "novel-studio-339abe7ba1a25c7c",
+  "title": "偏航三百米",
+  "platform": "tomato",
+  "genre": "sci-fi",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2481,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "轻科幻"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材",
+      "职业成长"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "师徒情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "齐述舸",
+  "synopsis": "云锦里小区上空第十七航段近一个月内投诉激增，系统后台却显示航线执行率百分之百。齐述舸实地复飞发现，无人机经过小区东南角时实际航迹向南偏出约三百米，绕了一个系统里根本不存在的弧。他的核心欲望是查清偏航原因、把十七航段的备案航路与实际航迹对上；代价是这套手抄底账与系统数据的长期分歧将公开，可能坐实他『不信任系统』的名声，而偏航背后牵扯的利益方随时能让复核员岗位整编消失。",
+  "sourceProjectId": "偏航三百米-自动0105-d60656",
+  "sourceSnapshotSHA256": "61587ece4b70ac5f4d92d923aa6fe3548ee60ac1e343ee2508abc93bcaf9d1a7",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

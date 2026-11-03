@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-438440b8d67964da",
+  "readerId": "novel-studio-438440b8d67964da",
+  "title": "一寸经纬",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2422,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "樊素笺",
+  "synopsis": "明线是经营之战——樊素笺白天守柜台，夜里接佟桂芝转来的私活养账面，带穆春穗把『隐形织补』做成招牌，收费按破洞经纬难易分档，还在花市街服装摊上揽下整批的售后织补；暗线是布料之疑——樊素笱发现店里代客染整和承接团体制服修补用的几批呢料手感不对：标着纯毛的呢子，捻线时毛糙感发滑。她翻自己的底账，逐件回访，把用这批料做的制服补处留样贴账，又在一次送检中让顾松年做了纤维含量检验，查出三批『纯毛呢』实为化纤含量超标的混纺，进价却按纯毛结算——是贺川声从个体布商柴记手里吃的回扣，账走的是转岗分流的『清仓处理』名目。关键证据可核实：检验存根、进货发票副本、樊素笺底账中逐件留样与日期、穆春穗无意抄下的过磅码单。",
+  "sourceProjectId": "一寸经纬-自动0078-371ae8",
+  "sourceSnapshotSHA256": "77fcae38caee008b3caefb70f15fd65c8bc33f6e4096e2086ec7a352e245fcd6",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

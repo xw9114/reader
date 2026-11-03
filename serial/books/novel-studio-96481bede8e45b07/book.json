@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-96481bede8e45b07",
+  "readerId": "novel-studio-96481bede8e45b07",
+  "title": "一衣一单",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2496,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "覃素筠",
+  "synopsis": "覃素筠想让二十多年的去渍手艺在承包年代体面地活下去，代价是放弃安稳工资、以个人名义担保承包洗染柜，并在与阎立德的旧日情分和真相之间做出选择。",
+  "sourceProjectId": "一衣一单-自动0193-84bec1",
+  "sourceSnapshotSHA256": "78d3bce3cf95a54bd24fcfa23723191d6fd1c61f7eadea7f8c2f8c4734632db7",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

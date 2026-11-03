@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-2bc4c2dd5ef92078",
+  "readerId": "novel-studio-2bc4c2dd5ef92078",
+  "title": "回弹值",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2396,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "荀郓",
+  "synopsis": "荀郓想要一份真实、能让自己签字负责的检测结论；代价是若坚持如实判定，将断送老工友米照邡的工程款、牵连恩师魏呈阙的接单渠道，甚至砸掉自己饭碗。他必须在签字与真相之间做出选择。",
+  "sourceProjectId": "回弹值-自动0126-9a362b",
+  "sourceSnapshotSHA256": "1449efeb1f04c2dcf8e52ac623f8e2b36d95e660e4b43ae560879187dcb21bb9",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

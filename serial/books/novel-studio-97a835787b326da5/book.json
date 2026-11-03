@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-97a835787b326da5",
+  "readerId": "novel-studio-97a835787b326da5",
+  "title": "云底欠量",
+  "platform": "tomato",
+  "genre": "sci-fi",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2392,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "轻科幻"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材",
+      "职业成长"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "师徒情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "祁昭",
+  "synopsis": "祁昭想要让灌区在这三十天里等来一场真正下到地里的透雨，她坚信自己读云的判断而怀疑AI给出的『窗口内云体不达标、禁止作业』的判定；代价是，若违令作业，她将被吊销作业指挥证——那是她熬了九年才拿到、也是她全部职业身份的凭证。",
+  "sourceProjectId": "云底欠量-自动0110-3d939d",
+  "sourceSnapshotSHA256": "9a35593f061eeb86e77653e9c20c024992da59c77cf0dc03d5b6116cc6cc7e19",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

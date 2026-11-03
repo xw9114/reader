@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-9fa4f916c39f3cfc",
+  "readerId": "novel-studio-9fa4f916c39f3cfc",
+  "title": "十八层的准点",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2460,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "裴照雪",
+  "synopsis": "第1天，栖霞里8号楼那台服役十九年的老电梯深夜困人四十分钟，孕妇受惊送医，业主群炸锅，物业公司借机提出把维保合同转给报价更低的新公司，并暗示『女技工深夜救援不力』。裴照雪到场时发现制动器闸瓦间隙正常、门锁回路完好，但限速器棘爪上有一道不属于正常磨耗的新鲜锉痕——困人原因指向人为破坏或前一家整改公司遗留的隐患。核心欲望：五十天内查清8号楼电梯故障的真正原因、洗清自己『维保不力』的责任，并在合同招标前拿下她维保生涯第一次独立带组的钢丝绳更换大修工程——此前这类大修一直由部长指定男班组做，她的资质够了三年却从未被派过。代价：追查真相会得罪正在竞标的新公司、动摇物业与公司高层的合作关系；若坚持更换钢丝绳，成本上升可能让公司主动弃标；她想不通的还有师傅临退休时那句没说完的话。",
+  "sourceProjectId": "十八层的准点-自动0057-aeb5e0",
+  "sourceSnapshotSHA256": "77411b58520fbe1a69d1347b41ec8d275740517d2454b2b8f5f709600876573a",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

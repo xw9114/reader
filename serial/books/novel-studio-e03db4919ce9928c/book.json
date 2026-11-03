@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-e03db4919ce9928c",
+  "readerId": "novel-studio-e03db4919ce9928c",
+  "title": "信号红灯之后",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2452,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "程霜序",
+  "synopsis": "白露过后第七天，雨还没有停的意思。\n\n浔川的雨一下起来就不讲道理，整座城市泡在水里，连地下三十米的三号线隧道里都透着一股潮气。程霜序坐在驾驶室，指腹搭在牵引手柄上，推到位的那半秒，车体顿挫的轻重顺着掌心传上来，均匀，干净，像一句说得很稳的话。她开了两年车，十二名司机里只有她一个女的，也只有她会跟一列车说话，用耳朵和手。\n\n过弯。轮轨挤压声从车底升起来，松紧合适。她的手略松了一分。\n\n底账在工具包里，等这趟末班车回场，她要添上今天的第六行。车次、发车时分、门夹物次数、制动反应手感，一趟一行，从不间断。公司行车日志只记该记的，她这本手抄的，记的是日志上装不下的东西。账是从秦师傅手里传下来的。师傅如今在车辆段场内调车，见了她只点头，话比信号灯还省。两年前他被调离驾驶台，原因没人说得清。",
+  "sourceProjectId": "信号红灯之后-自动0112-4d4d78",
+  "sourceSnapshotSHA256": "3b593e85753151d5e6b846ec5d70a5dff2727bc32fb9650a7a2b8c2fa6835442",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "approved-manuscript-excerpt"
+}

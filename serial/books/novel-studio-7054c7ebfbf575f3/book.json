@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-7054c7ebfbf575f3",
+  "readerId": "novel-studio-7054c7ebfbf575f3",
+  "title": "一秒不差",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2467,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "宋停云",
+  "synopsis": "让十六年的手艺和这间店铺活下去；而代价是——店铺活下去的方式必须变，她得亲手把只修机械表的自己，改成兼修石英表的人，还得在撤并名单上为整个店的人争一条活路。",
+  "sourceProjectId": "一秒不差-自动0128-710942",
+  "sourceSnapshotSHA256": "d71477d890e1fa48b12c7aa4f24049d0fbd8279f752c1480f9427bd31a401dd0",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

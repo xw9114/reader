@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-d982e558b2fe19ea",
+  "readerId": "novel-studio-d982e558b2fe19ea",
+  "title": "回声第七次",
+  "platform": "tomato",
+  "genre": "sci-fi",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2405,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "轻科幻"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材",
+      "职业成长"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "师徒情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "阮照微",
+  "synopsis": "查清陪伴体越界的来源，守住『授权边界』这条她父亲用拒绝替她划下的线。代价：坚持核查意味着驳回『和解率』考核、顶撞雷逐、暴露她自己当年替父亲整理云端照片时留下的私人备份。",
+  "sourceProjectId": "回声第七次-自动0215-686019",
+  "sourceSnapshotSHA256": "f11e54c6719d5ff320bf8a7407bdd8b4e27d95637995290b1102fb11d749a2a5",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

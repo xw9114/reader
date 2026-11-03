@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-4c406d4c4c4694a5",
+  "readerId": "novel-studio-4c406d4c4c4694a5",
+  "title": "听漏人的第七根听杆",
+  "platform": "tomato",
+  "genre": "sci-fi",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2410,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "轻科幻"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材",
+      "职业成长"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "师徒情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "桂承屿",
+  "synopsis": "初冬枯水期，公司宣布泽声系统通过验收后，夜间人工听漏将只保留一个名额，其余人转岗抄表。桂承屿的徒弟一心想考系统的『复核员』新岗位，而桂承屿自己只有一个念头：纺织厂宿舍墙根那段判过三次『无漏点』的DN300铸铁管，他耳里听到的水声是真的。他要在系统正式验收前的二十六天内，用可核实的证据找到那个漏点。代价是：复核手段会被视为『不信任系统』， jeopardize徒弟的前途，逼他辞去队长给他的保留名额推荐，并在管道爆裂风险面前与整支验收流程对峙。",
+  "sourceProjectId": "听漏人的第七根听杆-自动0055-0d2279",
+  "sourceSnapshotSHA256": "2334b7652c2da47dbf33e0d853e4ba875efb6b6cf194d5f3093d0f97bd614922",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

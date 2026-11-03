@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-b2d98b582030ba1f",
+  "readerId": "novel-studio-b2d98b582030ba1f",
+  "title": "半月检的签字",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2417,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "郑守拙",
+  "synopsis": "第1天，枫树里11号楼电梯发生困人，被困的正是贺秀贞，救援时郑守拙亲手拆开制动器，发现闸瓦磨损早已超标，但系统里近三个月的半月检记录全部显示『制动器间隙合格』，签字栏里有他自己的名字——可这三个月他一直在跑别的片区，一次都没来过11号楼。手抄底账也被人撕走了两页。他要在十八天后特检院对11号楼电梯作出结论之前，查清记录是谁冒他名义填的、为什么唯独11号楼连续漏检，并把真实的隐患证据交上去，让全小区十四台同型号电梯得到整改。代价是：恒升公司正是他签了无固定期限合同、还差一年就能考检验师资格的单位，撕开造假等于亲手砸掉饭碗；冒名者一旦坐实，他若说不清底账缺页，第一个被怀疑的就是他本人。",
+  "sourceProjectId": "半月检的签字-自动0036-d268ec",
+  "sourceSnapshotSHA256": "b4157d83689b5bd8ef4d4da27f7e5d2f167600b7734e1ec0edb4addb45e38cb0",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

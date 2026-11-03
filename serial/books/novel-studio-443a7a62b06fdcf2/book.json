@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-443a7a62b06fdcf2",
+  "readerId": "novel-studio-443a7a62b06fdcf2",
+  "title": "刻刀与原子印",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2445,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "齐砚农",
+  "synopsis": "守住手工刻章这门手艺的体面与刻字社的招牌，在原子印章与个体摊的双重夹击下让社里活下去；他付出的代价是必须放下『国营老师傅不下海』的架子，学着给个体摊修机器、教徒弟做新工艺，甚至承认自己一刀一刀刻的方章，在『立等可取』面前贵得没有道理。",
+  "sourceProjectId": "刻刀与原子印-自动0118-fa879f",
+  "sourceSnapshotSHA256": "ae4ea4d9c0bdcbea9c98cf72170b42d237d7b6cf47b1099e45845eb9a36eaea0",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

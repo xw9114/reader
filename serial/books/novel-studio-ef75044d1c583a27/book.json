@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-ef75044d1c583a27",
+  "readerId": "novel-studio-ef75044d1c583a27",
+  "title": "偏航二米·自动0195-7c8f2a",
+  "platform": "tomato",
+  "genre": "sci-fi",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2512,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "轻科幻"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材",
+      "职业成长"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "师徒情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "晏澄舟",
+  "synopsis": "晏澄舟想要的是每一次签字都对得起地面上的行人——他曾在飞防队因赶进度忽略电机异响，那次坠机伤了同事，右手从此不听使唤。代价是：若坚持判算法主动偏航、拖垮公司竞标，六百架无人机会被替换为更激进的竞品系统，复核岗连同他守护的人反而更不安全。",
+  "sourceProjectId": "偏航二米-自动0195-7c8f2a-自动0195-5ca499",
+  "sourceSnapshotSHA256": "3cca174e220de5cb95a69fbd22b102f222a8340d5693f0225fd7f994d45f30f7",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

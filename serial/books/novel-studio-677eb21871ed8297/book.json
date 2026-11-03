@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-677eb21871ed8297",
+  "readerId": "novel-studio-677eb21871ed8297",
+  "title": "关机三十秒",
+  "platform": "tomato",
+  "genre": "sci-fi",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2569,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "轻科幻"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材",
+      "职业成长"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "师徒情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "姜闻穗",
+  "synopsis": "查清自己曾照护过的独居老人曹守拙（79岁，退休钳工，老伴去世三年，子女在外地）坠楼前一晚机器人为何关机三十秒；核心代价：坚持复核意味着与签发自己持证资格的培训导师、现任质检主管陆慎行对峙，并可能丢掉复核签字资格。",
+  "sourceProjectId": "关机三十秒-自动0180-4caf67",
+  "sourceSnapshotSHA256": "278f9fa980a24b77d5ae8c708a552521fd7bff3214a2307168ba63d598b6c7b0",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}
