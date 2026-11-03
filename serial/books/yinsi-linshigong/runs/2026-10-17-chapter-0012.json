@@ -10,8 +10,8 @@
   "platforms": {
     "fanqie": {
       "status": "failed",
-      "error": "等待草稿同步到云端超时",
-      "updatedAt": "2026-11-03T01:16:04.109Z"
+      "error": "未能在草稿箱中确认本章草稿已保存",
+      "updatedAt": "2026-11-03T15:19:04.388Z"
     },
     "qimao": {
       "status": "skipped",
