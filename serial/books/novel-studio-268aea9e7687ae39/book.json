@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-268aea9e7687ae39",
+  "readerId": "novel-studio-268aea9e7687ae39",
+  "title": "彩缝三毫",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2418,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "盛聆秋",
+  "synopsis": "栖霞观藻井彩画评审中，主张『落架重绘、焕然一新』的旅游开发方与主张『最小干预』的文保评审僵持不下，重绘方案意味着工期能赶上暑期开放，盛聆秋却在一处脱色的团龙衬底里发现了不合官式的笔路——那不是匠人随手，而是有意为之的私人记号。她的核心欲望：证明这方藻井的原始彩画出自一位民国年间被历史抹去姓名的女画师之手，让它按原样补绘并留下题名；代价：站在工期的对立面，得罪急于交付的公司、动摇自己在班里的立足之地，并被迫直面自己婚姻里那段『被要求擦掉重来』的旧伤。",
+  "sourceProjectId": "彩缝三毫-自动0212-c9fb84",
+  "sourceSnapshotSHA256": "8855de7b9c19396b5d372715b4f82a4787cf4da4a3f74419e184d27ebb471ce9",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-e994dc3d047b93ca",
+  "readerId": "novel-studio-e994dc3d047b93ca",
+  "title": "律管无声",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2524,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "闻叙白",
+  "synopsis": "音乐学院老教授云岫声委托闻叙白鉴定一架据称是1930年代德国名厂制造的三角钢琴，声称要捐给校庆作镇馆之琴。鉴定中闻叙白发现琴体编号与弦列数据不符——高音区弦的规格档案显示这架琴曾被人整体换过音板与弦轴板，时间不早于十五年前，与『原装老琴』的说法矛盾。他出具保留意见后，压力接踵而至：琴的来源方是一家正与学院谈合作的琴行老板金砚舟，他暗示鉴定书关系工作室下半年的全部生意；云教授的弟子、青年调律师柳望舒也劝他『老教授一生清誉，何必较真』。闻叙白的舅舅生前留下的一册手抄修琴底账里，恰好有一页十五年前同名琴号的修复记录，被撕去了半页。",
+  "sourceProjectId": "律管无声-自动0149-a8e8de",
+  "sourceSnapshotSHA256": "04f1e2d996733966036e9c09252b42163cd3c16742b65b27f148f239402c8881",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

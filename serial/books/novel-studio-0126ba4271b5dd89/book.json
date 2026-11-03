@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-0126ba4271b5dd89",
+  "readerId": "novel-studio-0126ba4271b5dd89",
+  "title": "字肩上的墨",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2484,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "韩霁青",
+  "synopsis": "一九九二年四月十七日，洹川印刷厂东跨院的墙头刚刷过白灰，崭新的铜牌挂上了激光照排车间的门框。红绸子剪断那一刻，照相机的闪光灯亮了。韩霁青站在人群后排，前排有人低声说，这机器是从省城托关系才批下来的，一台抵半条生产线。\n\n屠砚洲站在台阶上讲话。他四十五岁，中山装的风纪扣系得齐整，讲话前先把稿纸对折，再对折。他说厂里告别了铅与火，迎来了光与电；排字车间这类落后产能，年底前撤并，人员另行安排。掌声响起来的时候，韩霁青也跟着抬了抬手，掌心却没碰上另一只掌心。她手里攥着排字手托，铁质的托沿被二十一年的汗浸得发亮。指尖抵在无名指根的旧茧上，那是常年抵字肩磨出来的。风从东跨院的门洞里穿过来，那茧头一回发冷。\n\n散会后她没走，隔着院子看了一眼照排车间的玻璃窗。一个穿白球鞋的年轻人俯身在屏幕前调试什么，听人说是新来的技术员，姓邵，省城大学计算机专业毕业。屏幕上绿莹莹的字一闪一闪，像水底的光。",
+  "sourceProjectId": "字肩上的墨-自动0108-c88965",
+  "sourceSnapshotSHA256": "5c0d793fdf5367aeebd7c1b6c4e34dee7aefbcaaf953294d1ef2c87d212f7848",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "approved-manuscript-excerpt"
+}

@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-4d1d3e90a5725f53",
+  "readerId": "novel-studio-4d1d3e90a5725f53",
+  "title": "方寸铁笔",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2425,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "严琢如",
+  "synopsis": "严琢如想保住刻字社公章刻制的信誉，并亲手拿下刻章柜台的承包；代价是他要抵押修笔柜台多年攒下的积蓄抵作风险押金，独自扛起淡季亏空，还顶着徒弟离心、同行断路的压力——他坚持的备案底账，在旁人眼里是拖慢生意的老规矩。",
+  "sourceProjectId": "方寸铁笔-自动0173-1dcd46",
+  "sourceSnapshotSHA256": "e9501195717bdb81d65851354fa5aa96eebfbcb8804056507672fce98cbb9513",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-71ae9c206412efcf",
+  "readerId": "novel-studio-71ae9c206412efcf",
+  "title": "显影之前",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2579,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "蒲静山",
+  "synopsis": "蒲静山想在承包年代守住照相馆和修版手艺，让手工精放和老照片翻新证明价值；代价是他必须放弃‘靠单位兜底’的安全，抵押自家住房接下承包，并在姚克俭出事时决定是落井下石还是伸手——翻出1989年的旧案意味着揭开师父最疼的一块伤疤。全书的经营线靠具体选择推进：买不买二手彩扩机、接不接纺织厂退休职工组团翻修五十年代劳模合影的大单、留不留想跳槽的徒弟、联营还是吞并。",
+  "sourceProjectId": "显影之前-自动0133-d0bf9e",
+  "sourceSnapshotSHA256": "c784fcbbb7f8aa91459f5c368392d51666a0d180d88ca7bfe3e38fd914ee15e1",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

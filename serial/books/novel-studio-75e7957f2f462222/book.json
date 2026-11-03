@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-75e7957f2f462222",
+  "readerId": "novel-studio-75e7957f2f462222",
+  "title": "显影一寸半",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2504,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "宁照白",
+  "synopsis": "其一，南方经销处运来的彩色扩印机要占掉他的暗房，馆长梅叙庚施压他转岗学彩扩，且彩扩机到货后发现药液配比与厂方标称不符，首批顾客的集体彩照偏色发灰，馆里面临承包后第一笔巨额赔偿，宁照白凭底片密度反推出是经销商掺了过期套药，靠留样底片与显影试条比对坐实证据；其二，个体影楼老板申屠虹低价挖他，开的条件是放弃国营身份，妻子力主他去，女儿学校要缴赞助费的当口，他动摇过；其三，市里一位老主顾、退休中学教师历年年照皆出自他手，老人今年病重，最后一张照片在他手里放大时底片折了一道印，他必须凭修版手艺补出那道痕。",
+  "sourceProjectId": "显影一寸半-自动0208-75225a",
+  "sourceSnapshotSHA256": "dc28a1140fc6d9215eeb484920bf4898d5d39bf129d26d3abc5643ec272c5066",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

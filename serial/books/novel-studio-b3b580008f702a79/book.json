@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-b3b580008f702a79",
+  "readerId": "novel-studio-b3b580008f702a79",
+  "title": "夜间最小流量",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2357,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "舒聿澄",
+  "synopsis": "城北梧桐埂片区连续三个月夜间最小流量异常偏高，DMA分区计量显示每小时多流失近四十立方米水，但舒聿澄带人听了十九夜，一段一段排查，主管、支管、阀门、消火栓全部听不出漏点；同期片区内一家名为宏晏生物制品的公司新厂区投产，自装了一路DN150的专管，申请的是工业用水低价水价。核心欲望：舒聿澄要在公司按『不可解释漏损』核销、片区水价听证会被舆论推着走之前，用可核实的证据找到水的真实去向，守住自己十一年听漏底账从没记过错一行的名声。代价：越查越接近真相，越要在『保住饭碗』与『签字说真话』之间做选择——分管副经理暗示他按漏损核销了事，因为宏晏是区里重点招商项目。",
+  "sourceProjectId": "夜间最小流量-自动0121-a8210c",
+  "sourceSnapshotSHA256": "8864a91fdd5f79b226b833d08119eb869139b6c908fe61c158088f0258170ddd",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

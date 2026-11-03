@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-770620cb7ae442aa",
+  "readerId": "novel-studio-770620cb7ae442aa",
+  "title": "层门之间",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2340,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "闻采芜",
+  "synopsis": "谷雨这天的雨，从傍晚下起，到夜里九点，已经没了分寸。\n\n闻采芜骑着那辆旧电动车冲进雨幕时，雨衣帽子被风掀翻两次。手机在口袋里还烫着，调度电话里的声音言犹在耳：老城槐安里回迁楼，三号楼那台老电梯，困人，一位老人。师傅宋叙岐今晚陪床，丈母娘住院，班组值班表上轮到的人家里孩子发烧。顶下这一班，就顶下一份人情，一份说不清的账。她把电动车拧到底，还是去了。\n\n顶班是她的常态。三年了，从递扳手、清轿顶、扫底坑的跟班做起，扫到班组里谁也不好意思再把她当跟班。六个人的维保一部，三十四台老旧住宅电梯的责任区，她是唯一的女人，也是唯一一个把每一台电梯的半月检日期背得比生日还熟的人。再有两个月，季度工单评审，通过了，她就能独立签单，不用再让自己的每一笔记录挂在宋叙岐的签名底下，还能申报检验员助理。签字即担责，她懂，但她要的就是这个责。\n\n槐安里三号楼的楼道灯坏了两盏。",
+  "sourceProjectId": "层门之间-自动0167-73438d",
+  "sourceSnapshotSHA256": "d12459d88b4ab027b1ddb7e28040d6596203e9a1fc3ed20547c871d16abea6f8",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "approved-manuscript-excerpt"
+}

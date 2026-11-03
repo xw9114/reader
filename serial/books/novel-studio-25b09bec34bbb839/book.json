@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-25b09bec34bbb839",
+  "readerId": "novel-studio-25b09bec34bbb839",
+  "title": "支座无声",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2474,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "邵闻汀",
+  "synopsis": "邵闻汀想在复查中把柳汀大桥三分之二桥墩支座剪切变形超限的问题如实上报，推动限期更换；但如实上报意味着检测中心此前三年的合格结论全部被推翻，费简桐的签字资质与她自己的职业前途都将被牵连。时间跨度为霜降后二十五天。",
+  "sourceProjectId": "支座无声-自动0164-3311fa",
+  "sourceSnapshotSHA256": "1824fe9640441046ed62244a6c2e3e611a71969c661d4da5fca239b00d676624",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-01ac452d88ba61ee",
+  "readerId": "novel-studio-01ac452d88ba61ee",
+  "title": "末端试水",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2400,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "岑叙潮",
+  "synopsis": "岑叙潮要证明澜汀苑六号楼的喷淋系统检测数据被人为调换、他签下的合格报告背后另有真相，还倪家一个清白；代价是他可能被吊销检测资格、连累公司资质，并被迫与恩师鲁定铎对峙。",
+  "sourceProjectId": "末端试水-自动0151-4d2674",
+  "sourceSnapshotSHA256": "97e3e5bf934783d906b627d511c72f06fa2d2b43358ebfc2053541f01d37bbb6",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

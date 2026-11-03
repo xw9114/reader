@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-2725a19ed78734f0",
+  "readerId": "novel-studio-2725a19ed78734f0",
+  "title": "引水十三浬",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2323,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "钟潮生",
+  "synopsis": "在台风季来临前独立完成一次夜航引水，拿到正式派遣资格；代价是她必须在「听话执行站里安排」与「坚持自己对航道一处浅点的判断」之间做出选择，选错任何一头都可能断送引航生涯，甚至搭上一船人的命。",
+  "sourceProjectId": "引水十三浬-自动0197-dc6709",
+  "sourceSnapshotSHA256": "d60fc5be1a168cd9ad17c66fa247413a5adf8c99ffea0dfc1a8ff6fad29b6729",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

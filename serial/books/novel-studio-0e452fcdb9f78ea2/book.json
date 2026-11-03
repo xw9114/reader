@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-0e452fcdb9f78ea2",
+  "readerId": "novel-studio-0e452fcdb9f78ea2",
+  "title": "最后一场雪的仪式师",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2390,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "江照雪",
+  "synopsis": "市里开展城郊'散乱污'小作坊整治，宁泊市市场监管局接到三起匿名投诉，指善终馆'无证火化、污染扰民'，馆面临查封，二十天内要么补办环评与火化设备手续、要么关门搬迁；江照雪要保住这家馆，让街坊的猫狗走得体面，也要赶在师傅复查回来前查清三起投诉是谁递的、凭的是什么。代价是她必须抵押自己准备结婚用的积蓄垫付设备改造和检测费，婚期可能推迟，未婚夫的态度也在经受考验；而查下去，她发现投诉附的照片里，有一张拍的是她三年前亲手操办却从未对外透露细节的一场告别仪式——举报人对馆内情况了如指掌。",
+  "sourceProjectId": "最后一场雪的仪式师-自动0019-94b2a9",
+  "sourceSnapshotSHA256": "e0f80576b806b595286ff00d21a81c56384317f91c404cdb011a0f26d4dec7b2",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

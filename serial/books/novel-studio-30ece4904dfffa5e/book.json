@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-30ece4904dfffa5e",
+  "readerId": "novel-studio-30ece4904dfffa5e",
+  "title": "推剪春秋",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2440,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "佟秀蓝",
+  "synopsis": "佟秀蓝要保住跃进店这块三十年老招牌，让班组在承包制下活得体面；代价是她必须查清八年前姜绫被除名一案的真相——不查，姜绫与跃进店势同水火，街面上客源之争演变成互相压价、谣言互泼，两败俱伤；查到底，则可能牵出方守拙当年经手的一笔进货账，动了自己的顶头上司，也动摇她最看重的师徒情分。",
+  "sourceProjectId": "推剪春秋-自动0138-7a1592",
+  "sourceSnapshotSHA256": "ebc23a32a28bef57dea19e758280b98817a5c88d6b63c7d0afb84a9da1788a52",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

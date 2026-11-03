@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-c25c59d434c419b4",
+  "readerId": "novel-studio-c25c59d434c419b4",
+  "title": "晒足一百八十天",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2328,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "温叙禾",
+  "synopsis": "温叙禾想在秋分前晒出父亲手上那锅\"压得住舌头三天\"的头道原油，证明露天古法在当代仍有活路；代价是她必须顶着家族分家压力、资金断链与自己手艺与父亲差着\"最后半分火候\"的怀疑。故事核心冲突有三层：家族层面上她与温立丰围绕卖地与保晒场的对峙；技艺层面上她与父亲那半分说不清的差距；市场层面上冒牌\"古法\"产品正在败坏同丰号最后的名声。悬疑线靠可核实证据推进：温叙禾从底账里晒缸时间与出油量对不上的三口缸入手，逐页核对出近两年温立丰曾三次偷偷抽走原缸酱油掺兑出售，再由迟照蒲的检测报告与柏九斤铺里留样的购货瓶交叉印证，最终坐实冒牌货源头。",
+  "sourceProjectId": "晒足一百八十天-自动0122-2c9d60",
+  "sourceSnapshotSHA256": "33e35b67b5e6ed4fad235802b9cf3429250ce2881f1417beb473ea8f2238b5d2",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

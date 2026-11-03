@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-51ea7b9cf805e8a1",
+  "readerId": "novel-studio-51ea7b9cf805e8a1",
+  "title": "打劫留谱",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2428,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "迟蘅芜",
+  "synopsis": "迟蘅芜要让应小满凭实力打进定段赛预选，并守住钟朴山留下的训练册制度；代价是她必须直面自己当年冲段失败背后的隐情，并可能得罪掌握她续聘权的武峻声。",
+  "sourceProjectId": "打劫留谱-自动0152-2e8ccf",
+  "sourceSnapshotSHA256": "f898dbe39aca2857830d4c924684bbe083ed1ff185e08b26edd398cb8af17ce0",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

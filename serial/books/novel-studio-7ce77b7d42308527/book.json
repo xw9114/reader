@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-7ce77b7d42308527",
+  "readerId": "novel-studio-7ce77b7d42308527",
+  "title": "差二两",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2417,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "岑照禾",
+  "synopsis": "寒露后第三天，天亮得比前些日子迟。流动检定车拐进泺西农贸市集后巷，岑照禾呵出的气在车窗上凝了一小片白。\n\n市集还没开业。卷帘门拉起一半，里面新铺的水磨石地面泛着潮气，混着石灰味和刚拆箱的塑料味。三百多个摊位空着大半，统一配发的电子计价秤一台台摆上台面，白色塑壳，红色数码管，崭新得晃眼。\n\n岑照禾把检定装置从车上卸下来，砝码箱搁在推车上一层，二十公斤的、五公斤的、一公斤的、五百克的，按序排开。她干这行第七年，前三年在衡器厂装配线上拧传感器、调主板，成箱的电阻和焊点过手，摸得出一块称重传感器是紧还是虚；后来考进所里，跟着吴厚德从搬砝码、贴铅封学起。老师傅常说，检定员的本事一半在手上，一半在耳朵上。砝码落盘那一瞬，数字跳上去、晃两晃、稳住，这个过程里藏着秤的脾气。传感器老了，回稳就拖泥带水；被人动过手脚的，迟滞里有种说不出的贼。\n\n她从市场东侧第一台开始。",
+  "sourceProjectId": "差二两-自动0184-1c5a51",
+  "sourceSnapshotSHA256": "2dd301ccdc7af580cb78bc1c0bf73d8338bb2472d6d3168111a75e22da874c55",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "approved-manuscript-excerpt"
+}

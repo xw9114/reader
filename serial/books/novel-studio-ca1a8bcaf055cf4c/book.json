@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-ca1a8bcaf055cf4c",
+  "readerId": "novel-studio-ca1a8bcaf055cf4c",
+  "title": "慢半拍",
+  "platform": "tomato",
+  "genre": "sci-fi",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2503,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "轻科幻"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材",
+      "职业成长"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "师徒情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "纪酌然",
+  "synopsis": "纪酌然渴望被当作工程师而非被照顾的福利对象，并暗自渴望有朝一日自己站起来；而她一旦追查出真相并推翻官方结论，代价是承保方可能撤保、全市租赁项目崩塌，三千人的行走可能被她亲手收回，公司还会以她个人装配名额的加速审批作礼物兼封口。悬疑全部建立在可核实证据上：六名申诉人日志中形态完全相同的0.4秒助力力矩凹陷；申诉时间点密集聚在某个凌晨两点的一次静默推送之后；展示厅样机仍运行旧版固件、过门槛毫无迟滞的高速摄影逐帧对比；退回机黑匣子原始介质显示力矩下跌先于抬脚，即机器先动手而非响应。",
+  "sourceProjectId": "慢半拍-自动0200-e3ddd6",
+  "sourceSnapshotSHA256": "82e92049ad81fcf3c283d082dd6c79424404fcb4607be2e70bca8cdcabac6240",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

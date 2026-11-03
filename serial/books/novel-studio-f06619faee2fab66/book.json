@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-f06619faee2fab66",
+  "readerId": "novel-studio-f06619faee2fab66",
+  "title": "弦轴上的旧痕",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2398,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "沈枕澜",
+  "synopsis": "沈枕澜想守住十一年来每一张验收单的公信力，又不愿失去雅声琴行这份养活工作室的生计；她必须在展演前查明真相并决定是否签字，代价是与最大客户决裂、被威胁起诉、短期收入断流。",
+  "sourceProjectId": "弦轴上的旧痕-自动0089-0238b0",
+  "sourceSnapshotSHA256": "cf7fc61cf5943cf4a18cbab28f8a250f9bd9265562f8006ed276e5205b29ae40",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

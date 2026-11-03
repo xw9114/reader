@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-aa7c1444353cb358",
+  "readerId": "novel-studio-aa7c1444353cb358",
+  "title": "折射率之外",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2586,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "沈照微",
+  "synopsis": "查清调包发生在哪个环节，守住自己签字的每一张证书。代价：调查指向收样窗口，孔晚杏是她一手带出的徒弟；而薛东流的翠澜珠宝趁势施压，扬言若中心『连自己样品都管不住』就撤单换机构，贺承砚要求她把照片差异归为『拍摄光线问题』封口。沈照微必须在自己签字的公信力、徒弟的前途与中心的生存之间做选择。",
+  "sourceProjectId": "折射率之外-自动0109-8acb01",
+  "sourceSnapshotSHA256": "272af581323e6796cd2dc77765d0e07da68b2a9183f9b1bbfcef5c983105720a",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

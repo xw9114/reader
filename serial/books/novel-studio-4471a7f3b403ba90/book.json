@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-4471a7f3b403ba90",
+  "readerId": "novel-studio-4471a7f3b403ba90",
+  "title": "末端试水",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2428,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "应砚青",
+  "synopsis": "应砚青想要一份真实、经得起抽查的合格报告，好按期完成青芜广场年度检测并顺利休假去看病中的母亲；代价是若如实出具不合格报告，公司将丢掉青芜集团的连锁项目，她可能被调离检测岗，母亲的手术费也靠这份工作。她必须在职业操守与生计之间做出具体选择，并亲手推动查证。",
+  "sourceProjectId": "末端试水-自动0074-e19dee",
+  "sourceSnapshotSHA256": "828f950a86311f67dc47dd7e08c188baa243edece69e9f56172e328522a6a7e6",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

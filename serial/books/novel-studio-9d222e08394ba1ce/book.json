@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-9d222e08394ba1ce",
+  "readerId": "novel-studio-9d222e08394ba1ce",
+  "title": "拍卖钟上的第九度",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2573,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "乔问蘅",
+  "synopsis": "冬末开市首周，云溪花社连续十二批标注『冷库直出A级』的玫瑰在拍卖后不到两天就被花商投诉瓶插萎蔫，退货率陡升，花商联合要求拍卖中心说法。乔问蘅复检留样时察觉茎秆含水率与硬度的细微异常，但电子系统当日的定级照片与卡尺数据全部合格——问题出在采后环节的『两头称重、中间回温』：花社在预冷前称重、运输中让花回温吸水增重再复冷，花看着饱满，瓶插寿命已被暗中折损。她的手抄底账成为唯一能对出『同批花缺陷读数逐次漂移』的证据。",
+  "sourceProjectId": "拍卖钟上的第九度-自动0084-ca8a30",
+  "sourceSnapshotSHA256": "a77f21a904de0d7ca87b78a17449a9c84f68c5b5dbc7112e1cf781fce7cffb73",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

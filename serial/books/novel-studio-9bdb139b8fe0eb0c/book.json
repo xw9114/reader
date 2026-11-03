@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-9bdb139b8fe0eb0c",
+  "readerId": "novel-studio-9bdb139b8fe0eb0c",
+  "title": "接管零点四秒",
+  "platform": "tomato",
+  "genre": "sci-fi",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2456,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "轻科幻"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材",
+      "职业成长"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "师徒情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "祁望舒",
+  "synopsis": "祁望舒要在审计窗口关闭前证明邵一帆清白与系统误判真相；代价：改判将撕开公司节能策略与外包保养造假，签字即赌上自己的复核资质与四年前那零点四秒的心结。",
+  "sourceProjectId": "接管零点四秒-自动0185-c3ffa4",
+  "sourceSnapshotSHA256": "a738cfe467896a2d9e2241238200ea29cf28acc8fbf45825027610646d696e17",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

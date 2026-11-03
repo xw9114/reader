@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-f116542fd0c2f9a5",
+  "readerId": "novel-studio-f116542fd0c2f9a5",
+  "title": "字架上的缺字·自动0073",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2448,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "祁疏桐",
+  "synopsis": "祁疏桐的欲望很朴素——保住排字车间这门手艺和三十几号人的饭碗，让活字排版在照排机进厂前体面地走完最后一程。代价是：她必须违逆顶头上司贾慕坤、赌上自己十九年攒下的资历与转干名额，把一条查到底会伤人的线索一页页拼完整。",
+  "sourceProjectId": "字架上的缺字-自动0073-自动0073-b6ab09",
+  "sourceSnapshotSHA256": "177b65bf7de01ccbae5ac90f1ec79c230933f219351637eeca32245e53dcbb38",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}
