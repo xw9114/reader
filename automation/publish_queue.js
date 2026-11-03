@@ -317,6 +317,39 @@ async function fillChapterFanqie(page, chapter) {
   if (wantLen > 0 && bodyLen < wantLen * 0.9) {
     await fillTextControl(body, chapter.body);
   }
+  const actual = await body.evaluate(element => (element.innerText || "").replace(/\s/g, ""));
+  const expected = String(chapter.body || "").replace(/\s/g, "");
+  if (actual.normalize("NFC") !== expected.normalize("NFC")) throw new Error("编辑器正文与源稿不一致，已停止提交");
+}
+
+async function findFanqieChapterRow(page, chapter) {
+  const { number, title } = splitChapterTitle(chapter.title);
+  const seen = new Set();
+  for (let index = 0; index < 100; index += 1) {
+    const rows = await page.locator("tr").allInnerTexts();
+    const fingerprint = JSON.stringify(rows);
+    if (seen.has(fingerprint)) throw new Error("章节列表翻页未前进，状态不明确");
+    seen.add(fingerprint);
+    const match = await page.locator("tr").evaluateAll((elements, expected) => {
+      const compact = text => String(text).replace(/\s/g, "").normalize("NFC");
+      const found = elements.find(row => {
+        const text = row.innerText || "";
+        return compact(text).includes(compact(expected.title)) &&
+          (!expected.number || new RegExp("第\\s*" + expected.number + "\\s*章").test(text));
+      });
+      if (!found) return null;
+      const anchor = [...found.querySelectorAll("a[href]")].find(link => /\/publish\//.test(link.href));
+      return { text: found.innerText, editUrl: anchor ? anchor.href : null };
+    }, {number, title});
+    if (match) return match;
+    const next = page.locator(".arco-pagination-item-next:not(.arco-pagination-item-disabled)").first();
+    if (!(await next.count())) return null;
+    await next.click();
+    await page.waitForFunction(previous => JSON.stringify([...document.querySelectorAll("tr")].map(row => row.innerText)) !== previous,
+                               fingerprint, {timeout: 15000});
+    await page.waitForTimeout(500);
+  }
+  throw new Error("章节列表超过安全翻页上限，保留现场");
 }
 
 async function confirmFanqieDraftSaved(page, chapter) {
@@ -327,19 +360,29 @@ async function confirmFanqieDraftSaved(page, chapter) {
   let cloudSaved = false;
   while (Date.now() < deadline) {
     const text = await page.locator("body").innerText().catch(() => "");
-    if (/已保存到云端/.test(text)) { cloudSaved = true; break; }
+    if (/已保存到云端/.test(text.replace(/\s/g, ""))) { cloudSaved = true; break; }
     await page.waitForTimeout(2000);
   }
   if (!cloudSaved) throw new Error("等待草稿同步到云端超时");
   const match = page.url().match(/main\/writer\/(\d+)/);
-  if (!match) return "draft_saved";
+  if (!match) throw new Error("无法识别书籍ID，不能确认草稿云端状态");
   const checkPage = await page.context().newPage();
   try {
     for (let attempt = 0; attempt < 3; attempt += 1) {
       await checkPage.goto(`https://fanqienovel.com/main/writer/chapter-manage/${match[1]}?type=2`, { waitUntil: "domcontentloaded", timeout: 60000 });
       await checkPage.waitForTimeout(4000);
-      const text = await checkPage.locator("body").innerText().catch(() => "");
-      if (text.includes(title)) return "draft_saved";
+      const row = await findFanqieChapterRow(checkPage, chapter);
+      if (row && row.editUrl) {
+        await checkPage.goto(row.editUrl, {waitUntil:"domcontentloaded",timeout:60000});
+        await checkPage.waitForTimeout(4500);
+        const editor = await firstVisible(checkPage, ["[contenteditable=true]:not([data-placeholder*=有话说]):not([id*=message])", ".chapter-editor[contenteditable=true]", "[contenteditable=true]"]);
+        if (!editor) throw new Error("无法回读云端草稿正文");
+        const saved = await editor.evaluate(element => (element.innerText || "").replace(/\s/g, ""));
+        if (saved.normalize("NFC") !== String(chapter.body || "").replace(/\s/g, "").normalize("NFC")) {
+          throw new Error("云端草稿正文与源稿不一致，停止发布");
+        }
+        return "draft_saved";
+      }
       await checkPage.waitForTimeout(3000);
     }
   } finally {
@@ -355,21 +398,9 @@ async function findFanqieDraftEditUrl(page, chapter) {
   const finder = await page.context().newPage();
   try {
     await finder.goto(`https://fanqienovel.com/main/writer/chapter-manage/${match[1]}?type=2`, { waitUntil: "domcontentloaded", timeout: 60000 });
-    for (let pageIndex = 0; pageIndex < 5; pageIndex += 1) {
-      await finder.waitForTimeout(3500);
-      const foundUrl = await finder.evaluate((titleText) => {
-        const rows = [...document.querySelectorAll("tr")];
-        const row = rows.find((r) => r.innerText.includes(titleText));
-        if (!row) return null;
-        const anchor = [...row.querySelectorAll("a[href]")].find((a) => /\/publish\//.test(a.href));
-        return anchor ? anchor.href : null;
-      }, title);
-      if (foundUrl) return foundUrl;
-      const nextBtn = finder.locator("li.arco-pagination-item-next:not(.arco-pagination-item-disabled)").first();
-      if ((await nextBtn.count()) === 0) break;
-      await nextBtn.click().catch(() => {});
-    }
-    return null;
+    await finder.waitForTimeout(3500);
+    const row = await findFanqieChapterRow(finder, chapter);
+    return row ? row.editUrl : null;
   } finally {
     await finder.close().catch(() => {});
   }
@@ -390,14 +421,14 @@ async function publishFanqieChapter(page, chapter) {
   await page.waitForTimeout(4500);
   await dismissFanqieEditorOverlays(page);
   const bodyEditor = await firstVisible(page, ["[contenteditable=true]:not([data-placeholder*=有话说]):not([id*=message])", ".chapter-editor[contenteditable=true]", "[contenteditable=true]"]);
-  const currentBodyLen = bodyEditor
-    ? await bodyEditor.evaluate((element) => (element.innerText || "").replace(/\s/g, "").length).catch(() => 0)
-    : 0;
-  const targetBodyLen = String(chapter.body || "").replace(/\s/g, "").length;
-  if (targetBodyLen > 0 && currentBodyLen < targetBodyLen * 0.9) {
+  const currentBody = bodyEditor
+    ? await bodyEditor.evaluate((element) => (element.innerText || "").replace(/\s/g, "")).catch(() => "")
+    : "";
+  const targetBody = String(chapter.body || "").replace(/\s/g, "");
+  if (currentBody.normalize("NFC") !== targetBody.normalize("NFC")) {
     await fillChapter(page, "fanqie", chapter);
-    await confirmFanqieDraftSaved(page, chapter);
   }
+  await confirmFanqieDraftSaved(page, chapter);
   await page.getByRole("button", { name: /下一步/ }).first().click();
   let settingsSeen = false;
   for (let attempt = 0; attempt < 25; attempt += 1) {
@@ -432,14 +463,14 @@ async function publishFanqieChapter(page, chapter) {
   const bookMatch = editUrl.match(/main\/writer\/(\d+)/);
   await page.goto(`https://fanqienovel.com/main/writer/chapter-manage/${bookMatch[1]}`, { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.waitForTimeout(5000);
-  const listText = await page.locator("body").innerText().catch(() => "");
-  if (!listText.includes(title)) throw new Error("发布后未在章节列表中找到本章");
+  const publishedRow = await findFanqieChapterRow(page, chapter);
+  if (!publishedRow) throw new Error("发布后未在章节列表中找到本章");
   const draftCheck = await page.context().newPage();
   try {
     await draftCheck.goto(`https://fanqienovel.com/main/writer/chapter-manage/${bookMatch[1]}?type=2`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await draftCheck.waitForTimeout(4000);
-    const draftText = await draftCheck.locator("body").innerText().catch(() => "");
-    if (draftText.includes(title)) throw new Error("发布后本章仍在草稿箱，状态不明确");
+    const draftRow = await findFanqieChapterRow(draftCheck, chapter);
+    if (draftRow) throw new Error("发布后本章仍在草稿箱，状态不明确");
   } finally {
     await draftCheck.close().catch(() => {});
   }
@@ -565,7 +596,7 @@ async function main() {
       status = await publishFanqieChapter(page, payload.content);
     } else {
       if (platform === "fanqie" && !args.dryRun) {
-        const existingDraftUrl = await findFanqieDraftEditUrl(page, payload.content).catch(() => null);
+        const existingDraftUrl = await findFanqieDraftEditUrl(page, payload.content);
         if (existingDraftUrl) {
           await page.goto(existingDraftUrl, { waitUntil: "domcontentloaded", timeout: 60000 });
           await page.waitForTimeout(3000);
@@ -611,6 +642,7 @@ module.exports = {
   fillChapter,
   confirmFanqieDraftSaved,
   findFanqieDraftEditUrl,
+  findFanqieChapterRow,
   publishFanqieChapter,
   findChapter,
   loadChapter,
