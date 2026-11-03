@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-03",
+  "chapter": 6,
+  "bookId": "novel-studio-25b09bec34bbb839",
+  "createdAt": "2026-11-03T17:28:50.000Z",
+  "status": "published",
+  "characters": 3050,
+  "sha256": "ac92be3d8859ef9d08ba1e4958aded95c90d062c1872ab2e6ac7484717ac1a70",
+  "publishedAt": "2026-11-03T17:28:50.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "pending",
+      "updatedAt": "2026-11-03T17:28:50.000Z"
+    },
+    "qimao": {
+      "status": "skipped",
+      "updatedAt": "2026-11-03T17:28:50.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-11-03 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}
