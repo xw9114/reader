@@ -9,8 +9,9 @@
   "publishedAt": "2026-10-22T06:10:23.000Z",
   "platforms": {
     "fanqie": {
-      "status": "draft_saved",
-      "updatedAt": "2026-10-22T07:28:02.206Z"
+      "status": "failed",
+      "error": "等待草稿同步到云端超时",
+      "updatedAt": "2026-11-03T01:16:04.109Z"
     },
     "qimao": {
       "status": "skipped",
