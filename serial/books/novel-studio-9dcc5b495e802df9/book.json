@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-9dcc5b495e802df9",
+  "readerId": "novel-studio-9dcc5b495e802df9",
+  "title": "铅封上的日期",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2512,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "邰雨时",
+  "synopsis": "第1天例行年检，邰雨时在市场B区发现三具灭火器的铅封编号与她的底账对不上，且瓶底出厂日期是十四年前——早该报废的筒体却贴着今年新粉批次和崭新铅封。她要查清这批瓶的来源，却必须面对代价：线索可能指向带她十二年的师傅，追查会砸掉自己和他饭碗。",
+  "sourceProjectId": "铅封上的日期-自动0051-ef8386",
+  "sourceSnapshotSHA256": "c05c60f1ddb79999168e60a53e4ea650635304a3ecad593135d854c3d513466f",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

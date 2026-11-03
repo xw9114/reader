@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-03ecc08504619b40",
+  "readerId": "novel-studio-03ecc08504619b40",
+  "title": "铅封之下",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2440,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "纪松和",
+  "synopsis": "纪松和想要把片区里一次普通例行安检中发现的异常查到底——临澜里7栋有四户人家的燃气表底数与一年前记录几乎持平，可四户灶具与热水器用气迹象明显；他上报后工单被主管以『证据不足、勿扰用户』为由压下，反而排他去做别的片区。他要的不是立功，是那四户楼里几十户人家的安全；代价是他将被调离岗位、失去连续七年的零漏检记录，甚至被暗示合同到期不再续签。",
+  "sourceProjectId": "铅封之下-自动0091-2dafee",
+  "sourceSnapshotSHA256": "164cf9a8e8dc956a27fe999569776d166158a912d2e1554050cf4af5a7e6ff7c",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-18764e57c3ffb0a0",
+  "readerId": "novel-studio-18764e57c3ffb0a0",
+  "title": "贴地三米",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2356,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "穆晚禾",
+  "synopsis": "穆晚禾要在小满前拿下柳陂镇统防统治合同，让父亲把八十亩地的植保作业权和经营签字交到她手里；代价是垫资压价、起早贪黑，以及一旦出事便无人作保的名誉风险。",
+  "sourceProjectId": "贴地三米-自动0157-71a966",
+  "sourceSnapshotSHA256": "f0e0a1078f209198054b1d01eca7da69250d4676a0cf0beafa77c238c8a302c3",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

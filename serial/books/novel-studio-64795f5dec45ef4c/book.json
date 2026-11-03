@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-64795f5dec45ef4c",
+  "readerId": "novel-studio-64795f5dec45ef4c",
+  "title": "闸瓦之下",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2482,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "桂洄",
+  "synopsis": "桂洄想要的不过是一份经得起回查的合格报告，代价是与维保公司正面冲突、被投诉到院长那里、停签待查，甚至可能失去签字资格。全书围绕一条可核实的证据链推进：制动衬垫磨薄后违规加装的薄垫片、垫片边缘的车削毛刺、机房积尘与维保记录里『已清扫』的矛盾、限速器铅封封线走向与出厂照片不符、被困救援纸质工单拍照存底的时间与物业监控的分钟差。每一步悬疑都落在实物与记录上，不靠巧合。",
+  "sourceProjectId": "闸瓦之下-自动0124-33943f",
+  "sourceSnapshotSHA256": "fc116ab164b70f5f39ff83406ce224e4b049877933e04dbd8e6f2ed8b2b9ebcf",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

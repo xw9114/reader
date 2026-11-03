@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-54a7c847b0a1a4f3",
+  "readerId": "novel-studio-54a7c847b0a1a4f3",
+  "title": "限速器封签",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2480,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "霍叙莼",
+  "synopsis": "霍叙莼想要的不是揪出某个人，而是让四十一部梯的每一份检验结论重新变回真的——为此他要付出的代价，是牵出师父娄宿海三年前的一次失察签字，动用手抄底账作证意味着自己私下留存检验数据的行为也将曝光、可能被吊销检验师证。他必须在『师父的名声』与『那部梯下次下坠时里面站着人』之间做选择。",
+  "sourceProjectId": "限速器封签-自动0101-f66350",
+  "sourceSnapshotSHA256": "5fc7d62463c8e0fc43046e76e23b2a0cda7f9c183efd3ebc3f0d379052d04a49",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

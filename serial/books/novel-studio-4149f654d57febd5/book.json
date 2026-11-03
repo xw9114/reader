@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-4149f654d57febd5",
+  "readerId": "novel-studio-4149f654d57febd5",
+  "title": "过磅",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2540,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "卫兰",
+  "synopsis": "车头是她以'公司垫付、分期扣款'方式买下的，尾款十一万六千元须在九十天内结清才能过户到她个人名下；她要在期限内凑齐尾款、注册个体运输户、以自己的名义接下第一趟单。代价：她押上离婚分得的六万元和攒下的四万七积蓄，还动了女儿下学期转学的学费；若到期交不齐，车被公司收回，五年白干；她还要独自扛下连夜返程、错过女儿开学家长会、母亲住院只能在服务区打电话的账。",
+  "sourceProjectId": "过磅-自动0032-cce2c1",
+  "sourceSnapshotSHA256": "5c013a095512eb0419e213c7c7a57ff06906be6b702513c5b9ce3de900f50c6e",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

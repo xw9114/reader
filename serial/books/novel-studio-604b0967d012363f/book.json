@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-604b0967d012363f",
+  "readerId": "novel-studio-604b0967d012363f",
+  "title": "轨底回波",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2494,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "池聿声",
+  "synopsis": "偏移的两米意味着要么是仪器探头架定位出了问题，要么有人动过他的原始探伤记录。池聿声调阅自己签字上传的探伤数据，发现原始回波文件的时间戳与当晚天窗结束时间对不上，早了四十七分钟——而他清楚地记得那晚工程车晚点、他们进轨行时间是零点二十。数据被改过。改数据需要进入工务部探伤台账系统，权限在班组与主管之间。同组成员只有三人：师兄贺舸、主管探伤台账的技术员温姝，以及新来的实习学徒陆见秋。",
+  "sourceProjectId": "轨底回波-自动0154-253cc3",
+  "sourceSnapshotSHA256": "7f67882830d94ce17d3f403eafd3067daa741e71a28b96b26ac7e546fe7bc892",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-d3acbdc713a98590",
+  "readerId": "novel-studio-d3acbdc713a98590",
+  "title": "靛缸不冷",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2480,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "柯蕴山",
+  "synopsis": "1992年夏，店经理贾凤梧提出柜台承包改制方案，染整车间将租给秦老板的快洗生意，染活全数停掉。柯蕴山的对策是把压箱底的复染手艺变成招牌——承接国营纺织厂积压的色差布料回修与市民的真丝旧衣复染，靠一单一单的活保住车间。但第一单大生意就出了事：他为纺织厂回修的一批藏青华达呢交货后被投诉『色牢度不合格、批量花色』，索赔金额足以让承包方案立刻通过、车间当月关停。核心欲望：柯蕴山要在改制 deadline 前证明这批活不是他的手艺出了错，保住染缸与老字号的名声；代价：他必须翻自己二十年的底账与留样布，而对出的线索指向他最敬重的老主任当年的徒弟、如今的秦老板——当年正是她从店里带走了染料配方记录。人物必须主动行动：柯蕴山不接受『停职等调查』，自己逐缸复验、找霍世澄调纺织厂的领料单与留样封存布、对照两处底账的缸号与批号，最终以物证链而非口供说话。",
+  "sourceProjectId": "靛缸不冷-自动0168-1d91dd",
+  "sourceSnapshotSHA256": "5635c89593a51bca2ab4d4ed403f7a790c6409a3390ee6b54f3a97dbc63996f5",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

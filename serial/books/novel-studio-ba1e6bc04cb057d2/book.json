@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-ba1e6bc04cb057d2",
+  "readerId": "novel-studio-ba1e6bc04cb057d2",
+  "title": "表底余量",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2355,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "麦执衡",
+  "synopsis": "麦执衡要查明0307表的来历，代价是与老站长的多年情分、与苗大川的旧交，甚至自己的检定签字资质都可能搭进去。",
+  "sourceProjectId": "表底余量-自动0116-4a1384",
+  "sourceSnapshotSHA256": "3314dddd61e6f3cb0c3415cdec20ee194a12a409a277a20c95d1a53876da7cfe",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

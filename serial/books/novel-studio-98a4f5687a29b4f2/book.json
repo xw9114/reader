@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-98a4f5687a29b4f2",
+  "readerId": "novel-studio-98a4f5687a29b4f2",
+  "title": "錾下留名",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2316,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "虞知棠",
+  "synopsis": "虞知棠想要的是錾下留名——在一件银器上錾自己的落款，从替祖母和师兄做坯的\"手\"变成署名的\"匠\"；代价是若离开聚银楼自立，祖母的錾花间撑不过旅游合同签署的期限，而若留下继续无落款地錾，她十年底账里记下的三千件银器将没有一件属于她。核心冲突围绕落款权、仿古订单与旅游合同三方收紧：",
+  "sourceProjectId": "錾下留名-自动0137-0ae117",
+  "sourceSnapshotSHA256": "7d735eb8e029e95bd4aa60e71c92deaf5b72077e0f4688350305dfba0e02e7e4",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

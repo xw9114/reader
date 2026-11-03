@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-876d86bf83b48227",
+  "readerId": "novel-studio-876d86bf83b48227",
+  "title": "零点零六",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2431,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "沈灼",
+  "synopsis": "让每一批超标的菜在进场前被拦住，别流入幼儿园和食堂的餐桌。代价是拦菜即断人生意——深夜批发市场里，被扣批次的货主围住流动检测车讨说法、检测试纸被人当面撕碎、考核台账上她的误判记录被反复翻出，而她必须为每一次拦截拿出能复现的证据。",
+  "sourceProjectId": "零点零六-自动0199-2199ae",
+  "sourceSnapshotSHA256": "e1f72f51bf281f79c7e09ebdb42d04fb688f30d099a4d36dceeab39bd7087595",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

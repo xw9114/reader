@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-bf0fc1be20ee76fa",
+  "readerId": "novel-studio-bf0fc1be20ee76fa",
+  "title": "铅字未冷",
+  "platform": "tomato",
+  "genre": "period-business",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2178,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "年代经营"
+    ],
+    "contentTags": [
+      "经营",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "经营",
+        "成长"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "务实",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "岑砚秋",
+  "synopsis": "鞭炮是早上八点半响的。\n\n隔着一堵墙，岑砚秋听见纸屑落在照排车间新铺的水磨石地面上，听见人群往里涌的脚步，听见有人高声念红绸上的字。她没抬头。手里这版昨天夜里拆到一半的《农技手册》，还有三行没归完。她把一枚铅字拈起来，指腹在字肩上轻轻一捻，圆钝，锋口磨去了三成，字腹里的墨垢结得厚，这枚\"墒\"字至少翻过四万印，该挑出来换新了。她把它搁进左手边的小铁盒，铁盒里已经躺着十几枚这样的废字。\n\n拆版归字这活儿，车间里没人比她快。字盘在指间一磕，脆的是宋体，滞的是仿宋，谁要是把仿宋混进了宋体盘，那一声闷响逃不过她的耳朵。十六年，三百多盘字，她一盘一盘听过来的。\n\n外头的喧闹到九点来钟才漫进排字车间。广播里喊：各车间派人到三楼会议室听宣布。岑砚秋放下镊子，在围裙上擦了擦手，手上的铅灰擦不净，指缝里常年是黑的。她又核了一遍那三行的部首归位，把字盘推回架上，才解下围裙搭在椅背上，出了车间。",
+  "sourceProjectId": "铅字未冷-自动0148-f50a40",
+  "sourceSnapshotSHA256": "6b20f1417b2122bddc9198b98ea93e2eb1f170308ff297ebfe97e5974b407746",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "approved-manuscript-excerpt"
+}

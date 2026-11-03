@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-aad026ff218c5946",
+  "readerId": "novel-studio-aad026ff218c5946",
+  "title": "药渣里的秤星",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2423,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "谷雨桐",
+  "synopsis": "仲春头一天，天亮得比前阵子早了小半个钟头。谷雨桐拉开仁济堂总店临街的排闼板时，早点摊刚支起来，一股白面和水汽的味道顺着门缝钻进来，混进药斗里陈年的草木气。她习惯了这股味道，每天早上，她先不开灯，站在百子柜前深吸一口气。哪一格药返潮了，哪一格药气味淡了，鼻子先知道。\n\n八点整，伙计们陆续到齐。复核岗在店堂最里头，一张老榆木案子，案上一杆小戥子，一台电子秤，一册用牛皮纸包了封皮、边角磨得起毛的纸册。那是她的底账。电子处方系统里什么都有，可她还是每天往这册子上抄：日期、医师、患者姓氏、每味药的批次、称量实数、复核签字，一方一行，一天不落。\n\n抓药的小周端着茶杯路过，探头看了一眼：\"谷姐，你这账记得比医药公司的出库单还细，哪天系统崩了，全店就靠你这本子活。\"\n\n谷雨桐头也没抬：\"系统崩不崩我不知道，我只知道经我手的药，得能对得上。\"\n\n小周嘿嘿笑着走了。",
+  "sourceProjectId": "药渣里的秤星-自动0096-019446",
+  "sourceSnapshotSHA256": "bd22fcc3a796d8a4497193c8668f261d452edd4480d1909bf5fe6c89119a5ce0",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "approved-manuscript-excerpt"
+}

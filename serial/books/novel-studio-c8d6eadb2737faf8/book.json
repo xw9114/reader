@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-c8d6eadb2737faf8",
+  "readerId": "novel-studio-c8d6eadb2737faf8",
+  "title": "走音的三角钢琴",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2314,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "程曼青",
+  "synopsis": "四十五天前，琴行与本地最大的艺考培训机构『栖洲雅乐艺术中心』签下一笔大单：三十架号称『欧洲原装进口、琴龄十年以内』的二手三角钢琴，分三批交付，用于艺考集训教室。程曼青被派去为首批到货的十架琴做交付前整备，凭指尖与耳朵发现其中七架的榔头磨损、键盘象牙贴片更换痕迹与序列号年份对不上——琴行报关单上写的是琴龄八年的德国琴，她的台账与钢琴铸铁板上被磨改过的序列号残痕却显示，这批琴至少有五架是琴龄三十年上下、翻新冒充的旧琴，音板已现暗裂，撑不过艺考生两年的高强度练习。她要在第三批琴交付、尾款结清之前，查清这批琴是谁进的货、序列号是谁磨改的，把可核实的证据交到市场监管部门，保住琴行十三年的招牌，也保住三百多个艺考家庭的钱。",
+  "sourceProjectId": "走音的三角钢琴-自动0034-22a284",
+  "sourceSnapshotSHA256": "0654860b394c3defb43bbb9219931ab19df99b8a1d335d09baf4ddcc230cffb9",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-9ab853d2d737e82b",
+  "readerId": "novel-studio-9ab853d2d737e82b",
+  "title": "臂架四十七米",
+  "platform": "tomato",
+  "genre": "women-growth",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2475,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "女性成长"
+    ],
+    "contentTags": [
+      "职业成长",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "成长",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "女强",
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "苏棠屿",
+  "synopsis": "苏棠屿想在这六十天里完成三块中板大体积浇筑的独立操作，拿到班组季度评审的带教资格，摆脱「只配打杂」的处境。代价：独立操作意味着每堵一次管、每延误一分钟都由她一人签字担责，而车站底板浇筑正卡在搅拌站换供、砂石含水率波动最大的窗口期。转折：一次底板浇筑夜班，泵送至第四十七车时堵管爆管，混凝土浇断在结构施工缝上，项目部认定是她臂架回转过快、未按规程反打所致，带教资格被冻结，面临退场。她不肯认，开始逐车核对泵送油压曲线、调度派车单上的坍落度签收记录与搅拌站换供当天的开盘鉴定单，主动找夜班泵工、试验员与泵管安装工查证，一步步把真相拼齐。",
+  "sourceProjectId": "臂架四十七米-自动0187-b7a3e4",
+  "sourceSnapshotSHA256": "215f86698f485b2aaa05a8563182089fafd3fbc252f3c8540333102eee7cadb7",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

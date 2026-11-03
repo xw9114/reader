@@ -1,0 +1,51 @@
+{
+  "id": "novel-studio-1b04b0fc5f405cb3",
+  "readerId": "novel-studio-1b04b0fc5f405cb3",
+  "title": "超温十一个小时",
+  "platform": "tomato",
+  "genre": "suspense",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2459,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "现实悬疑"
+    ],
+    "contentTags": [
+      "调查取证",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "推理",
+        "调查取证"
+      ],
+      "emotion": [
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "楚牧远",
+  "synopsis": "楚牧远要查清那批疫苗是否失效、拦住更多孩子接种无效针，代价是与带他入行的恩师决裂、被停职并一度背上『签字合格又翻案』的诬告名声。",
+  "sourceProjectId": "超温十一个小时-自动0071-164430",
+  "sourceSnapshotSHA256": "8ce171b584773bb92093fe08f7dd7099256aa971ef040e588b85d5983b5e3480",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}

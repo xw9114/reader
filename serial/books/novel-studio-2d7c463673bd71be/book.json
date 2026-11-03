@@ -1,0 +1,52 @@
+{
+  "id": "novel-studio-2d7c463673bd71be",
+  "readerId": "novel-studio-2d7c463673bd71be",
+  "title": "锁止零点三",
+  "platform": "tomato",
+  "genre": "urban",
+  "status": "active",
+  "targetChapters": 6,
+  "chapterWordCount": 2492,
+  "language": "zh",
+  "publishingHint": {
+    "schemaVersion": 1,
+    "source": "external-ai",
+    "audience": "方向待定",
+    "readingTags": [
+      "职业成长"
+    ],
+    "contentTags": [
+      "职场",
+      "现实题材"
+    ],
+    "tagDimensions": {
+      "plot": [
+        "调查取证",
+        "职业成长"
+      ],
+      "emotion": [
+        "师徒情",
+        "亲情"
+      ],
+      "persona": [
+        "理性清醒",
+        "坚韧成长"
+      ],
+      "worldview": []
+    }
+  },
+  "volumes": [
+    {
+      "number": 1,
+      "title": "全书",
+      "startChapter": 1,
+      "endChapter": 6
+    }
+  ],
+  "protagonist": "麦承堰",
+  "synopsis": "麦承堰要在开业日前查清「流星索二代」三号座舱锁扣棘爪回弹迟滞零点三秒的成因，拒绝在证据不足时为「悬鸦」验收签字，并为被吊销的师兄讨回清白。代价：与最大客户决裂可能令峻测公司失去全区合同、同事失业；他本人的检验员证与职业前途押在每一次签字上；旧识石大椿若配合作证，也将丢掉维保班的饭碗。",
+  "sourceProjectId": "锁止零点三-自动0194-76c245",
+  "sourceSnapshotSHA256": "b972425b578915edf891b10ce1c04f94180f96cbd899c0c32ca3979ff6bdfcd2",
+  "sourceImportDate": "2026-11-03",
+  "synopsisSource": "source-premise-conflict"
+}
