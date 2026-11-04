@@ -17,7 +17,7 @@ commit_if_dirty() {
 
 echo "[1/6] 提交本地状态并拉取"
 commit_if_dirty "chore(auto): sync local state $(date +%F)"
-git pull --rebase origin main
+git pull --rebase origin main || { git rebase --abort 2>/dev/null || true; echo "[1/6] 拉取变基冲突，已中止变基，保留本地状态" >&2; exit 1; }
 
 echo "[2/6] 重建 dist"
 python3 tools/build_publish.py
@@ -52,5 +52,15 @@ fi
 
 echo "[6/6] 提交并回推"
 commit_if_dirty "chore(auto): daily run $(date +%F)"
-git push origin main
+push_attempt=0
+until git push origin main; do
+  push_attempt=$((push_attempt + 1))
+  if [ "$push_attempt" -ge 3 ]; then
+    echo "[6/6] 回推 3 次均失败，保留本地提交待下次处理" >&2
+    exit 1
+  fi
+  echo "[6/6] 回推被拒（远端已推进），变基后重试 ($push_attempt/3)..."
+  git pull --rebase origin main || { git rebase --abort 2>/dev/null || true; echo "[6/6] 变基冲突，已中止变基，保留本地提交" >&2; exit 1; }
+  sleep 10
+done
 echo "DAILY_SYNC_OK"
