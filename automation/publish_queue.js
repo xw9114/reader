@@ -4,6 +4,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const process = require("node:process");
 const { chromium } = require("playwright");
+const { classifyPublishResponse, recordPlatformLimit, activePlatformLimit } = require("./platform_limits");
 
 const ROOT = path.resolve(__dirname, "..");
 const PLATFORM_NAMES = { fanqie: "番茄", qimao: "七猫" };
@@ -458,7 +459,7 @@ async function publishFanqieChapter(page, chapter) {
     await page.screenshot({ path: path.join(ROOT, ".runtime", "publish-stop-before-confirm.png"), fullPage: true }).catch(() => {});
     return "validated_before_confirm";
   }
-  await dialog.getByRole("button", { name: /确认发布/ }).first().click();
+  await submitFanqiePublish(page, dialog.getByRole("button", { name: /确认发布/ }).first());
   await page.waitForTimeout(8000);
   const bookMatch = editUrl.match(/main\/writer\/(\d+)/);
   await page.goto(`https://fanqienovel.com/main/writer/chapter-manage/${bookMatch[1]}`, { waitUntil: "domcontentloaded", timeout: 60000 });
@@ -475,6 +476,25 @@ async function publishFanqieChapter(page, chapter) {
     await draftCheck.close().catch(() => {});
   }
   return "published";
+}
+
+async function submitFanqiePublish(page, button) {
+  // Subscribe before clicking: an HTTP 200 response can still reject publication.
+  const responsePromise = page.waitForResponse(response => {
+    const url = new URL(response.url());
+    return /(^|\.)fanqienovel\.com$/.test(url.hostname) &&
+      url.pathname === "/api/author/publish_article/v0/" &&
+      response.request().method() === "POST";
+  }, { timeout: 30000 }).catch(() => null);
+  await button.click();
+  const response = await responsePromise;
+  if (!response) throw new Error("未收到发布接口确认，结果不明确；保留现场，禁止盲目重复提交");
+  const payload = await response.json().catch(() => null);
+  const outcome = classifyPublishResponse(payload, response.status());
+  if (outcome.status === "accepted") return outcome;
+  const error = new Error(outcome.message);
+  error.platformOutcome = outcome;
+  throw error;
 }
 
 async function fillChapter(page, platform, chapter) {
@@ -503,7 +523,7 @@ async function clickSafeAction(page, publish) {
   throw new Error(publish ? "未找到安全的发布按钮" : "未找到保存草稿按钮");
 }
 
-function updateLedger(runFile, platform, status, error) {
+function updateLedger(runFile, platform, status, error, details = {}) {
   const lockFile = `${runFile}.lock`;
   const staleAfterMs = Number(process.env.READER_LEDGER_LOCK_STALE_MS || 10 * 60 * 1000);
   let descriptor;
@@ -550,6 +570,7 @@ function updateLedger(runFile, platform, status, error) {
       qimao: { status: "pending" },
     };
     platforms[platform] = {
+      ...details,
       status,
       ...(error ? { error: String(error).slice(0, 500) } : {}),
       updatedAt: new Date().toISOString(),
@@ -579,6 +600,13 @@ async function main() {
   let context;
   let page;
   try {
+    if (args.publish && !args.dryRun) {
+      const limit = activePlatformLimit(platform);
+      if (limit) {
+        console.log(JSON.stringify({ ok: true, mode: "waiting_platform_limit", platform, ...limit }));
+        return;
+      }
+    }
     const profile = args.profile || process.env.READER_BROWSER_PROFILE || path.join(ROOT, ".runtime", "browser-profiles", platform);
     fs.mkdirSync(profile, { recursive: true });
     context = await chromium.launchPersistentContext(profile, {
@@ -618,7 +646,18 @@ async function main() {
     fs.mkdirSync(failureDir, { recursive: true });
     const screenshot = path.join(failureDir, `${platform}-${bookId}-${chapterNumber}.png`);
     if (page) await page.screenshot({ path: screenshot, fullPage: true }).catch(() => {});
-    if (!args.dryRun && fs.existsSync(payload.chapter.runFile)) updateLedger(payload.chapter.runFile, platform, "failed", error.message);
+    const outcome = error.platformOutcome;
+    if (outcome?.status === "waiting_platform_limit") recordPlatformLimit(platform, outcome);
+    if (!args.dryRun && fs.existsSync(payload.chapter.runFile)) {
+      updateLedger(payload.chapter.runFile, platform, outcome?.status || "failed", error.message,
+        outcome ? { platformCode: outcome.code, retryAfter: outcome.retryAfter,
+                    retryPolicy: outcome.retryPolicy } : {});
+    }
+    if (outcome?.status === "waiting_platform_limit") {
+      console.log(JSON.stringify({ ok: true, mode: outcome.status, platform, bookId,
+        chapter: chapterNumber, ...outcome }));
+      return;
+    }
     throw new Error(`${error.message}（截图：${screenshot}）`);
   } finally {
     if (context) await context.close();
@@ -644,6 +683,8 @@ module.exports = {
   findFanqieDraftEditUrl,
   findFanqieChapterRow,
   publishFanqieChapter,
+  submitFanqiePublish,
+  updateLedger,
   findChapter,
   loadChapter,
 };

@@ -1,63 +1,89 @@
 #!/usr/bin/env node
-// 每日自动发布：给 wired_books.json 里的每本书发布 1 章（由 daily_sync.sh 在 READER_AUTO_PUBLISH=1 时调用）。
-// 选章规则（与控制台发布按钮一致）：按章号顺序，第一个状态为 draft_saved 且前面章节都已 published 的章；
-// 若排头的是 pending/failed（还没存成草稿）→ 本书跳过并说明。单本失败不影响其他书（汇总退出码 0 除非全失败于异常）。
-// 用法: node automation/auto_publish.js [--dry]   --dry 只打印每本的决策，不执行发布。
-const fs = require("fs");
-const path = require("path");
-const { spawnSync } = require("child_process");
+const fs = require("node:fs");
+const path = require("node:path");
+const { spawnSync } = require("node:child_process");
+const { beijingDay, activePlatformLimit } = require("./platform_limits");
 
-const ROOT = "/root/reader";
-const DRY = process.argv.includes("--dry");
-const log = (...a) => console.log(new Date().toISOString(), ...a);
-
-function nextChapter(bookDir) {
-  const runsDir = path.join(ROOT, "serial", "books", bookDir, "runs");
-  const byChapter = {};
-  for (const f of fs.readdirSync(runsDir)) {
-    if (!f.endsWith(".json")) continue;
-    try {
-      const rec = JSON.parse(fs.readFileSync(path.join(runsDir, f), "utf8"));
-      const st = rec && rec.platforms && rec.platforms.fanqie && rec.platforms.fanqie.status;
-      if (st && rec.chapter) byChapter[rec.chapter] = st;
-    } catch (e) { /* ignore */ }
+const ROOT = path.resolve(__dirname, "..");
+function chapterRecords(bookDir, root = ROOT) {
+  const runsDir = path.join(root, "serial", "books", bookDir, "runs");
+  const records = new Map();
+  for (const name of fs.readdirSync(runsDir).sort()) {
+    const modern = /^\d{4}-\d{2}-\d{2}-chapter-\d{4}\.json$/.test(name);
+    if (!modern && !/^\d{4}-\d{2}-\d{2}\.json$/.test(name)) continue;
+    const rec = JSON.parse(fs.readFileSync(path.join(runsDir, name), "utf8"));
+    if (!Number.isInteger(rec.chapter) || rec.chapter < 1) throw new Error("章节台账号无效：" + name);
+    if (!records.has(rec.chapter) || modern) {
+      records.set(rec.chapter, { ...rec.platforms?.fanqie, modern });
+    }
   }
-  const nums = Object.keys(byChapter).map(Number).sort((a, b) => a - b);
-  for (const n of nums) {
-    const st = byChapter[n];
-    if (st === "published") continue;
-    if (st === "draft_saved") return { chapter: n };
-    return { blocked: `第 ${n} 章状态为 ${st}，还没存成草稿` };
-  }
-  return { blocked: "没有待发布的章节（全部已发布或无台账）" };
+  return records;
 }
 
-function ledgerStatus(bookDir, chapter) {
-  const runsDir = path.join(ROOT, "serial", "books", bookDir, "runs");
-  for (const f of fs.readdirSync(runsDir)) {
-    if (!f.includes(`chapter-${String(chapter).padStart(4, "0")}`)) continue;
-    try {
-      const rec = JSON.parse(fs.readFileSync(path.join(runsDir, f), "utf8"));
-      return rec.platforms.fanqie.status;
-    } catch (e) { /* ignore */ }
+function nextChapter(bookDir, root = ROOT, now = new Date()) {
+  const records = chapterRecords(bookDir, root);
+  if ([...records.values()].some(r => r.status === "published" && r.updatedAt &&
+      beijingDay(new Date(r.updatedAt)) === beijingDay(now))) {
+    return { blocked: "本书今天已发布，保持每天1章" };
   }
-  return null;
+  let expected = 1;
+  for (const [n, r] of [...records.entries()].sort((a, b) => a[0] - b[0])) {
+    if (n !== expected) return { blocked: "前置章节缺少台账：" + expected };
+    expected++;
+    if (r.status === "published") continue;
+    if (r.status === "draft_saved") return { chapter: n };
+    if (r.status === "waiting_platform_limit" && Number.isFinite(Date.parse(r.retryAfter)) &&
+        Date.parse(r.retryAfter) <= now.getTime()) return { chapter: n };
+    return { blocked: "第" + n + "章状态为" + r.status + "，等待处理或重试时间" };
+  }
+  return { blocked: "没有待发布的章节" };
 }
 
-const wired = JSON.parse(fs.readFileSync(path.join(ROOT, "automation", "wired_books.json"), "utf8"));
-let acted = 0;
-for (const w of wired) {
-  if (w.platform !== "fanqie") { log(w.book, "跳过：非番茄平台暂不支持自动发布"); continue; }
-  const next = nextChapter(w.book);
-  if (!next.chapter) { log(w.book, "跳过：", next.blocked); continue; }
-  if (DRY) { console.log(`DRY ${w.book} → 将发布第 ${next.chapter} 章`); acted++; continue; }
-  log(w.book, `开始发布第 ${next.chapter} 章`);
-  const r = spawnSync("/usr/local/bin/node", [
-    "automation/publish_queue.js", "--platform", "fanqie", "--book-id", w.book,
-    "--chapter", String(next.chapter), "--url", w.url, "--headless", "--publish",
-  ], { cwd: ROOT, stdio: "inherit", env: { ...process.env, READER_HEADLESS: "1" } });
-  const st = ledgerStatus(w.book, next.chapter);
-  if (r.status === 0 && st === "published") { console.log(`AUTO_PUBLISH_OK ${w.book} chapter=${next.chapter}`); acted++; }
-  else console.log(`AUTO_PUBLISH_FAIL ${w.book} chapter=${next.chapter} exit=${r.status} ledger=${st}`);
+function orderedBooks(wired, root = ROOT) {
+  const latest = book => Math.max(0, ...[...chapterRecords(book, root).values()]
+    .filter(r => r.status === "published").map(r => Date.parse(r.updatedAt) || 0));
+  return wired.filter(w => w.platform === "fanqie").map(w => ({
+    ...w, priority: w.publishPriority ?? (w.book === "serial-0002-mianguang" ? 100 : 0),
+    latest: latest(w.book),
+  })).sort((a, b) => b.priority - a.priority || a.latest - b.latest);
 }
-console.log(`AUTO_PUBLISH_DONE acted=${acted} dry=${DRY}`);
+
+function main() {
+  const dry = process.argv.includes("--dry");
+  const wired = JSON.parse(fs.readFileSync(path.join(ROOT, "automation", "wired_books.json"), "utf8"));
+  let acted = 0, failed = 0, waiting = false;
+  for (const w of orderedBooks(wired)) {
+    const limit = activePlatformLimit("fanqie");
+    if (limit) {
+      console.log("AUTO_PUBLISH_WAIT platform=fanqie retryAfter=" + limit.retryAfter + " reason=" + limit.message);
+      waiting = true;
+      break;
+    }
+    const next = nextChapter(w.book);
+    if (!next.chapter) { console.log(w.book, "跳过：", next.blocked); continue; }
+    if (dry) { console.log("DRY " + w.book + " → 将发布第" + next.chapter + "章"); continue; }
+    const r = spawnSync(process.execPath, [
+      "automation/publish_queue.js", "--platform", "fanqie", "--book-id", w.book,
+      "--chapter", String(next.chapter), "--url", w.url, "--headless", "--publish",
+    ], { cwd: ROOT, stdio: "inherit", env: { ...process.env, READER_HEADLESS: "1" } });
+    const state = chapterRecords(w.book).get(next.chapter)?.status;
+    if (r.status === 0 && state === "published") {
+      console.log("AUTO_PUBLISH_OK " + w.book + " chapter=" + next.chapter);
+      acted++;
+    } else if (state === "waiting_platform_limit" || activePlatformLimit("fanqie")) {
+      console.log("AUTO_PUBLISH_WAIT " + w.book + " chapter=" + next.chapter);
+      waiting = true;
+      break;
+    } else {
+      console.log("AUTO_PUBLISH_FAIL " + w.book + " chapter=" + next.chapter + " exit=" + r.status + " ledger=" + state);
+      failed++;
+    }
+  }
+  console.log("AUTO_PUBLISH_DONE acted=" + acted + " failed=" + failed + " waiting=" + waiting + " dry=" + dry);
+  if (failed) process.exitCode = 1;
+}
+
+module.exports = { chapterRecords, nextChapter, orderedBooks };
+if (require.main === module) {
+  try { main(); } catch (error) { console.error("AUTO_PUBLISH_FAIL", error.message); process.exitCode = 1; }
+}

@@ -6,7 +6,14 @@
 # 任一环节失败即停（set -e），失败原因留在青龙日志里；单本书存草稿/发布失败不阻塞（|| true）。
 set -e
 cd /root/reader
-export GIT_SSH_COMMAND="ssh -i /root/.ssh/github-deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
+export GIT_SSH_COMMAND="ssh -i /root/.ssh/github-deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o BatchMode=yes"
+mkdir -p .runtime/locks
+exec 9>.runtime/locks/daily-sync.lock
+if ! flock -n 9; then
+  echo "DAILY_SYNC_ALREADY_RUNNING"
+  exit 0
+fi
+partial_failures=0
 
 commit_if_dirty() {
   if [ -n "$(git status --porcelain)" ]; then
@@ -17,7 +24,7 @@ commit_if_dirty() {
 
 echo "[1/6] 提交本地状态并拉取"
 commit_if_dirty "chore(auto): sync local state $(date +%F)"
-git pull --rebase origin main || { git rebase --abort 2>/dev/null || true; echo "[1/6] 拉取变基冲突，已中止变基，保留本地状态" >&2; exit 1; }
+git pull --rebase origin main
 
 echo "[2/6] 重建 dist"
 python3 tools/build_publish.py
@@ -28,11 +35,7 @@ python3 automation/sync_ledgers.py
 echo "[4/6] 队列存草稿（名单来自 wired_books.json）"
 python3 - << 'PYEOF' > /tmp/wired-list.txt
 import json
-try:
-    rows = json.load(open("automation/wired_books.json"))
-except Exception as e:
-    print("# wired_books.json 读取失败:", e)
-    rows = []
+rows = json.load(open("automation/wired_books.json"))
 for r in rows:
     print("\t".join([r["book"], r["platform"], r["url"]]))
 PYEOF
@@ -40,27 +43,26 @@ while IFS=$'\t' read -r book platform url; do
   [ -z "$book" ] && continue
   case "$book" in \#*) echo "  跳过：$book"; continue;; esac
   echo "  → $book（$platform）"
-  READER_HEADLESS=1 node automation/run_pending_publish.js --platform "$platform" --book-id "$book" --url "$url" || true
+  if ! READER_HEADLESS=1 node automation/run_pending_publish.js --platform "$platform" --book-id "$book" --url "$url"; then
+    echo "DRAFT_SAVE_FAIL $book"
+    partial_failures=$((partial_failures + 1))
+  fi
 done < /tmp/wired-list.txt
 
 echo "[5/6] 每日自动发布（每本 1 章）"
 if [ "$READER_AUTO_PUBLISH" = "1" ]; then
-  node automation/auto_publish.js || true
+  if ! node automation/auto_publish.js; then
+    partial_failures=$((partial_failures + 1))
+  fi
 else
   echo "  未开启（READER_AUTO_PUBLISH != 1），跳过"
 fi
 
 echo "[6/6] 提交并回推"
 commit_if_dirty "chore(auto): daily run $(date +%F)"
-push_attempt=0
-until git push origin main; do
-  push_attempt=$((push_attempt + 1))
-  if [ "$push_attempt" -ge 3 ]; then
-    echo "[6/6] 回推 3 次均失败，保留本地提交待下次处理" >&2
-    exit 1
-  fi
-  echo "[6/6] 回推被拒（远端已推进），变基后重试 ($push_attempt/3)..."
-  git pull --rebase origin main || { git rebase --abort 2>/dev/null || true; echo "[6/6] 变基冲突，已中止变基，保留本地提交" >&2; exit 1; }
-  sleep 10
-done
+python3 automation/sync_git.py
+if [ "$partial_failures" -gt 0 ]; then
+  echo "DAILY_SYNC_PARTIAL_FAILURE count=$partial_failures"
+  exit 1
+fi
 echo "DAILY_SYNC_OK"
