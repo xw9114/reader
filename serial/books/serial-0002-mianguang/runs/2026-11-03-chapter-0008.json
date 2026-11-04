@@ -9,8 +9,9 @@
   "publishedAt": "2026-11-03T17:28:50.000Z",
   "platforms": {
     "fanqie": {
-      "status": "draft_saved",
-      "updatedAt": "2026-11-03T17:29:08.750Z"
+      "status": "failed",
+      "error": "发布后未在章节列表中找到本章",
+      "updatedAt": "2026-11-04T01:14:57.289Z"
     },
     "qimao": {
       "status": "skipped",

@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-04",
+  "chapter": 10,
+  "bookId": "serial-0002-mianguang",
+  "createdAt": "2026-11-04T01:10:09.000Z",
+  "status": "published",
+  "characters": 3311,
+  "sha256": "f78d822ea6f5cad952a467e033ed5c382d326289da86d2eae71fa7db222d6389",
+  "publishedAt": "2026-11-04T01:10:09.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "draft_saved",
+      "updatedAt": "2026-11-04T01:11:45.392Z"
+    },
+    "qimao": {
+      "status": "skipped",
+      "updatedAt": "2026-11-04T01:10:09.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-11-04 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}

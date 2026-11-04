@@ -9,8 +9,8 @@
   "publishedAt": "2026-11-02T06:03:49.000Z",
   "platforms": {
     "fanqie": {
-      "status": "pending",
-      "updatedAt": "2026-11-02T06:03:49.000Z"
+      "status": "published",
+      "updatedAt": "2026-11-04T01:12:33.744Z"
     },
     "qimao": {
       "status": "skipped",
