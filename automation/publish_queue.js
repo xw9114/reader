@@ -460,6 +460,7 @@ async function publishFanqieChapter(page, chapter) {
     return "validated_before_confirm";
   }
   await submitFanqiePublish(page, dialog.getByRole("button", { name: /确认发布/ }).first());
+  try {
   await page.waitForTimeout(8000);
   const bookMatch = editUrl.match(/main\/writer\/(\d+)/);
   await page.goto(`https://fanqienovel.com/main/writer/chapter-manage/${bookMatch[1]}`, { waitUntil: "domcontentloaded", timeout: 60000 });
@@ -476,6 +477,10 @@ async function publishFanqieChapter(page, chapter) {
     await draftCheck.close().catch(() => {});
   }
   return "published";
+  } catch (error) {
+    error.platformOutcome = { status: "publication_unknown", message: error.message };
+    throw error;
+  }
 }
 
 async function submitFanqiePublish(page, button) {
@@ -486,10 +491,24 @@ async function submitFanqiePublish(page, button) {
       url.pathname === "/api/author/publish_article/v0/" &&
       response.request().method() === "POST";
   }, { timeout: 30000 }).catch(() => null);
-  await button.click();
+  try {
+    await button.click();
+  } catch (error) {
+    error.platformOutcome = { status: "publication_unknown", message: error.message };
+    throw error;
+  }
   const response = await responsePromise;
-  if (!response) throw new Error("未收到发布接口确认，结果不明确；保留现场，禁止盲目重复提交");
+  if (!response) {
+    const error = new Error("未收到发布接口确认，结果不明确；保留现场，禁止盲目重复提交");
+    error.platformOutcome = { status: "publication_unknown", message: error.message };
+    throw error;
+  }
   const payload = await response.json().catch(() => null);
+  if (!payload || payload.code === undefined || response.status() >= 500) {
+    const error = new Error("发布接口响应不可确认；保留现场，禁止盲目重复提交");
+    error.platformOutcome = { status: "publication_unknown", message: error.message };
+    throw error;
+  }
   const outcome = classifyPublishResponse(payload, response.status());
   if (outcome.status === "accepted") return outcome;
   const error = new Error(outcome.message);

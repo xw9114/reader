@@ -70,6 +70,19 @@ const auto = require("../automation/auto_publish");
     payload = {code:-1,message:"需要验证"};
     await assert.rejects(() => publisher.submitFanqiePublish(page, page.getByRole("button")), /需要验证/);
     assert.equal(submissions, 3);
+    payload = {};
+    await assert.rejects(() => publisher.submitFanqiePublish(page, page.getByRole("button")), error => {
+      assert.equal(error.platformOutcome.status, "publication_unknown");
+      return true;
+    });
+    assert.equal(submissions, 4);
+    let uncertainClicks = 0;
+    await assert.rejects(() => publisher.submitFanqiePublish(
+      {waitForResponse: () => Promise.resolve(null)}, {click:async()=>{uncertainClicks++;}}),
+      error => error.platformOutcome.status === "publication_unknown");
+    assert.equal(uncertainClicks, 1);
+    write("unknown", 1, {status:"publication_unknown"});
+    assert.ok(auto.nextChapter("unknown", tmp, now).blocked);
     console.log("PLATFORM_LIMIT_FIXTURES_OK: HTTP200 rejection, one submit per call, midnight retry, daily idempotency, priority, gap and ledger protection");
   } finally {
     await browser.close();

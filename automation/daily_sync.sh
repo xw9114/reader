@@ -3,7 +3,7 @@
 # 拉取 GitHub 最新 → 重建 dist → 补缺失台账 → 各书队列存草稿 → 每日自动发布（可选） → 本地状态提交并回推。
 # 队列名单读 automation/wired_books.json（控制台「接入并建书」成功后会自动追加）。
 # 自动发布仅当 READER_AUTO_PUBLISH=1 时执行（青龙 09:10 包装脚本会带上；控制台「立即同步」不带，手动同步不发文）。
-# 任一环节失败即停（set -e），失败原因留在青龙日志里；单本书存草稿/发布失败不阻塞（|| true）。
+# 基础环节失败即停；单书失败继续处理其他书并同步台账，最终以部分失败退出。
 set -e
 cd /root/reader
 export GIT_SSH_COMMAND="ssh -i /root/.ssh/github-deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o BatchMode=yes"
