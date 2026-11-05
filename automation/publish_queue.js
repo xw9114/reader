@@ -236,6 +236,38 @@ function splitChapterTitle(title) {
   return { number: String(parsed), title: match[2].trim() };
 }
 
+async function dismissVersionConflict(page) {
+  // 番茄编辑器在本地与云端草稿不一致时会弹「版本冲突提示」模态框
+  // （2026-11-05 阴司第 13 章失败的直接原因：该框遮住一切指针事件，
+  // 「全面检测」点 30 秒超时，整趟发布失败）。
+  // 本地版本就是本趟刚校验过的源稿，选本地；选完后流程仍会回读正文校验，
+  // 不一致会重填，不会把错版发出去。
+  const keepLocal = page.getByText("继续编辑本地", { exact: true });
+  if (await keepLocal.first().isVisible().catch(() => false)) {
+    await keepLocal.first().click().catch(() => {});
+    await page.waitForTimeout(2500);
+    return true;
+  }
+  return false;
+}
+
+async function clickWithRetry(locator, label) {
+  // 弹窗遮挡、动画未结束等瞬时状态会让单次 click 吃满 30 秒超时并抛错，
+  // 直接杀死整趟发布。改成短超时多轮重试，轮间给遮挡消失留时间。
+  let lastError = null;
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    try {
+      await locator.scrollIntoViewIfNeeded({ timeout: 5000 }).catch(() => {});
+      await locator.click({ timeout: 10000 });
+      return;
+    } catch (error) {
+      lastError = error;
+      await locator.page().waitForTimeout(2500);
+    }
+  }
+  throw new Error(`点击「${label}」多次失败（可能仍被弹窗遮挡）：${lastError ? String(lastError.message).split("\n")[0] : ""}`);
+}
+
 async function dismissFanqieEditorOverlays(page) {
   // 新书首次打开编辑器会叠两层一次性浮层：平台规则弹窗（按钮「我知道了」）与
   // 新手引导卡片（带 1/3 步数标记，按钮「下一步」）。不关掉它们，填入的标题
@@ -243,6 +275,8 @@ async function dismissFanqieEditorOverlays(page) {
   // 步数标记区分，只在引导卡片可见时才点。
   for (let round = 0; round < 10; round += 1) {
     let clicked = false;
+    // 版本冲突框也可能在编辑器打开时就挡着（见 dismissVersionConflict）。
+    if (await dismissVersionConflict(page)) clicked = true;
     // 上次会话异常退出时，编辑器会先弹「有刚刚更新的草稿，是否继续编辑？」，
     // 不处理它编辑会话不初始化、填什么都不会被采纳（新书第1章三度失败的原因）。
     const resume = page.getByText("继续编辑", { exact: true });
@@ -364,7 +398,12 @@ async function confirmFanqieDraftSaved(page, chapter) {
     if (/已保存到云端/.test(text.replace(/\s/g, ""))) { cloudSaved = true; break; }
     await page.waitForTimeout(2000);
   }
-  if (!cloudSaved) throw new Error("等待草稿同步到云端超时");
+  if (!cloudSaved) {
+    // 120 秒没等到「已保存到云端」不一定是没存上（2026-11-03 阴司第 12 章
+    // 就是指示器没刷出来）：不直接判失败，改走下面的草稿箱实证——
+    // 草稿箱里找得到、打开正文一致，才算存上；找不到再判失败。
+    console.log("未等到云端保存指示，改用草稿箱实证确认");
+  }
   const match = page.url().match(/main\/writer\/(\d+)/);
   if (!match) throw new Error("无法识别书籍ID，不能确认草稿云端状态");
   const checkPage = await page.context().newPage();
@@ -411,6 +450,23 @@ async function publishFanqieChapter(page, chapter) {
   // 番茄新版发布流程（2026-10-22 实测）：草稿编辑页 → 下一步 → 错别字弹窗提交
   // → 内容检测（全面检测优先，额度不足时基础检测）→ 发布设置选 AI 声明 → 确认发布。
   const { title } = splitChapterTitle(chapter.title);
+  // 防重发守门：若本章其实已在已发布列表里（上一趟提交成功、但列表校验
+  // 没刷出来造成的假失败），直接认 published，不再提交一次。
+  try {
+    const guardMatch = page.url().match(/main\/writer\/(\d+)/);
+    if (guardMatch) {
+      const guardPage = await page.context().newPage();
+      try {
+        await guardPage.goto(`https://fanqienovel.com/main/writer/chapter-manage/${guardMatch[1]}`, { waitUntil: "domcontentloaded", timeout: 60000 });
+        await guardPage.waitForTimeout(4000);
+        if (await findFanqieChapterRow(guardPage, chapter)) return "published";
+      } finally {
+        await guardPage.close().catch(() => {});
+      }
+    }
+  } catch {
+    // 守门查不到（网络、翻页异常）不阻断正常发布，继续走原流程。
+  }
   let editUrl = await findFanqieDraftEditUrl(page, chapter);
   if (!editUrl) {
     await fillChapter(page, "fanqie", chapter);
@@ -430,20 +486,24 @@ async function publishFanqieChapter(page, chapter) {
     await fillChapter(page, "fanqie", chapter);
   }
   await confirmFanqieDraftSaved(page, chapter);
-  await page.getByRole("button", { name: /下一步/ }).first().click();
+  await dismissVersionConflict(page);
+  await clickWithRetry(page.getByRole("button", { name: /下一步/ }).first(), "下一步");
   let settingsSeen = false;
   for (let attempt = 0; attempt < 25; attempt += 1) {
     await page.waitForTimeout(3000);
+    // 版本冲突框可能在流程中途才弹出来（编辑器自动保存与云端打架），
+    // 每轮先清它，否则后面的按钮一样点不下去。
+    await dismissVersionConflict(page);
     const text = await page.locator("body").innerText().catch(() => "");
     if (/发布设置/.test(text) && /确认发布/.test(text)) { settingsSeen = true; break; }
     const typoSubmit = page.getByRole("button", { name: /^提交$/ }).first();
-    if ((await typoSubmit.count()) && (await typoSubmit.isVisible().catch(() => false))) { await typoSubmit.click(); continue; }
+    if ((await typoSubmit.count()) && (await typoSubmit.isVisible().catch(() => false))) { await clickWithRetry(typoSubmit, "提交"); continue; }
     const fullCheck = page.getByRole("button", { name: /全面检测/ }).first();
     if ((await fullCheck.count()) && (await fullCheck.isVisible().catch(() => false))) {
       const disabled = await fullCheck.evaluate((b) => b.disabled || b.classList.contains("arco-btn-disabled")).catch(() => false);
-      if (!disabled) { await fullCheck.click(); continue; }
+      if (!disabled) { await clickWithRetry(fullCheck, "全面检测"); continue; }
       const basicCheck = page.getByRole("button", { name: /仅基础检测/ }).first();
-      if (await basicCheck.count()) { await basicCheck.click(); continue; }
+      if (await basicCheck.count()) { await clickWithRetry(basicCheck, "仅基础检测"); continue; }
     }
   }
   if (!settingsSeen) throw new Error("发布流程未进入发布设置");
@@ -463,15 +523,28 @@ async function publishFanqieChapter(page, chapter) {
   try {
   await page.waitForTimeout(8000);
   const bookMatch = editUrl.match(/main\/writer\/(\d+)/);
-  await page.goto(`https://fanqienovel.com/main/writer/chapter-manage/${bookMatch[1]}`, { waitUntil: "domcontentloaded", timeout: 60000 });
-  await page.waitForTimeout(5000);
-  const publishedRow = await findFanqieChapterRow(page, chapter);
+  // 发布接口已接受不等于列表立刻可见：2026-11-02 大荒第 4 章、2026-11-04
+  // 面光第 8 章都是提交成功但列表一次没刷出来，导致误判失败、次日重发。
+  // 改成最长约 5 分钟轮询，列表滞后不再算失败。
+  let publishedRow = null;
+  for (let round = 0; round < 12 && !publishedRow; round += 1) {
+    await page.goto(`https://fanqienovel.com/main/writer/chapter-manage/${bookMatch[1]}`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(5000);
+    publishedRow = await findFanqieChapterRow(page, chapter).catch(() => null);
+    if (!publishedRow) await page.waitForTimeout(20000);
+  }
   if (!publishedRow) throw new Error("发布后未在章节列表中找到本章");
   const draftCheck = await page.context().newPage();
   try {
-    await draftCheck.goto(`https://fanqienovel.com/main/writer/chapter-manage/${bookMatch[1]}?type=2`, { waitUntil: "domcontentloaded", timeout: 60000 });
-    await draftCheck.waitForTimeout(4000);
-    const draftRow = await findFanqieChapterRow(draftCheck, chapter);
+    // 草稿被消费也可能有滞后，同样轮询 3 次再定性，避免把已发布判成状态不明。
+    let draftRow = null;
+    for (let round = 0; round < 3; round += 1) {
+      await draftCheck.goto(`https://fanqienovel.com/main/writer/chapter-manage/${bookMatch[1]}?type=2`, { waitUntil: "domcontentloaded", timeout: 60000 });
+      await draftCheck.waitForTimeout(4000);
+      draftRow = await findFanqieChapterRow(draftCheck, chapter).catch(() => null);
+      if (!draftRow) break;
+      await draftCheck.waitForTimeout(10000);
+    }
     if (draftRow) throw new Error("发布后本章仍在草稿箱，状态不明确");
   } finally {
     await draftCheck.close().catch(() => {});
@@ -699,6 +772,8 @@ module.exports = {
   splitChapterTitle,
   fillChapter,
   confirmFanqieDraftSaved,
+  dismissVersionConflict,
+  clickWithRetry,
   findFanqieDraftEditUrl,
   findFanqieChapterRow,
   publishFanqieChapter,
