@@ -9,10 +9,9 @@
   "publishedAt": "2026-10-22T06:10:23.000Z",
   "platforms": {
     "fanqie": {
-      "status": "draft_saved",
-      "error": "等待草稿同步到云端超时",
-      "updatedAt": "2026-10-22T17:55:00+08:00",
-      "note": "2026-10-22 final audit: full draft verified on platform (word count matches local); earlier hollow/missing state repaired via insertText protocol."
+      "status": "failed",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: /全面检测/ }).first()\n    - locator resolved to <button type=\"button\" class=\"arco-btn arco-btn-primary arco-btn-size-default arco-btn-shape-square\">…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div class=\"byte-modal-content\">…</div> from",
+      "updatedAt": "2026-11-05T01:13:14.814Z"
     },
     "qimao": {
       "status": "skipped",

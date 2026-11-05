@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-04",
+  "chapter": 13,
+  "bookId": "tianming-fanpai",
+  "createdAt": "2026-11-05T01:10:09.000Z",
+  "status": "published",
+  "characters": 2643,
+  "sha256": "b37e9895e2321d8ad74287e6ea871e8ccb2e76c4927195b3d2e59a04e726d821",
+  "publishedAt": "2026-11-05T01:10:09.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "skipped",
+      "updatedAt": "2026-11-05T01:10:09.000Z"
+    },
+    "qimao": {
+      "status": "pending",
+      "updatedAt": "2026-11-05T01:10:09.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-11-05 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}
