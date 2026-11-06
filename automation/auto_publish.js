@@ -3,7 +3,6 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const { beijingDay, activePlatformLimit } = require("./platform_limits");
-const { filterWiredBooks } = require("./long_novel_policy");
 
 const ROOT = path.resolve(__dirname, "..");
 function chapterRecords(bookDir, root = ROOT) {
@@ -43,7 +42,7 @@ function nextChapter(bookDir, root = ROOT, now = new Date()) {
 function orderedBooks(wired, root = ROOT) {
   const latest = book => Math.max(0, ...[...chapterRecords(book, root).values()]
     .filter(r => r.status === "published").map(r => Date.parse(r.updatedAt) || 0));
-  return filterWiredBooks(wired, root).eligible.filter(w => w.platform === "fanqie").map(w => ({
+  return wired.filter(w => w.platform === "fanqie").map(w => ({
     ...w, priority: w.publishPriority ?? (w.book === "serial-0002-mianguang" ? 100 : 0),
     latest: latest(w.book),
   })).sort((a, b) => b.priority - a.priority || a.latest - b.latest);
@@ -52,9 +51,6 @@ function orderedBooks(wired, root = ROOT) {
 function main() {
   const dry = process.argv.includes("--dry");
   const wired = JSON.parse(fs.readFileSync(path.join(ROOT, "automation", "wired_books.json"), "utf8"));
-  for (const item of filterWiredBooks(wired, ROOT).skipped) {
-    console.log(item.book, "跳过每日自动发布：", item.reason);
-  }
   let acted = 0, failed = 0, waiting = false;
   for (const w of orderedBooks(wired)) {
     const limit = activePlatformLimit("fanqie");
@@ -91,4 +87,3 @@ module.exports = { chapterRecords, nextChapter, orderedBooks };
 if (require.main === module) {
   try { main(); } catch (error) { console.error("AUTO_PUBLISH_FAIL", error.message); process.exitCode = 1; }
 }
-
