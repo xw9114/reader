@@ -32,13 +32,8 @@ python3 tools/build_publish.py
 echo "[3/6] 补建缺失台账"
 python3 automation/sync_ledgers.py
 
-echo "[4/6] 队列存草稿（名单来自 wired_books.json）"
-python3 - << 'PYEOF' > /tmp/wired-list.txt
-import json
-rows = json.load(open("automation/wired_books.json"))
-for r in rows:
-    print("\t".join([r["book"], r["platform"], r["url"]]))
-PYEOF
+echo "[4/6] 队列存草稿（只处理目标章节数 >= 50 的长篇）"
+node automation/long_novel_policy.js automation/wired_books.json > /tmp/long-wired-list.txt
 while IFS=$'\t' read -r book platform url; do
   [ -z "$book" ] && continue
   case "$book" in \#*) echo "  跳过：$book"; continue;; esac
@@ -47,7 +42,7 @@ while IFS=$'\t' read -r book platform url; do
     echo "DRAFT_SAVE_FAIL $book"
     partial_failures=$((partial_failures + 1))
   fi
-done < /tmp/wired-list.txt
+done < /tmp/long-wired-list.txt
 
 echo "[5/6] 每日自动发布（每本 1 章）"
 if [ "$READER_AUTO_PUBLISH" = "1" ]; then
@@ -66,3 +61,4 @@ if [ "$partial_failures" -gt 0 ]; then
   exit 1
 fi
 echo "DAILY_SYNC_OK"
+
