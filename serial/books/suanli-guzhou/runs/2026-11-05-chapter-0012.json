@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-05",
+  "chapter": 12,
+  "bookId": "suanli-guzhou",
+  "createdAt": "2026-11-06T01:10:10.000Z",
+  "status": "published",
+  "characters": 2718,
+  "sha256": "5c812f14865587ac2a8953e9b0079d101835eb2951c28c1259b5a84e3d0854b3",
+  "publishedAt": "2026-11-06T01:10:10.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "pending",
+      "updatedAt": "2026-11-06T01:10:10.000Z"
+    },
+    "qimao": {
+      "status": "skipped",
+      "updatedAt": "2026-11-06T01:10:10.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-11-06 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}

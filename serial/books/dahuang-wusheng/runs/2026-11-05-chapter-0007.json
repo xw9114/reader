@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-05",
+  "chapter": 7,
+  "bookId": "dahuang-wusheng",
+  "createdAt": "2026-11-06T01:10:10.000Z",
+  "status": "published",
+  "characters": 2533,
+  "sha256": "49165a5282b86edd7f69314ab15d55b4b7b119fedf840b4081a00093355e9211",
+  "publishedAt": "2026-11-06T01:10:10.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "published",
+      "updatedAt": "2026-11-06T01:11:30.968Z"
+    },
+    "qimao": {
+      "status": "skipped",
+      "updatedAt": "2026-11-06T01:10:10.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-11-06 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}
