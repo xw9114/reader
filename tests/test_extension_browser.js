@@ -16,6 +16,27 @@ async function openFixture(browser, filename) {
   const channel = process.env.BROWSER_CHANNEL || (process.platform === "win32" ? "msedge" : undefined);
   const browser = await chromium.launch({ headless: true, ...(channel ? { channel } : {}) });
   try {
+    const classificationPage = await openFixture(browser, "book-classification.html");
+    const classificationPanel = classificationPage.locator("#reader-fanqie-importer");
+    await classificationPanel.locator(".story option").first().waitFor({ state: "attached" });
+    const longGroup = classificationPanel.locator('optgroup[label="📚 长篇小说"]');
+    const shortGroup = classificationPanel.locator('optgroup[label="📖 短篇故事"]');
+    assert.equal(await longGroup.locator("option").count(), 3);
+    assert.equal(await shortGroup.locator("option").count(), 3);
+    assert.match(await shortGroup.locator('option[value="short"]').textContent(), /【短篇】.*空载里程.*全6章 · 已完结/);
+    assert.match(await longGroup.locator('option[value="long"]').textContent(), /【长篇】.*面光.*更新至第15章/);
+    assert.match(await longGroup.locator('option[value="complete-long"]').textContent(), /全160章 · 已完结/);
+    assert.doesNotMatch(await classificationPanel.locator(".story").textContent(), /每日连更/);
+    await classificationPanel.locator(".story").selectOption("long");
+    assert.match(await classificationPanel.locator(".story-kind-tag").textContent(), /长篇小说.*更新中/);
+    assert.equal(await classificationPanel.locator("select.chapter option").count(), 15);
+    await classificationPanel.locator(".story").selectOption("short");
+    assert.match(await classificationPanel.locator(".story-kind-tag").textContent(), /短篇故事.*已完结/);
+    assert.equal(await classificationPanel.locator("select.chapter option").count(), 6);
+    await classificationPanel.locator(".fill").click();
+    assert.match(await classificationPage.locator(".chapter-editor").textContent(), /保留正文1。/);
+    await classificationPage.close();
+
     const chapterPage = await openFixture(browser, "fanqie-editor.html");
     const chapterPanel = chapterPage.locator("#reader-fanqie-importer");
     assert.equal(await chapterPanel.locator(".mode").textContent(), "番茄 · 章节");
@@ -59,6 +80,7 @@ async function openFixture(browser, filename) {
     assert.match(await shortStoryPanel.locator(".status").textContent(), /整篇正文已填入/);
     assert.equal(await shortStoryPanel.locator(".cover-tools").isVisible(), true);
     await shortStoryPanel.locator(".cover-fill").click();
+    await shortStoryPage.waitForFunction(() => document.querySelector("#cover-upload").files.length === 1);
     assert.deepEqual(
       await shortStoryPage.locator("#cover-upload").evaluate((input) => ({ count: input.files.length, type: input.files[0]?.type, name: input.files[0]?.name })),
       { count: 1, type: "image/png", name: "测试短故事-封面.png" },

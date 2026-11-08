@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from tools.chapter_format import normalize_chapter
+from reader_schema import book_writing_mode
 from tools.publishing_metadata import resolve_publishing_metadata
 
 DEFAULT_ACCESS_FILE = ROOT.parent / "novel-studio" / "artifacts" / "vps" / "access.json"
@@ -107,6 +108,19 @@ def preset_for(genre: str) -> dict[str, list[str]]:
     )
 
 
+def imported_writing_mode(project: dict, chapter_count: int, existing: dict | None = None) -> str:
+    """Prefer authored/source length settings over a partially imported chapter count."""
+    existing = existing or {}
+    if existing.get("writingMode") is not None:
+        return book_writing_mode(existing)
+    if project.get("writingMode") is not None:
+        return book_writing_mode(project)
+    words = project.get("target_word_count")
+    if type(words) is int and words > 0:
+        return "long" if words >= 100000 else "short"
+    return book_writing_mode({"targetChapters": existing.get("targetChapters") or chapter_count})
+
+
 def import_book(
     base_url: str,
     auth: tuple[str, str],
@@ -173,6 +187,8 @@ def import_book(
         }.get(genre, "urban"),
         "status": "active",
         "targetChapters": len(chapters),
+        "writingMode": imported_writing_mode(project, len(chapters), existing),
+        "manuscriptStatus": "complete",
         "chapterWordCount": round(sum(word_counts) / max(1, len(word_counts))),
         "language": "zh",
         "publishingHint": {

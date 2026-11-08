@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<title>作品篇幅分类测试</title>
+<label>章节标题<input id="chapter-title" placeholder="请输入章节标题"></label>
+<div class="chapter-editor" contenteditable="true" data-placeholder="请输入正文"></div>
+<script>
+  window.__READER_TEST_PATHNAME__ = "/main/writer/123/publish/456";
+  const chapters = (count) => Array.from({ length: count }, (_, i) => ({
+    id: `chapter-${i + 1}`, title: `第${i + 1}章 测试`, body: `保留正文${i + 1}。`, characters: 6,
+  }));
+  window.__READER_TEST_LIBRARY__ = { stories: [
+    { id: "short", title: "空载里程", kind: "serial", writingMode: "short", manuscriptStatus: "complete", targetChapters: 6, chapters: chapters(6) },
+    { id: "long", title: "面光", kind: "serial", writingMode: "long", manuscriptStatus: "ongoing", targetChapters: 100, chapters: chapters(15) },
+    { id: "complete-long", title: "已完结长篇", kind: "serial", writingMode: "long", manuscriptStatus: "complete", targetChapters: 160, chapters: chapters(160) },
+    { id: "legacy-short", title: "旧数据短篇", kind: "serial", targetChapters: 6, chapters: chapters(6) },
+    { id: "explicit-long", title: "明确长篇", kind: "serial", writingMode: "long", targetChapters: 6, chapters: chapters(2) },
+    { id: "legacy-daily", title: "独立短篇", kind: "daily", chapters: chapters(1) },
+  ] };
+</script>
+<script src="../../extension/content.js"></script>
+</html>

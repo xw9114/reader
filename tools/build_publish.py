@@ -20,6 +20,8 @@ if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
 from reader_schema import (
+    book_writing_mode,
+    book_manuscript_status,
     validate_publishing_hint as _validate_publishing_hint,
     validate_volumes as _validate_volumes,
 )
@@ -330,6 +332,8 @@ def parse_story(path: Path) -> dict:
         "title": title,
         "date": date,
         "kind": "daily",
+        "writingMode": "short",
+        "manuscriptStatus": "complete",
         "source": f"daily/{path.name}",
         "download": downloads["txt"],
         "downloads": downloads,
@@ -410,7 +414,11 @@ def parse_serial_book(book_path: Path, published: Path, serial_dir: Path) -> tup
         "title": title,
         "date": numbered[-1][1],
         "source": published.relative_to(serial_dir.parent).as_posix().rstrip("/") + "/",
-        "kind": "serial",
+        "kind": "serial" if book_writing_mode(book) == "long" else "daily",
+        "storageKind": "serial",
+        "writingMode": book_writing_mode(book),
+        "manuscriptStatus": book_manuscript_status(book, len(chapters)),
+        "targetChapters": book.get("targetChapters"),
         "download": downloads["txt"],
         "downloads": downloads,
         "characters": sum(c["characters"] for c in chapters),
@@ -476,7 +484,7 @@ def write_story_downloads(story: dict, source_paths: list[Path], output_dir: Pat
         f"{story['title']}\n\n{story['fullText']}\n",
         encoding="utf-8-sig",
     )
-    if len(source_paths) == 1 and story.get("kind") != "serial":
+    if len(source_paths) == 1 and story.get("storageKind", story.get("kind")) != "serial":
         shutil.copy2(source_paths[0], md_path)
     else:
         md_path.write_text(story_markdown(story), encoding="utf-8-sig")

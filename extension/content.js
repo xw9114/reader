@@ -1578,11 +1578,33 @@
     renderCoverPreview();
   }
 
+  function storyWritingMode(story) {
+    if (story.writingMode === "long" || story.writingMode === "short") return story.writingMode;
+    if (Number.isInteger(story.targetChapters) && story.targetChapters > 0) {
+      return story.targetChapters >= 50 ? "long" : "short";
+    }
+    return story.kind === "serial" ? "long" : "short";
+  }
+
+  function storyIsComplete(story) {
+    if (story.manuscriptStatus === "complete") return true;
+    if (story.manuscriptStatus === "ongoing") return false;
+    if (Number.isInteger(story.targetChapters) && story.targetChapters > 0) {
+      return (story.chapters || []).length >= story.targetChapters;
+    }
+    return story.kind !== "serial";
+  }
+
+  function storyProgressLabel(story) {
+    const count = (story.chapters || []).length;
+    return storyIsComplete(story) ? `（全${count}章 · 已完结）` : `（更新至第${count}章）`;
+  }
+
   function updateStoryKindTag() {
     if (!ui?.storyKindTag || !state.activeStory) return;
-    const isSerial = state.activeStory.kind === "serial";
+    const isSerial = storyWritingMode(state.activeStory) === "long";
     ui.storyKindTag.className = `story-kind-tag ${isSerial ? "serial" : "daily"}`;
-    ui.storyKindTag.textContent = isSerial ? "📚 长篇连载" : "📖 独立短篇";
+    ui.storyKindTag.textContent = `${isSerial ? "📚 长篇小说" : "📖 短篇故事"} · ${storyIsComplete(state.activeStory) ? "已完结" : "更新中"}`;
   }
 
   function selectStory(storyId) {
@@ -1640,16 +1662,15 @@
     }
     ui.story.replaceChildren();
     const serialGroup = document.createElement("optgroup");
-    serialGroup.label = "📚 长篇连载小说（每日连更）";
+    serialGroup.label = "📚 长篇小说";
     const dailyGroup = document.createElement("optgroup");
-    dailyGroup.label = "📖 独立短篇故事（单篇精选）";
+    dailyGroup.label = "📖 短篇故事";
 
     state.stories.forEach((story) => {
       const option = document.createElement("option");
       option.value = story.id;
-      const isSerial = story.kind === "serial";
-      const chapterCount = (story.chapters || []).length;
-      const countDesc = isSerial ? `（连载至第${chapterCount}章）` : `（全${chapterCount}章）`;
+      const isSerial = storyWritingMode(story) === "long";
+      const countDesc = storyProgressLabel(story);
       const prefix = isSerial ? "【长篇】" : "【短篇】";
       option.textContent = `${prefix} ${story.date ? `${story.date} · ` : ""}${story.title} ${countDesc}`;
 
@@ -1870,6 +1891,9 @@
     suggestProtagonists,
     suggestWorkType,
     suggestTagDimensions,
+    storyWritingMode,
+    storyIsComplete,
+    storyProgressLabel,
   };
   globalThis.__readerPublisherImporter = globalThis.__readerFanqieImporter;
   if (document.readyState === "loading") {

@@ -12,6 +12,30 @@ PUBLISHING_DIMENSION_LIMITS = {"plot": 4, "emotion": 2, "persona": 4, "worldview
 MAX_VOLUMES = 12
 
 
+def book_writing_mode(book: dict) -> str:
+    """Classify the planned work, independent of its chapter storage directory."""
+    mode = book.get("writingMode")
+    if mode is not None:
+        if mode not in ("short", "long"):
+            raise ValueError("writingMode must be short or long")
+        return mode
+    target = book.get("targetChapters")
+    if type(target) is int and target > 0:
+        return "long" if target >= 50 else "short"
+    # Legacy serials without a plan retain their existing category.
+    return "long"
+
+
+def book_manuscript_status(book: dict, chapter_count: int) -> str:
+    status = book.get("manuscriptStatus")
+    if status is not None:
+        if status not in ("complete", "ongoing"):
+            raise ValueError("manuscriptStatus must be complete or ongoing")
+        return status
+    target = book.get("targetChapters")
+    return "complete" if type(target) is int and 0 < target <= chapter_count else "ongoing"
+
+
 def publishing_string_list(value: object, field: str, minimum: int, maximum: int) -> list[str]:
     if not isinstance(value, list):
         raise ValueError(f"{field} must be an array")
