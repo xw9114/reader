@@ -9,9 +9,8 @@
   "publishedAt": "2026-10-22T06:10:23.000Z",
   "platforms": {
     "fanqie": {
-      "status": "failed",
-      "error": "page.goto: Timeout 60000ms exceeded.\nCall log:\n  - navigating to \"https://fanqienovel.com/main/writer/7699380588012112920/publish/?enter_from=newchapter_1\", waiting until \"domcontentloaded\"\n",
-      "updatedAt": "2026-11-11T01:35:27.707Z"
+      "status": "published",
+      "updatedAt": "2026-11-11T15:04:55.120Z"
     },
     "qimao": {
       "status": "skipped",
