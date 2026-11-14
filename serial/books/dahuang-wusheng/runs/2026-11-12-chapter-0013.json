@@ -9,8 +9,12 @@
   "publishedAt": "2026-11-13T01:10:10.000Z",
   "platforms": {
     "fanqie": {
-      "status": "draft_saved",
-      "updatedAt": "2026-11-13T01:10:37.063Z"
+      "platformCode": "-1020",
+      "retryAfter": "2026-11-14T16:00:00.000Z",
+      "retryPolicy": "next_beijing_day_not_guaranteed_reset",
+      "status": "waiting_platform_limit",
+      "error": "更新连载模式作品数超出每日上限",
+      "updatedAt": "2026-11-14T01:12:29.517Z"
     },
     "qimao": {
       "status": "skipped",

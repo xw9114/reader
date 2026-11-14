@@ -3,8 +3,8 @@
     "status": "waiting_platform_limit",
     "code": "-1020",
     "message": "更新连载模式作品数超出每日上限",
-    "observedAt": "2026-11-04T03:38:46.255Z",
-    "retryAfter": "2026-11-04T16:00:00.000Z",
+    "observedAt": "2026-11-14T01:12:29.420Z",
+    "retryAfter": "2026-11-14T16:00:00.000Z",
     "retryPolicy": "next_beijing_day_not_guaranteed_reset"
   }
 }

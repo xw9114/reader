@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-13",
+  "chapter": 39,
+  "bookId": "lianai-daka",
+  "createdAt": "2026-11-14T01:10:10.000Z",
+  "status": "published",
+  "characters": 2996,
+  "sha256": "c80a7e3278d0e39e7f4e5bc8daecd8e76261157a8ab5e40c2755de3a7f389fea",
+  "publishedAt": "2026-11-14T01:10:10.000Z",
+  "platforms": {
+    "fanqie": {
+      "status": "skipped",
+      "updatedAt": "2026-11-14T01:10:10.000Z"
+    },
+    "qimao": {
+      "status": "pending",
+      "updatedAt": "2026-11-14T01:10:10.000Z"
+    }
+  },
+  "note": "台账由 sync_ledgers.py 于 2026-11-14 自动补建（正文已入库、台账缺失）；平台状态继承本书已有台账的 skipped 标记，其余为 pending。createdAt/publishedAt 为补建时间。"
+}
