@@ -10,11 +10,11 @@
   "platforms": {
     "fanqie": {
       "platformCode": "-1020",
-      "retryAfter": "2026-11-21T16:00:00.000Z",
+      "retryAfter": "2026-11-22T16:00:00.000Z",
       "retryPolicy": "next_beijing_day_not_guaranteed_reset",
       "status": "waiting_platform_limit",
       "error": "更新连载模式作品数超出每日上限",
-      "updatedAt": "2026-11-21T01:12:28.611Z"
+      "updatedAt": "2026-11-22T01:12:30.007Z"
     },
     "qimao": {
       "status": "skipped",
